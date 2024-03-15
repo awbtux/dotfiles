@@ -174,16 +174,16 @@ local plugins = {
     },
 
     -- self explanatory
-    { "windwp/nvim-autopairs",
-        event = {
-            "BufReadPost",
-            "BufNewFile",
-            "BufWrite",
-        },
-        config = function()
-            require "user.plugins.autopairs"
-        end,
-    },
+    --{ "windwp/nvim-autopairs",
+    --    event = {
+    --        "BufReadPost",
+    --        "BufNewFile",
+    --        "BufWrite",
+    --    },
+    --    config = function()
+    --        require "user.plugins.autopairs"
+    --    end,
+    --},
 
     -- vscode-like indent indicator
     { "lukas-reineke/indent-blankline.nvim",
