@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# source ~/.config/shell/profile
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . ${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile
+
+# source ~/.config/x11/xinitrc
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xinitrc" ] && . ${XDG_CONFIG_HOME:-$HOME/.config}/x11/xinitrc

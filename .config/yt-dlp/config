@@ -1,0 +1,11 @@
+--trim-filenames 256
+--no-continue
+--quiet
+--progress
+--no-part
+--no-cookies
+--prefer-free-formats
+--output "%(title)s.%(ext)s"
+--audio-quality 0
+--default-search ytsearch
+--user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.61 Safari/537.36"

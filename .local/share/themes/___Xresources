@@ -1,0 +1,83 @@
+! Everforest Dark (Hard) !
+
+! backgrounds
+#define forest0 #2b3339
+#define forest1 #323c41
+#define forest2 #3a454a
+#define forest3 #445055
+#define forest4 #503946
+#define forest5 #4e3e43
+#define forest6 #404d44
+#define forest7 #394f5a
+#define forest8 #4a4940
+
+! foregrounds
+#define forest9 #d3c6aa
+#define forest10 #e67e80
+#define forest11 #e69875
+#define forest12 #dbbc7f
+#define forest13 #a7c080
+#define forest14 #83c092
+#define forest15 #7fbbb3
+#define forest16 #d699b6
+#define forest17 #7a8478
+#define forest18 #9da9a0
+
+! special
+*.foreground:       forest9
+*.background:       forest0
+*.highlight:        forest6
+*.backgroundVisual: forest4
+*.cursorColor:      forest9
+
+! terminal colors
+*.color0:  forest0
+*.color8:  forest2
+*.color1:  forest10
+*.color9:  forest10
+*.color2:  forest13
+*.color10: forest13
+*.color3:  forest12
+*.color11: forest12
+*.color4:  forest15
+*.color12: forest15
+*.color5:  forest16
+*.color13: forest16
+*.color6:  forest14
+*.color14: forest14
+*.color7:  forest9
+*.color15: forest9
+
+! dwm
+dwm.normfgcolor: forest9
+dwm.selfgcolor: forest9
+dwm.normbgcolor: forest1
+dwm.selbgcolor: forest3
+dwm.normbordercolor: forest1
+dwm.selbordercolor: forest3
+
+! urxvt
+URxvt.font: xft:#::font-monospace::#:style=Regular:size=9
+URxvt.boldFont: xft:#::font-monospace::#:style=Bold:size=9
+URxvt.italicFont: xft:#::font-monospace::#:style=Italic:size=9
+URxvt.boldItalicFont: xft:#::font-monospace::#:style=BoldItalic:size=9
+URxvt.depth: 32
+URxvt.letterSpace: 0
+URxvt.lineSpace: 0
+URxvt.geometry: 92x24
+URxvt.internalBorder: -2
+URxvt.saveline: 8192
+URxvt.scrollBar: false
+URxvt.scrollBar_right: false
+URxvt.cursorBlink: false
+URxvt.cursorUnderline: false
+URxvt.urgentOnBell: true
+URxvt.iso14755: false
+URxvt.transparent: false
+
+! nsxiv
+Nsxiv.window.foreground: forest9
+Nsxiv.window.background: forest0
+Nsxiv.bar.foreground: forest9
+Nsxiv.bar.background: forest2
+Nsxiv.bar.font: #::font-monospace::#:style=Regular:size=9

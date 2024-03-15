@@ -1,0 +1,114 @@
+#!/bin/sh
+
+# reset aliases to ensure that they don't break
+unalias -a
+
+# only create an alias to a command if it exists
+aliascmd() {
+    while [ "$#" -gt 0 ]; do
+        # checks
+        case "${1%%=*}" in
+            "${1#${1%%=*}=}"|\
+            "${1%=}"|\
+            "$1") shift; continue ;;
+        esac
+
+        # decide which part of the alias value to execute as the cmd
+        for i in ${1#${1%%=*}=}; do
+            case "$i" in ""|"sudo"|*=*) continue ;; esac; break
+        done
+
+        # add the alias
+        command -v "${i%% }" >/dev/null 2>&1 && alias "${1%%=*}"="${1#${1%%=*}=}"
+        shift
+    done
+}
+
+# sudo links to suexec if it doesn't exist
+command -v sudo >/dev/null 2>&1 || {
+    # not optimal, but it's distributed here in ~/.local/bin/scripts
+    aliascmd sudo="suexec"
+
+    # preferred when it's available
+    aliascmd sudo="doas"
+}
+
+# run riverwm under dbus if it's installed
+command -v river >/dev/null 2>&1 && alias river="dbus-run-session river"
+
+# use ~/.config/x11/xinitrc
+aliascmd \
+    startx="startx $XINITRC"
+
+# neovim familiarity
+aliascmd \
+    vim="nvim" \
+    vimdiff="nvim -d"
+
+# ls options
+aliascmd \
+    ls="ls --group-directories-first --color=auto -ChN" \
+    la="ls -A" \
+    l.="ls -d .*" \
+    l1="ls -1" \
+    l1a="ls -1A" \
+    l1.="ls -d .* -1" \
+    l.1="ls -d .* -1" \
+    ll="ls -l" \
+    lla="ls -lA" \
+    ll.="ls -d .* -l" \
+    l="ls"
+
+# misc. shortcuts
+aliascmd \
+    e="${EDITOR:-vi}" \
+    g="git" \
+    cl="clear" \
+    cdd="cd /" \
+    ..="cd ../" \
+    c-="cd -" \
+
+# run these as root
+aliascmd \
+    reboot="sudo reboot" \
+    poweroff="sudo poweroff"
+
+# xbps shortcuts
+aliascmd \
+    xi="sudo xbps-install" \
+    xq="xbps-query" \
+    xr="sudo xbps-remove -R"
+
+# verbosity and confirmation
+aliascmd \
+    cp="cp -iv" \
+    mv="mv -iv" \
+    rm="rm -Iv" \
+    mkdir="mkdir -v" \
+    chmod="chmod -v" \
+    chown="chown -v" \
+    ln="ln -v" \
+    pkill="pkill -e"
+
+# add color to commands
+aliascmd \
+    dir="ls" \
+    vdir="ls" \
+    grep="grep --color=auto" \
+    fgrep="fgrep --color=auto" \
+    egrep="egrep --color=auto"
+
+# yt-dlp options
+# also see ${HOME}/.config/yt-dlp, these are just for different presets
+aliascmd \
+    yt="yt-dlp --config-locations \"${XDG_CONFIG_HOME:-$HOME/.config}/yt-dlp/video-config\"" \
+    yta="yt-dlp --config-locations \"${XDG_CONFIG_HOME:-$HOME/.config}/yt-dlp/audio-config\""
+
+# concatenate playlists
+aliascmd \
+    ytc="yt --config-locations \"${XDG_CONFIG_HOME:-$HOME/.config}/yt-dlp/video-config\" --concat-playlist always" \
+    ytca="yt --config-locations \"${XDG_CONFIG_HOME:-$HOME/.config}/yt-dlp/audio-config\" --concat-playlist always"
+
+# lie to elinks about the terminal type if running
+# under a 256-color multiplexer (eg. tmux/screen)
+[ "$TERM" = "screen-256color" ] && aliascmd elinks="TERM=xterm-256color elinks"

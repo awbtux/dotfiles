@@ -1,0 +1,7 @@
+#!/bin/sh
+
+require-cmd socat || exit 1
+
+for i in /tmp/mpvSockets/*; do
+    [ -r "$i" ] && echo '{ "command": ["set_property", "pause", true] }' | socat - "$i";
+done

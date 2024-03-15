@@ -1,0 +1,224 @@
+@define-color darkerfg ##::darkerfg::#;
+@define-color darkfg ##::darkfg::#;
+@define-color mainfg ##::mainfg::#;
+@define-color brightfg ##::brightfg::#;
+@define-color rootbg ##::rootbg::#;
+@define-color darkbg ##::darkbg::#;
+@define-color mainbg ##::mainbg::#;
+@define-color mainbg2 ##::mainbg2::#;
+@define-color statusbg ##::statusbg::#;
+@define-color statusbg2 ##::statusbg2::#;
+@define-color brightbg ##::brightbg::#;
+@define-color brightbg2 ##::brightbg2::#;
+@define-color brighterbg ##::brighterbg::#;
+@define-color brighterbg2 ##::brighterbg2::#;
+@define-color brightestbg ##::brightestbg::#;
+@define-color brightestbg2 ##::brightestbg2::#;
+@define-color darkred ##::darkred::#;
+@define-color mainred ##::mainred::#;
+@define-color brightred ##::brightred::#;
+@define-color darkgreen ##::darkgreen::#;
+@define-color maingreen ##::maingreen::#;
+@define-color brightgreen ##::brightgreen::#;
+@define-color darkyellow ##::darkyellow::#;
+@define-color mainyellow ##::mainyellow::#;
+@define-color brightyellow ##::brightyellow::#;
+@define-color darkorange ##::darkorange::#;
+@define-color mainorange ##::mainorange::#;
+@define-color brightorange ##::brightorange::#;
+@define-color darkblue ##::darkblue::#;
+@define-color mainblue ##::mainblue::#;
+@define-color brightblue ##::brightblue::#;
+@define-color darkmagenta ##::darkmagenta::#;
+@define-color mainmagenta ##::mainmagenta::#;
+@define-color brightmagenta ##::brightmagenta::#;
+@define-color darkcyan ##::darkcyan::#;
+@define-color maincyan ##::maincyan::#;
+@define-color brightcyan ##::brightcyan::#;
+
+* {
+    font-family: sans-serif;
+    font-size: 13px;
+    padding: 0;
+    margin: 0;
+}
+
+window#waybar {
+    background-color: @statusbg;
+    color: @mainfg;
+}
+
+button {
+    /* Use box-shadow instead of border so the text isn't offset */
+    box-shadow: inset 0 -3px transparent;
+    /* Avoid rounded borders under each button name */
+    border: none;
+    border-radius: 0;
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+button:hover {
+    background: inherit;
+    box-shadow: inset 0 -3px @brightfg;
+}
+
+label:focus {
+    background-color: @statusbg;
+    color: @mainfg;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    background-color: transparent;
+    color: @brightfg;
+}
+
+#workspaces button:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+#workspaces button.focused {
+    box-shadow: inset 0 -3px @brightfg;
+    background-color: @brightestbg;
+}
+
+#workspaces button.urgent {
+    background-color: @brightred;
+}
+
+#window,
+#workspaces {
+    margin: 0 4px;
+}
+
+/* If workspaces is the leftmost module, omit left margin */
+.modules-left > widget:first-child > #workspaces {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+/* If workspaces is the rightmost module, omit right margin */
+.modules-right > widget:last-child > #workspaces {
+    margin-right: 0;
+    padding-right: 0;
+}
+
+#clock,
+#battery,
+#temperature,
+#disk,
+#memory,
+#cpu,
+#network,
+#pulseaudio,
+#idle_inhibitor,
+#custom-media,
+#custom-weather,
+#tray,
+#user,
+#mpd {
+    padding: 0 4px;
+    color: @mainfg;
+}
+
+#custom-weather {
+    padding: 4px 4px;
+    color: @mainfg;
+}
+
+#tags button {
+    padding: 0 4px;
+    color: @darkerfg;
+}
+
+#tags button.focused {
+    font-weight: bold;
+    background-color: @brightbg;
+    color: @brightfg;
+}
+
+#tags button.urgent {
+    background-color: @darkred;
+    color: @statusbg;
+}
+
+#window {
+    color: @darkerfg;
+}
+
+#battery {
+    background-color: @mainfg;
+    color: @statusbg;
+}
+
+#battery.charging, #battery.plugged {
+    background-color: @darkgreen;
+    color: @statusbg;
+}
+
+#battery.critical:not(.charging) {
+    background-color: @darkred;
+    color: @statusbg;
+}
+
+#temperature {
+    background-color: @darkorange;
+    color: @statusbg;
+}
+
+#temperature.critical {
+    background-color: @mainred;
+    color: @statusbg;
+}
+
+#memory {
+    background-color: @darkmagenta;
+    color: @statusbg;
+}
+
+#cpu {
+    background-color: @darkgreen;
+    color: @statusbg;
+}
+
+#disk {
+    background-color: @darkcyan;
+    color: @statusbg;
+}
+
+#network {
+    background-color: @darkblue;
+    color: @statusbg;
+}
+
+#network.disconnected {
+    background-color: @darkred;
+    color: @statusbg;
+}
+
+#pulseaudio {
+    background-color: @darkyellow;
+    color: @statusbg;
+}
+
+#pulseaudio.muted {
+    opacity: 0.7;
+}
+
+#tray {
+    background-color: @statusbg;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: @mainred;
+}
+
+#idle_inhibitor {
+    background-color: @brighterbg;
+}
+
+#idle_inhibitor.activated {
+    background-color: @darkerfg;
+    color: @statusbg;
+}

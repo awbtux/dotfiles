@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# requires find and sed
+require-cmd find rm || exit 1
+
+# rm theme-specific config files
+for i in $(find ${XDG_CONFIG_HOME:-$HOME/.config} ${XDG_DATA_HOME:-$HOME/.local/share} -type f -name '___*'); do
+    dir="${i%/*}"
+    name="${i##*___}"
+    rm -v "$dir/$name"
+done

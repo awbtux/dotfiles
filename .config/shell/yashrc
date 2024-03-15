@@ -1,0 +1,45 @@
+#!/bin/sh
+
+# yash init file
+
+# todo: look at https://github.com/magicant/yash/blob/trunk/share/initialization/common
+
+# yash doesn't read .profile by default so this needs to be done manually
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && [ -z "$USERPROFILE" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile"
+
+# check if the proper shell is sourcing this file
+case "$SHNAME" in
+    yash) ;;
+       *) . "$ENV"; return 0 ;;
+esac
+
+# ps1 string to export to scripts
+export PS1="\${USER:-\$LOGNAME}\${HOSTNAME:+@\$HOSTNAME}:\$(pathabbrev \"\$PWD\"\\\$ "
+
+# if not running interactively, don't do anything else
+case "$-" in
+    *i*) ;;
+      *) return 0 ;;
+esac
+
+# functions
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
+
+# if we have access to the 'stty' binary, specify args for it
+command -v stty >/dev/null 2>&1 && stty -ixon
+
+# enable vi editing mode
+set -o vi
+
+# set the PS1 using print-prompt if the shell supports it
+PROMPT_COMMAND="PS1=\"\$(print_prompt)\""
+
+# load ~/.config/shell/aliases
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"
+
+# load scripts in rc.d
+[ -d "${XDG_CONFIG_HOME:-$HOME/.config}/shell/yashrc.d" ] && {
+    for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/yashrc.d/*.sh; do
+        [ -r "$i" ] && . "$i"
+    done
+}

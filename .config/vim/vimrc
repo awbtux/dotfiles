@@ -1,0 +1,307 @@
+" vim options
+set autoread
+set autoindent
+set autowrite
+set background=dark
+set backspace=indent,eol,start
+set nobackup
+set clipboard=unnamedplus
+set nocompatible
+set completeopt=menuone,noselect
+set cmdheight=1
+set cursorline
+set conceallevel=0
+set encoding=UTF-8
+set noerrorbells
+set expandtab
+set exrc
+set fileencoding=UTF-8
+set fileformat=unix
+set nofoldenable
+set foldlevel=0
+set foldmethod=indent
+set foldnestmax=16
+set go=a
+set hidden
+set history=1024
+set hlsearch
+set incsearch
+set laststatus=2
+set lazyredraw
+set listchars=tab:>-,trail:.,extends:>,precedes:<,nbsp:+
+set list
+set magic
+set mouse=a
+set number
+set numberwidth=4
+set relativenumber
+set pumheight=10
+set ruler
+set scrolloff=24
+set sessionoptions=curdir,folds,globals,help,buffers,tabpages,terminal,winsize
+set shell=/bin/sh
+set shiftround
+set shiftwidth=4
+set showmode
+set showtabline=2
+set sidescrolloff=12
+set signcolumn=yes
+set shortmess=atI
+set smartcase
+set smarttab
+set softtabstop=4
+set spelllang=en_us
+set splitbelow
+set splitright
+set noswapfile
+set tabstop=4
+set notermguicolors
+set timeoutlen=200
+set ttimeoutlen=200
+set undofile
+set undolevels=1024
+set updatetime=256
+set viminfo=""
+set visualbell
+set wildmenu
+set wildmode=longest,list,full
+set nowrap
+set writebackup
+
+" enable syntax highlighting
+syntax on
+
+" automatically-ran commands
+autocmd FileType * setlocal formatoptions-=cro
+autocmd FileType * set whichwrap=<,>,[,],h,l iskeyword+=-
+
+" close these windows with 'q'
+autocmd FileType netrw nnoremap <silent> <buffer> q :close<LF>
+autocmd FileType Jaq nnoremap <silent> <buffer> q :close<LF>
+autocmd FileType qf nnoremap <silent> <buffer> q :close<LF>
+autocmd FileType git nnoremap <silent> <buffer> q :close<LF>
+autocmd FileType help nnoremap <silent> <buffer> q :close<LF>
+autocmd FileType man nnoremap <silent> <buffer> q :close<LF>
+autocmd FileType lspinfo nnoremap <silent> <buffer> q :close<LF>
+autocmd FileType spectre_panel nnoremap <silent> <buffer> q :close<LF>
+autocmd FileType lir nnoremap <silent> <buffer> q :close<LF>
+autocmd FileType DressingSelect nnoremap <silent> <buffer> q :close<LF>
+autocmd FileType tsplayground nnoremap <silent> <buffer> q :close<LF>
+
+" update xresources
+autocmd BufWritePost *Xresources silent! !xrdb %
+autocmd BufWritePost *Xdefaults silent! !xrdb %
+autocmd BufWritePost *xresources silent! !xrdb %
+autocmd BufWritePost *xdefaults silent! !xrdb %
+
+" splits stay equal
+autocmd VimResized tabdo wincmd =
+
+" set the leader key
+let g:mapleader = " "
+let g:maplocalleader = " "
+
+" unset space
+noremap <Space> <Nop>
+
+" preserve the yank buffer when pasting over selected text
+vnoremap p _dp
+
+" preserve the yank buffer when substituting text
+nnoremap c _dc
+
+" preserve the yank buffer when deleting text
+noremap x "_x
+noremap X "_X
+noremap <Del> "_X
+
+" split management
+noremap <S-Up> :resize +2<LF>
+noremap <S-Down> :resize -2<LF>
+noremap <S-Right> :vertical resize +2<LF>
+noremap <S-Left> :vertical resize -2<LF>
+
+" tab management
+noremap <S-l> :bnext<LF>
+noremap <S-h> :bprevious<LF>
+noremap <M-l> :tabnext<LF>
+noremap <M-h> :tabprevious<LF>
+
+" easier moving on wrapped lines
+noremap j gj
+noremap k gk
+
+" arrow keys use jk behavior
+noremap <Down> gj
+noremap <Up> gk
+
+" use this behavior in insert mode
+inoremap <Down> <C-o>gj
+inoremap <Up> <C-o>gk
+
+" re-select vmode text after indent
+vnoremap < <gv
+vnoremap > >gv
+
+" move text up and down in visual / vblock
+vnoremap J :move '>+1<LF>gv-gv
+vnoremap K :move '<-2<LF>gv-gv
+xnoremap J :move '>+1<LF>gv-gv
+xnoremap K :move '<-2<LF>gv-gv
+
+" better multiline insert
+vnoremap i <S-i>
+vnoremap <S-i> ^<S-i>
+vnoremap a <S-a>
+vnoremap <S-a> $<S-a>
+xnoremap i <S-i>
+xnoremap <S-i> ^<S-i>
+xnoremap a <S-a>
+xnoremap <S-a> $<S-a>
+
+" ctrl-s to save
+nnoremap <C-s> :w<LF>
+inoremap <C-s> <C-o>:w<LF>
+
+" split movement
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> :nohlsearch<LF>:clear<LF><C-w>l
+
+
+" file manager keybinds
+nnoremap <leader>n :Lexplore 15<LF>
+nnoremap <C-n> :Lexplore 15<LF>
+
+" misc. leader keymaps
+nnoremap <leader>q :qa!<LF>
+nnoremap <leader>w :wa!<LF>:qa!<LF>
+
+" unmap standard keys if they are annoying
+inoremap kj <ESC><C-l>
+"vnoremap kj <ESC><C-l>
+
+" close a buffer with 'Q'
+nnoremap Q :bdelete! %<LF>
+
+" force the user to use these alternatives
+inoremap <ESC> <C-o>:echo \"Press \'k\' and \'j\' in quick succession to exit insert mode.\"<LF>
+"vnoremap <ESC> :<C-u>echo \"Press \'k\' and \'j\' in quick succession to exit visual mode.\"<LF>gv
+"xnoremap <ESC> :<C-u>echo \"Press \'k\' and \'j\' in quick succession to exit visual-block mode.\"<LF>gv
+
+" reset syntax
+syntax reset
+
+" highlights
+hi  clear Empty
+hi  clear CursorLine
+hi  clear CursorLineNr
+hi  clear SpellBad
+hi  clear SpellLocal
+hi  clear SpellCap
+hi  clear SpellRare
+highlight Normal                    cterm=none ctermfg=7 guifg=lightgrey ctermbg=none guibg=black
+highlight StatusLine                cterm=italic ctermfg=15 guifg=black ctermbg=8 guibg=grey
+highlight ToolbarLine               cterm=none ctermfg=15 guifg=black ctermbg=8 guibg=grey
+highlight ToolbarButton             cterm=none ctermfg=0 guifg=black ctermbg=7
+highlight StatusLineNC              cterm=none ctermfg=7 guifg=black ctermbg=8 guibg=grey
+highlight CursorColumn              cterm=none ctermfg=7 guifg=black ctermbg=8 guibg=grey
+highlight SignColumn                cterm=none ctermbg=none guibg=black
+highlight ColorColumn               cterm=none ctermfg=7 guifg=black ctermbg=8 guibg=grey
+highlight LineNr                    cterm=none ctermfg=8 guifg=grey
+highlight CursorLineSign            cterm=none ctermbg=none guibg=black
+highlight Conceal                   cterm=none ctermbg=none guibg=black
+highlight TabLine                   cterm=none ctermfg=7 guifg=black ctermbg=8 guibg=grey
+highlight TabLineFill               cterm=none ctermfg=7 guifg=black ctermbg=8 guibg=grey
+highlight TabLineSel                cterm=none ctermfg=15 guifg=white ctermbg=none guibg=black cterm=bold
+highlight Pmenu                     cterm=none ctermbg=8 guibg=grey
+highlight PmenuSbar                 cterm=none ctermbg=8 guibg=grey
+highlight PmenuSel                  cterm=none ctermfg=15 guifg=white ctermbg=2 guibg=darkgreen
+highlight WildMenu                  cterm=none ctermfg=9 guifg=red ctermbg=11 guibg=yellow
+highlight MsgArea                   cterm=none ctermfg=7 guifg=lightgrey ctermbg=none guibg=black
+highlight MsgSeparator              cterm=none ctermfg=7 guifg=lightgrey ctermbg=none guibg=black
+highlight Comment                   cterm=italic ctermfg=8 guifg=grey
+highlight NonText                   cterm=none ctermfg=8 guifg=grey
+highlight FloatBorder               cterm=none ctermfg=8 guifg=grey
+highlight WinSeparator              cterm=none ctermfg=0 guifg=black ctermbg=8 guibg=grey
+highlight VertSplit                 cterm=none ctermfg=0 guifg=black ctermbg=8 guibg=grey
+highlight Error                     cterm=none ctermfg=0 guifg=black ctermbg=1 guibg=darkred
+highlight ErrorMsg                  cterm=none ctermfg=0 guifg=black
+highlight WarningMsg                cterm=none ctermfg=3 guifg=orange
+highlight Question                  cterm=none ctermfg=4 guifg=blue
+highlight Debug                     cterm=none ctermfg=1 guifg=darkred
+highlight Exeption                  cterm=none ctermfg=1 guifg=darkred
+highlight ModeMsg                   cterm=none ctermfg=7 guifg=lightgrey
+highlight MoreMsg                   cterm=none ctermfg=7 guifg=lightgrey
+highlight Search                    cterm=none ctermfg=0 guifg=black ctermbg=3 guibg=orange
+highlight IncSearch                 cterm=none ctermfg=0 guifg=black ctermbg=3 guibg=orange
+highlight Visual                    cterm=none ctermfg=7 guifg=black ctermbg=8 guibg=grey
+highlight VisualNOS                 cterm=none ctermfg=1 guifg=darkred
+highlight Directory                 cterm=none ctermfg=4 guifg=blue
+highlight FoldColumn                cterm=none ctermfg=8 guifg=grey ctermbg=none guibg=black
+highlight Folded                    cterm=none ctermfg=8 guifg=grey ctermbg=none guibg=black
+highlight CursorLineFold            cterm=none ctermfg=8 guifg=grey ctermbg=none guibg=black
+highlight Macro                     cterm=none ctermfg=1 guifg=darkred
+highlight Substitute                cterm=none ctermfg=0 guifg=black ctermbg=3 guibg=orange
+highlight SpecialKey                cterm=none ctermfg=8 guifg=grey
+highlight TwoLong                   cterm=none ctermfg=1 guifg=darkred
+highlight Title                     cterm=none ctermfg=4 guifg=blue
+highlight healthSuccess             cterm=none ctermfg=0 guifg=black ctermbg=2 guibg=darkgreen
+highlight Boolean                   cterm=none ctermfg=3 guifg=orange
+highlight Character                 cterm=none ctermfg=9 guifg=red
+highlight Conditional               cterm=none ctermfg=5 guifg=magenta
+highlight Constant                  cterm=none ctermfg=9 guifg=red
+highlight Define                    cterm=none ctermfg=5 guifg=magenta
+highlight Delimiter                 cterm=none ctermfg=1 guifg=darkred
+highlight Float                     cterm=none ctermfg=3 guifg=orange
+highlight Variable                  cterm=none ctermfg=7 guifg=lightgrey
+highlight Function                  cterm=none ctermfg=4 guifg=blue
+highlight Identifier                cterm=none ctermfg=9 guifg=red
+highlight Include                   cterm=none ctermfg=4 guifg=blue
+highlight Keyword                   cterm=none ctermfg=5 guifg=magenta
+highlight Label                     cterm=none ctermfg=11 guifg=yellow
+highlight Number                    cterm=none ctermfg=3 guifg=orange
+highlight Operator                  cterm=none ctermfg=7 guifg=lightgrey
+highlight PreProc                   cterm=none ctermfg=11 guifg=yellow
+highlight Repeat                    cterm=none ctermfg=11 guifg=yellow
+highlight Special                   cterm=none ctermfg=6 guifg=darkcyan
+highlight SpecialChar               cterm=none ctermfg=1 guifg=darkred
+highlight Statement                 cterm=none ctermfg=9 guifg=red
+highlight StorageClass              cterm=none ctermfg=11 guifg=yellow
+highlight String                    cterm=none ctermfg=2 guifg=darkgreen
+highlight Structure                 cterm=none ctermfg=5 guifg=magenta
+highlight Tag                       cterm=none ctermfg=11 guifg=yellow
+highlight Todo                      cterm=none ctermfg=0 guifg=black ctermbg=11 guibg=yellow
+highlight Type                      cterm=none ctermfg=11 guifg=yellow
+highlight Typedef                   cterm=none ctermfg=11 guifg=yellow
+highlight UnderLined                cterm=underline ctermfg=none ctermbg=none guibg=black
+highlight Bold                      cterm=bold ctermfg=none ctermbg=none guibg=black
+highlight Italic                    cterm=italic ctermfg=none ctermbg=none guibg=black
+highlight Added                     ctermfg=2 guifg=darkgreen
+highlight Changed                   ctermfg=3 guifg=orange
+highlight diffOldFile               ctermfg=5 guifg=magenta
+highlight diffNewFile               ctermfg=4 guifg=blue
+highlight DiffAdd                   ctermfg=4 guifg=blue
+highlight DiffAdded                 ctermfg=2 guifg=darkgreen
+highlight DiffChange                ctermfg=8 guifg=grey
+highlight DiffChangeDelete          ctermfg=1 guifg=darkred
+highlight DiffModified              ctermfg=3 guifg=orange
+highlight DiffDelete                ctermfg=1 guifg=darkred
+highlight DiffRemoved               ctermfg=1 guifg=darkred
+highlight Removed                   ctermfg=1 guifg=darkred
+highlight gitcommitOverflow         ctermfg=1 guifg=darkred
+highlight gitcommitSummary          ctermfg=2 guifg=darkgreen
+highlight gitcommitComment          ctermfg=8 guifg=grey
+highlight gitcommitUntracked        ctermfg=8 guifg=grey
+highlight gitcommitDiscarded        ctermfg=8 guifg=grey
+highlight gitcommitSelected         ctermfg=8 guifg=grey
+highlight gitcommitHeader           ctermfg=5 guifg=magenta
+highlight gitcommitSelectedType     ctermfg=4 guifg=blue
+highlight gitcommitUnmergedType     ctermfg=4 guifg=blue
+highlight gitcommitDiscardedType    ctermfg=4 guifg=blue
+highlight gitcommitBranch           ctermfg=3 guifg=orange cterm=bold
+highlight gitcommitUntrackedFile    ctermfg=11 guifg=yellow
+highlight gitcommitUnmergedFile     ctermfg=1 guifg=darkred cterm=bold
+highlight gitcommitDiscardedFile    ctermfg=1 guifg=darkred cterm=bold
+highlight gitcommitSelectedFile     ctermfg=2 guifg=darkgreen cterm=bold

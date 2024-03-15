@@ -1,0 +1,46 @@
+#!/bin/sh
+
+# function to abbreviate a path
+pathabbrev() {
+    # start
+    case "$1" in
+        $HOME*) dir="~${PWD##$HOME}" ;;
+             *) dir="$PWD"; dpathpre="/" ;;
+    esac
+
+    # start
+    pathct=0 dirct=0
+
+    # operate on path components
+    _IFS="$IFS"
+    IFS="/"
+
+    # get the amount of path components
+    for i in $dir; do
+        # iterate on the path
+        pathct="$((pathct+1))"
+    done
+
+    # abbreviate directory names
+    for i in $dir; do
+        # iterate on the path again
+        dirct="$((dirct+1))"
+
+        # add to the path veriable
+        [ "$dirct" -ge "$((pathct-2))" ] && {
+            dpath="${dpath:+$dpath/}$i"
+        } || {
+            [ "$i" != "${i#.}" ] && {
+                dpath="${dpath:+$dpath/}$(printf "$i" | head -c 2)"
+            } || {
+                dpath="${dpath:+$dpath/}$(printf "$i" | head -c 1)"
+            }
+        }
+    done
+
+    # print the abbreviated path
+    printf "$dpathpre$dpath"
+
+    # unset stuff
+    unset dir dpathpre pathct dirct dpath
+}

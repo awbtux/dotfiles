@@ -1,0 +1,131 @@
+// vim: syntax=jsonc
+{
+    // main bar
+    "name": "mainbar",
+    "layer": "bottom",
+    "position": "top",
+    "spacing": 4,
+    "mode": "dock",
+    "start_hidden": false,
+    "exclusive": true,
+    "fixed-center": true,
+    "passthrough": false,
+    "reload_style_on_change": true,
+
+    // modules
+    "modules-left": ["river/tags"],
+    "modules-center": ["river/window"],
+    "modules-right": ["idle_inhibitor", "pulseaudio", "network", "cpu", "memory", "disk", "temperature", "battery", "battery#bat2", "clock"],
+
+    // clock
+    "clock": {
+        "interval": 1,
+        "tooltip-format": "<big>{:%A, %B %d %Y, %I:%M:%S %p %Z}</big>\n\n<tt><small>{calendar}</small></tt>",
+        "format": "{:%m/%d/%Y %H:%M:%S}",
+        "format-alt": "{:%a, %b %d %Y, %I:%M:%S %p %Z}"
+    },
+
+    // battery
+    "battery": {
+        "states": {
+            // "good": 95,
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{capacity}% {icon}",
+        "format-full": "{capacity}% {icon}",
+        "format-charging": "{capacity}% ",
+        "format-plugged": "{capacity}% ",
+        "format-alt": "{time} {icon}",
+        // "format-good": "", // An empty format will hide the module
+        // "format-full": "",
+        "format-icons": ["", "", "", "", ""]
+    }, "battery#bat2": {
+        "bat": "BAT2"
+    },
+
+    // temp
+    "temperature": {
+        // "thermal-zone": 2,
+        "hwmon-path": "/sys/class/hwmon/hwmon0/temp1_input",
+        "critical-threshold": 80,
+        "format": "{temperatureC}°C {icon}",
+        "format-icons": ["", "", ""]
+    },
+
+    // disk
+    "disk": {
+        "interval": 30,
+        "format": "{percentage_free}% free ",
+        "path": "/",
+        "on-click": "xdg-terminal-exec ncdu -x /"
+    },
+
+    // mem
+    "memory": {
+        "format": "{}% ",
+        "tooltip-format": "{used}G used, {avail}G available ({total}G total)",
+        "on-click": "xdg-terminal-exec htop"
+    },
+
+    // cpu
+    "cpu": {
+        "format": "{usage}% ",
+        "tooltip": false,
+        "on-click": "xdg-terminal-exec htop"
+    },
+
+    // net
+    "network": {
+        // "interface": "wlp2*", // (Optional) To force the use of this interface
+        //"format-wifi": "{essid} ({signalStrength}%) ",
+        "format-wifi": "{signalStrength}% ",
+        "format-ethernet": "{ipaddr}/{cidr}",
+        "tooltip-format": "{ifname} accessible at {ipaddr}/{cidr} via {gwaddr} (SSID: {essid})",
+        "format-linked": "{ifname} (No IP)",
+        "format-disconnected": "Disconnected ",
+        "format-alt": "{ifname}: {ipaddr}/{cidr}",
+        "on-click": "xdg-terminal-exec nmtui"
+    },
+
+    // pulseaudio (& properly configured pipewire)
+    "pulseaudio": {
+        // "scroll-step": 1, // %, can be a float
+        "format": "{volume}% {icon} {format_source}",
+        "format-bluetooth": "{volume}% {icon} {format_source}",
+        "format-bluetooth-muted": " {icon} {format_source}",
+        "format-muted": " {format_source}",
+        "format-source": "{volume}% ",
+        "format-source-muted": "",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", "", ""]
+        },
+        "on-click": "volumectl toggle"
+    },
+
+    // idle inhibitor
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        }
+    },
+
+    // window
+    "river/window": {
+        "max-length": 150
+    },
+
+    // tags
+    "river/tags": {
+        "num-tags": 9,
+        "disable-click": false
+    }
+}

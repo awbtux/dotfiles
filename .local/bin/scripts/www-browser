@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# use a terminal browser
+for i in amfora w3m links lynx elinks links2
+    do command -v $i >/dev/null 2>&1 && browser="xdg-terminal-exec $i"
+done
+
+# use a graphical browser
+[ -n "${WAYLAND_DISPLAY:-$DISPLAY}" ] && {
+    for i in google-chrome chromium-browser chromium netsurf midori dillo eolie falkon iceweaasel seamonkey mozilla firefox konqueror badwolf librewolf icecat
+        do command -v $i >/dev/null 2>&1 && browser="$i"
+    done
+}
+
+# use the BROWSER environment variable
+command -v "$BROWSER" >/dev/null 2>&1 && browser="$BROWSER"
+
+# run the browser
+exec $browser $@

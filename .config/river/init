@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# update env
+command -v dbus-update-activation-environment >/dev/null 2>&1 && riverctl spawn "dbus-update-activation-environment SEATD_SOCK DISPLAY WAYLAND_DISPLAY"
+
+# start waybar
+command -v waybar >/dev/null 2>&1 && waybar & pids="${pids:+$pids }$!"
+
+# start way-displays
+command -v way-displays >/dev/null 2>&1 && way-displays & pids="${pids:+$pids }$!"
+
+# start pipewire
+command -v pipewire >/dev/null 2>&1 && [ -z "$(ps -Aeo user,comm | grep "${USER:-$LOGNAME}" | grep "pipewire")" ] && pipewire & pids="${pids:+$pids }$!"
+
+# kill these cmds on exit
+riverctl map normal Super+Shift Q spawn "kill $pids; riverctl exit"
+
+# load config if possible
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/river/config" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/river/config"
+
+# start rivertile
+riverctl default-layout rivertile
+exec rivertile -main-location left -main-ratio 0.5 -view-padding 4 -outer-padding 4

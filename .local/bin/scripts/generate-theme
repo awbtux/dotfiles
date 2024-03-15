@@ -1,0 +1,150 @@
+#!/bin/sh
+
+# needs these commands
+require-cmd find sed || exit 1
+
+# parse args
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -v|--verbose) verbose="y"; shift ;;
+        [lL]|-[lL]|--list|list|[cC]|-[cC]|--choose|choose) choose="y"; shift ;;
+        *) break ;;
+    esac
+done
+
+# load the theme config file
+[ -r "${XDG_DATA_HOME:-$HOME/.local/share}/dots/themes/${1:+$1/}theme.conf" ] && [ "$choose" != "y" ] && {
+    . "${XDG_DATA_HOME:-$HOME/.local/share}/dots/themes/${1:+$1/}theme.conf"
+} || {
+    # search the directory for theme dirs
+    for i in $(find "${XDG_DATA_HOME:-$HOME/.local/share}/dots/themes/" -type d -not -path "${XDG_DATA_HOME:-$HOME/.local/share}/dots/themes/"); do
+        # store the dir
+        [ -d "$i" ] && tchoices="${tchoices:+$tchoices }'$i'"
+    done
+
+    # choose the theme
+    tchoice="$(eval "nmenu -t -b 'Applying which theme?' $tchoices")"
+
+    # apply it if possible
+    [ -r "$tchoice/theme.conf" ] && {
+        . "$tchoice/theme.conf"
+    } || {
+        printf "${0##*/}: error: $tchoice/theme.conf: No such file or directory"
+        exit 1
+    }
+}
+
+# generate theme-specific config files from templates
+for i in $(find "${XDG_CONFIG_HOME:-$HOME/.config}" "${XDG_DATA_HOME:-$HOME/.local/share}" -type f -name '___*') $(find "${XDG_CONFIG_HOME:-$HOME/.config}" "${XDG_DATA_HOME:-$HOME/.local/share}" -type f -name '.___*'); do
+    dir="${i%/*}"
+    name="${i##*/}"
+
+    # if dot prefix, fix this
+    [ "${name#.}" != "$name" ] && {
+        name=".${name##.___}"
+    } || {
+        name="${name##___}"
+    }
+
+    # substitution for fonts, colors, vim colorschemes, and directories
+    [ "$verbose" = "y" ] && printf "sed <$i >$dir/$name\n"
+    sed \
+        -e "s/#::font-monospace::#/${theme_font_monospace:-monospace}/g" \
+        -e "s/#::font-serif::#/${theme_font_serif:-serif}/g" \
+        -e "s/#::font-sans-serif::#/${theme_font_sans_serif:-sans-serif}/g" \
+        -e "s/#::font-serif::#/${theme_font_serif:-EB Garamond}/g" \
+        -e "s/#::font-sans-serif::#/${theme_font_sans_serif:-Aileron}/g" \
+        -e "s/#::font-monospace::#/${theme_font_monospace:-Fira Code}/g" \
+        -e "s/#::font-sans-serif-arabic::#/${theme_font_sans_serif_arabic:-${theme_font_serif_arabic:-sans-serif}}/g" \
+        -e "s/#::font-serif-arabic::#/${theme_font_serif_arabic:-${theme_font_sans_serif_arabic:-serif}}/g" \
+        -e "s/#::font-sans-serif-bengali::#/${theme_font_sans_serif_bengali:-${theme_font_serif_bengali:-sans-serif}}/g" \
+        -e "s/#::font-serif-bengali::#/${theme_font_serif_bengali:-${theme_font_sans_serif_bengali:-serif}}/g" \
+        -e "s/#::font-sans-serif-chinese-simplified::#/${theme_font_sans_serif_chinese_simplified:-${theme_font_serif_chinese_simplified:-sans-serif}}/g" \
+        -e "s/#::font-serif-chinese-simplified::#/${theme_font_serif_chinese_simplified:-${theme_font_sans_serif_chinese_simplified:-serif}}/g" \
+        -e "s/#::font-sans-serif-chinese-traditional::#/${theme_font_sans_serif_chinese_traditional:-${theme_font_serif_chinese_traditional:-sans-serif}}/g" \
+        -e "s/#::font-serif-chinese-traditional::#/${theme_font_serif_chinese_traditional:-${theme_font_sans_serif_chinese_traditional:-serif}}/g" \
+        -e "s/#::font-sans-serif-cypriot::#/${theme_font_sans_serif_cypriot:-${theme_font_serif_cypriot:-sans-serif}}/g" \
+        -e "s/#::font-serif-cypriot::#/${theme_font_serif_cypriot:-${theme_font_sans_serif_cypriot:-serif}}/g" \
+        -e "s/#::font-sans-serif-devanagari::#/${theme_font_sans_serif_devanagari:-${theme_font_serif_devanagari:-sans-serif}}/g" \
+        -e "s/#::font-serif-devanagari::#/${theme_font_serif_devanagari:-${theme_font_sans_serif_devanagari:-serif}}/g" \
+        -e "s/#::font-sans-serif-gurmukhi::#/${theme_font_sans_serif_gurmukhi:-${theme_font_serif_gurmukhi:-sans-serif}}/g" \
+        -e "s/#::font-serif-gurmukhi::#/${theme_font_serif_gurmukhi:-${theme_font_sans_serif_gurmukhi:-serif}}/g" \
+        -e "s/#::font-sans-serif-hebrew::#/${theme_font_sans_serif_hebrew:-${theme_font_serif_hebrew:-sans-serif}}/g" \
+        -e "s/#::font-serif-hebrew::#/${theme_font_serif_hebrew:-${theme_font_sans_serif_hebrew:-serif}}/g" \
+        -e "s/#::font-sans-serif-japanese::#/${theme_font_sans_serif_japanese:-${theme_font_serif_japanese:-sans-serif}}/g" \
+        -e "s/#::font-serif-japanese::#/${theme_font_serif_japanese:-${theme_font_sans_serif_japanese:-serif}}/g" \
+        -e "s/#::font-sans-serif-korean::#/${theme_font_sans_serif_korean:-${theme_font_serif_korean:-sans-serif}}/g" \
+        -e "s/#::font-serif-korean::#/${theme_font_serif_korean:-${theme_font_sans_serif_korean:-serif}}/g" \
+        -e "s/#::font-sans-serif-mongolian::#/${theme_font_sans_serif_mongolian:-${theme_font_serif_mongolian:-sans-serif}}/g" \
+        -e "s/#::font-serif-mongolian::#/${theme_font_serif_mongolian:-${theme_font_sans_serif_mongolian:-serif}}/g" \
+        -e "s/#::font-sans-serif-syriac::#/${theme_font_sans_serif_syriac:-${theme_font_serif_syriac:-sans-serif}}/g" \
+        -e "s/#::font-serif-syriac::#/${theme_font_serif_syriac:-${theme_font_sans_serif_syriac:-serif}}/g" \
+        -e "s/#::font-sans-serif-thai::#/${theme_font_sans_serif_thai:-${theme_font_serif_thai:-sans-serif}}/g" \
+        -e "s/#::font-serif-thai::#/${theme_font_serif_thai:-${theme_font_sans_serif_thai:-serif}}/g" \
+        -e "s/#::vim-colorscheme::#/${theme_vim_colorscheme:-default}/g" \
+        -e "s/#::vim-transparency::#/${theme_vim_transparency:-false}/g" \
+        -e "s/#::rootbg::#/$theme_rootbg/g" \
+        -e "s/#::darkbg::#/$theme_darkbg/g" \
+        -e "s/#::mainbg::#/$theme_mainbg/g" \
+        -e "s/#::mainbg2::#/$theme_mainbg2/g" \
+        -e "s/#::statusbg::#/$theme_statusbg/g" \
+        -e "s/#::statusbg2::#/$theme_statusbg2/g" \
+        -e "s/#::brightbg::#/$theme_brightbg/g" \
+        -e "s/#::brightbg2::#/$theme_brightbg2/g" \
+        -e "s/#::brighterbg::#/$theme_brighterbg/g" \
+        -e "s/#::brighterbg2::#/$theme_brighterbg2/g" \
+        -e "s/#::brightestbg::#/$theme_brightestbg/g" \
+        -e "s/#::brightestbg2::#/$theme_brightestbg2/g" \
+        -e "s/#::darkerfg::#/$theme_darkerfg/g" \
+        -e "s/#::darkfg::#/$theme_darkfg/g" \
+        -e "s/#::mainfg::#/$theme_mainfg/g" \
+        -e "s/#::brightfg::#/$theme_brightfg/g" \
+        -e "s/#::darkred::#/$theme_darkred/g" \
+        -e "s/#::mainred::#/$theme_mainred/g" \
+        -e "s/#::brightred::#/$theme_brightred/g" \
+        -e "s/#::darkgreen::#/$theme_darkgreen/g" \
+        -e "s/#::maingreen::#/$theme_maingreen/g" \
+        -e "s/#::brightgreen::#/$theme_brightgreen/g" \
+        -e "s/#::darkyellow::#/$theme_darkyellow/g" \
+        -e "s/#::mainyellow::#/$theme_mainyellow/g" \
+        -e "s/#::brightyellow::#/$theme_brightyellow/g" \
+        -e "s/#::darkorange::#/$theme_darkorange/g" \
+        -e "s/#::mainorange::#/$theme_mainorange/g" \
+        -e "s/#::brightorange::#/$theme_brightorange/g" \
+        -e "s/#::darkblue::#/$theme_darkblue/g" \
+        -e "s/#::mainblue::#/$theme_mainblue/g" \
+        -e "s/#::brightblue::#/$theme_brightblue/g" \
+        -e "s/#::darkmagenta::#/$theme_darkmagenta/g" \
+        -e "s/#::mainmagenta::#/$theme_mainmagenta/g" \
+        -e "s/#::brightmagenta::#/$theme_brightmagenta/g" \
+        -e "s/#::darkcyan::#/$theme_darkcyan/g" \
+        -e "s/#::maincyan::#/$theme_maincyan/g" \
+        -e "s/#::brightcyan::#/$theme_brightcyan/g" \
+        -e "s%#::configdir::#%${XDG_CONFIG_HOME:-$HOME/.config}%g" \
+        -e "s%#::datadir::#%${XDG_DATA_HOME:-$HOME/.local/share}%g" \
+        -e "s%#::cachedir::#%${XDG_CACHE_HOME:-$HOME/.cache}%g" \
+        -e "s%#::docdir::#%${XDG_DOCUMENTS_DIR:-$HOME/Documents}%g" \
+        -e "s%#::dldir::#%${XDG_DOWNLOAD_DIR:-$HOME/Downloads}%g" \
+        -e "s%#::musicdir::#%${XDG_MUSIC_DIR:-$HOME/Music}%g" \
+        -e "s%#::picdir::#%${XDG_PICTURES_DIR:-$HOME/Pictures}%g" \
+        -e "s%#::videodir::#%${XDG_VIDEOS_DIR:-$HOME/Videos}%g" \
+        -e "s%#::configdir::#%${XDG_CONFIG_HOME:-$HOME/.config}%g" \
+        -e "s%#::sharedir::#%${XDG_DATA_HOME:-$HOME/.local/share}%g" \
+        -e "s%#::statedir::#%${XDG_DATA_HOME:-$HOME/.local/state}%g" \
+        -e "s%#::cachedir::#%${XDG_DATA_HOME:-$HOME/.cache}%g" \
+    <"$i" >"$dir/$name"
+done
+
+# reload the font cache if the command to do so is provided
+command -v fc-cache >/dev/null 2>&1 && fc-cache
+
+# reload waybar
+command -v waybar >/dev/null 2>&1 && {
+    [ -n "$(pidof waybar 2>/dev/null)" ] && pkill waybar
+    command -v setsid >/dev/null 2>&1 && [ -n "$WAYLAND_DISPLAY" ] && setsid -f waybar >/dev/null 2>&1
+}
+
+# reload river theme if riverwm is active
+command -v riverctl >/dev/null 2>&1 && {
+    [ -n "$(pidof river 2>/dev/null)" ] && [ -n "$WAYLAND_DISPLAY" ] && sh "${XDG_CONFIG_HOME:-$HOME/.config}/river/theme" >/dev/null
+}

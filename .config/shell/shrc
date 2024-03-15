@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# posix-compatible shell init file
+
+# if our session isn't a login shell, source ~/.config/shell/profile
+case "${ZSH_ARGZERO:-$0}" in
+    -*) ;;
+     *) [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ;;
+esac
+
+# if not running interactively, don't do anything else
+case "$-" in
+    *i*) ;;
+      *) return 0 ;;
+esac
+
+# functions
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
+
+# if we have access to the 'stty' binary, specify args for it
+command -v stty >/dev/null 2>&1 && stty -ixon
+
+# enable vi editing mode
+set -o vi
+
+# load ~/.config/shell/aliases
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"
+
+# load scripts in rc.d
+[ -d "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shrc.d" ] && {
+    for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shrc.d/*.sh; do
+        [ -r "$i" ] && . "$i"
+    done
+}

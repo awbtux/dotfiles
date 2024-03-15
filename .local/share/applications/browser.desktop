@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Browser
+Exec=open-program browser %u
+Name[C]=browser.desktop

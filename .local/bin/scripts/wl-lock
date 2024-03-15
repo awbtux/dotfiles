@@ -1,0 +1,3 @@
+#!/bin/sh
+
+# lock a wayland session

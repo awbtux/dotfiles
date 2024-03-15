@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Add RSS Feed
+Exec=add-rss-feed %U
+Name[C]=rss.desktop

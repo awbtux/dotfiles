@@ -1,0 +1,53 @@
+#!/bin/sh
+
+# set the wallpaper
+require-cmd readlink file ln shuf || exit 1
+
+# location of link to wallpaper
+bgloc="${XDG_DATA_HOME:-$HOME/.local/share}/bg"
+
+# give -s as parameter to make notifications silent.
+while getopts "s" opt; do
+    case "$opt" in
+        s) silent='1' ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+trueloc="$(readlink -f "$1")" &&
+
+case "$(file --mime-type -b "$trueloc")" in
+    image/* )
+        ln -sf "$trueloc" "$bgloc" ;;
+    inode/directory )
+        ln -sf "$(find "$trueloc" -iregex '.*.\(jpg\|jpeg\|png\|gif\)' -type f | shuf -n 1)" "$bgloc" ;;
+    *) exit 1 ;;
+esac
+
+# set the wallpaper command
+[ -n "$WAYLAND_DISPLAY" ] && {
+    for i in swaybg; do
+        command -v $i >/dev/null 2>&1 && wpcmd="$i"
+    done
+}
+
+[ -z "$WAYLAND_DISPLAY" ] && [ -n "$DISPLAY" ] && {
+    for i in xwallpaper feh hsetroot xfconf-query; do
+        command -v $i >/dev/null 2>&1 && wpcmd="$i"
+    done
+}
+
+# set bg with swaybg
+[ "$wpcmd" = "swaybg" ] && swaybg -i "$bgloc" -m fill
+
+# set it with xwallpaper
+[ "$wpcmd" = "xwallpaper" ] && xwallpaper --zoom "$bgloc"
+
+# set it with feh
+[ "$wpcmd" = "feh" ] && feh --no-fehbg --bg-fill "$bgloc"
+
+# set it with hsetroot
+[ "$wpcmd" = "hsetroot" ] && hsetroot -fill "$bgloc"
+
+# set it with xfconf
+[ "$wpcmd" = "xfconf-query" ] && xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor1/workspace0/last-image -s "$bgloc"

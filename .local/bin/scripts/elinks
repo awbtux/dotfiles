@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# wrapper over elinks that deletes .rndjk
+
+# add to path
+pathadd() {
+    case ":$PATH:" in
+        *:"${1%/}":*) ;;
+        *) [ -d "$1" ] && { [ "$2" = "-a" ] && export PATH="${PATH:+$PATH:}${1%/}" || export PATH="${1%/}${PATH:+:$PATH}"; } ;;
+    esac
+}
+
+# stuff
+OLDPATH="$PATH"
+OLDIFS="$IFS"
+PATH=""
+IFS=":"
+
+# discard path elements in the home directory (ex. this script)
+for i in $OLDPATH; do
+    case "$i" in *"$HOME"*) continue ;; esac; pathadd "$i"
+done
+
+# get old ifs
+IFS="$OLDIFS"
+
+# run elinks
+if command -v elinks >/dev/null 2>&1; then
+    elinks "$@"
+    rm -rf "$HOME/.rnd"
+else
+    printf "${SHELL##*/}: elinks: command not found\n" >&2
+    exit 127
+fi

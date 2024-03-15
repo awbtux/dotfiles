@@ -1,0 +1,6 @@
+#!/bin/sh
+--tabs 4
+--wrap auto
+--theme="newansi"
+--italic-text=never
+--pager="less --RAW-CONTROL-CHARS --quit-if-one-screen"

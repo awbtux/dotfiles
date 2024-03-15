@@ -1,0 +1,40 @@
+#!/bin/python
+
+# interactive python session init file
+
+# use the system modules
+import os
+
+# set the history file
+try:
+    histfile = os.environ["PYTHON_HISTORY_FILE"]
+except KeyError:
+    try:
+        histfile = os.path.join(os.environ["XDG_DATA_HOME"], "python_history")
+    except KeyError:
+        try:
+            histfile = os.path.join(os.environ["HOME"], ".local/share/python_history")
+        except KeyError:
+            pass
+
+# use the required libraries for history reading/writing
+try:
+    import readline
+    import rlcompleter
+    import atexit
+except ImportError:
+    pass
+else:
+    # load the history file if it exists
+    try:
+        readline.read_history_file(histfile)
+    except (IOError, UnboundLocalError):
+        pass
+
+    # save the history when python exits if possible
+    try:
+        readline.write_history_file(histfile)
+    except (IOError, UnboundLocalError):
+        pass
+    else:
+        atexit.register(readline.write_history_file, histfile)

@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# screenshot utility frontend
+
+# name of the screenshot
+[ "$#" -gt 0 ] && {
+    # strip file formats
+    img="${1%%.png}"
+    img="${img%%.jpg}"
+    img="${img%%.jpeg}"
+    img="${img%%.webp}"
+    img="${img%%.bmp}"
+} || {
+    command -v date >/dev/null 2>&1 && {
+        img="${XDG_PICTURES_DIR:-$HOME/Pictures}/screenshot$(date +'_%Y%m%d_%H%M%S')"
+    } || {
+        img="${XDG_PICTURES_DIR:-$HOME/Pictures}/screenshot"
+    }
+}
+
+# numbered suffix for duplicate files
+[ -r "$img.png" ] && {
+    i=2
+    while [ -r "$img~$i.png" ]; do
+        i="$((i+1))"
+    done
+    img="$img~$i.png"
+} || {
+    img="$img.png"
+}
+
+# take a screenshot on wayland
+[ -n "$WAYLAND_DISPLAY" ] && {
+    # `grim` is required for taking wayland screenshots
+    require-cmd grim || exit 1
+
+    # get a selection using slurp if installed
+    command -v slurp >/dev/null 2>&1 && {
+        xypos="$(slurp 2>/dev/null)"
+        eval "grim${xypos:+ -g \"$xypos\"} \"$img\"" >/dev/null 2>&1
+        exit $?
+    } || {
+        grim "$img" >/dev/null 2>&1
+        exit $?
+    }
+}
+
+# take a screenshot on x11
+[ -n "$DISPLAY" ] && {
+    # `scrot` is required for taking x11 screeenshots
+    require-cmd scrot || exit 1
+
+    # take the screenshot
+    scrot "$img" -s >/dev/null 2>&1
+    exit $?
+}
+
+# fbgrab is required to take framebuffer screenshots
+require-cmd fbgrab || exit 1
+
+# take a screenshot of a framebuffer console
+fbgrab "$img" >/dev/null 2>&1
+exit $?

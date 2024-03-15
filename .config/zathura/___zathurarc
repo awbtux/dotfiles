@@ -1,0 +1,51 @@
+# nord theme
+set completion-fg "##::mainfg::#"
+set completion-bg "##::mainbg::#"
+set completion-highlight-fg "##::brightfg::#"
+set completion-highlight-bg "##::brighterbg::#"
+set default-fg "##::mainfg::#"
+set default-bg "##::mainbg::#"
+set inputbar-fg "##::mainfg::#"
+set inputbar-bg "##::mainbg::#"
+set notification-fg "##::brightfg::#"
+set notification-bg "##::brightbg::#"
+set notification-error-fg "##::brightfg::#"
+set notification-error-bg "##::mainred::#"
+set notification-warning-fg "##::brightfg::#"
+set notification-warning-bg "##::mainyellow::#"
+set statusbar-fg "##::mainfg::#"
+set statusbar-bg "##::statusbg2::#"
+set highlight-color "##::brighterbg::#"
+set highlight-fg "#000000"
+set highlight-active-color "##::brighterbg::#"
+set highlight-transparency 0.5
+set render-loading-fg "##::mainfg::#"
+set render-loading-bg "##::mainbg::#"
+set index-fg "##::mainfg::#"
+set index-bg "##::mainbg::#"
+set index-active-fg "##::brightfg::#"
+set index-active-bg "##::mainbg::#"
+
+# general behavior
+set window-width 1024
+set window-height 640
+set database plain
+set dbus-service false
+set dbus-raise-window false
+set page-padding 8
+set scroll-step 64
+set window-title-page true
+set zoom-center true
+set font "Fira Code 9"
+set selection-clipboard clipboard
+
+# page recoloring
+set recolor-lightcolor "##::mainbg2::#"
+set recolor-darkcolor "##::brightfg::#"
+set recolor-keephue "true"
+
+# key mappings
+map [normal] f toggle_fullscreen
+map [fullscreen] f toggle_fullscreen
+map [normal] i recolor
+map [fullscreen] i recolor

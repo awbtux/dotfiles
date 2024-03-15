@@ -1,0 +1,274 @@
+# Amfora config file
+
+# valid urls:
+# gemini://example.com
+# //example.com
+# example.com
+# example.com:123
+
+
+[a-general]
+# press Ctrl-H to access it
+home = "gemini://gemini.circumlunar.space"
+
+# follow up to 5 gemini redirects without prompting
+auto_redirect = true
+
+# what command to run to open a HTTP(S) URL, set to "default" to try to guess the browser
+# http = ['firefox']
+# http = ['custom-browser', '--flag', '--option=2']
+http = ['elinks']
+
+# any URL that will accept a query string can be put here
+search = "gemini://geminispace.info/search"
+
+# whether colors will be used in the terminal
+color = true
+
+# whether ANSI color codes from the page content should be rendered
+ansi = true
+
+# whether to replace list asterisks with unicode bullets
+bullets = true
+
+# whether to show link after link text
+show_link = true
+
+# a number from 0 to 1, indicating what percentage of the terminal width the left margin should take up.
+left_margin = 0.15
+
+# the max number of columns to wrap a page's text to. Preformatted blocks are not wrapped.
+max_width = 100
+
+# dowload items to the current directory
+downloads = './'
+
+# pages beyond 2MB are downloaded
+page_max_size = 2097152
+
+# max time it takes to load a page in seconds - after that a download window pops up
+page_max_time = 10
+
+# don't show scrollbar
+scrollbar = "auto"
+
+# underline non-gemini urls
+underline = true
+
+[auth]
+# authentication settings
+# note the use of single quotes for values, so that backslashes will not be escaped
+
+[auth.certs]
+# client certificates
+# set domain name equal to path to client cert
+# "example.com" = 'mycert.crt'
+
+[auth.keys]
+# client certificate keys
+# set domain name equal to path to key for the client cert above
+# "example.com" = 'mycert.key'
+
+[keybindings]
+bind_link1 = "1"
+bind_link2 = "2"
+bind_link3 = "3"
+bind_link4 = "4"
+bind_link5 = "5"
+bind_link6 = "6"
+bind_link7 = "7"
+bind_link8 = "8"
+bind_link9 = "9"
+bind_link0 = "0"
+bind_help = "?"
+bind_edit = "e"
+bind_bottom = ["Space"]
+bind_home = ["Ctrl-H","Backspace"]
+bind_reload= ["Ctrl-R","r"]
+bind_copy_page_url = "Ctrl-U"
+bind_copy_target_url = "C"
+bind_moveleft = ["h","Left"]
+bind_movedown = ["j","Down"]
+bind_moveup = ["k","Up"]
+bind_moveright = ["l","Right"]
+bind_pgup = ["u","PgUp"]
+bind_pgdn = ["d","PgDn"]
+bind_back = "b"
+bind_bookmarks = ["B","Ctrl-B"]
+bind_add_bookmark = ["D","Ctrl-D"]
+bind_save = "Ctrl-S"
+bind_forward = "f"
+bind_prev_tab = "<"
+bind_next_tab = ">"
+bind_close_tab = "c"
+bind_new_tab = "t"
+bind_quit = ["q","Q"]
+bind_beginning = ["g","Home"]
+bind_end = ["G","End"]
+bind_sub = "s"
+bind_add_sub = "S"
+
+[url-handlers]
+# E.g. to open FTP URLs with FileZilla set the following key:
+# ftp = ['filezilla']
+# magnet = ['transmission']
+# foo = ['custom-browser', '--flag', '--option=2']
+# tel = ['/path/with spaces/in it/telephone']
+#
+# Note the use of single quotes, so that backslashes will not be escaped.
+# Using just a string will also work, but it is deprecated, and will degrade if
+# you use paths with spaces.
+
+# This is a special key that defines the handler for all URL schemes for which
+# no handler is defined.
+# It uses the special value 'default', which will try and use the default
+# application on your computer for opening this kind of URI.
+other = 'default'
+
+
+# [[mediatype-handlers]] section
+# ---------------------------------
+#
+# Specify what applications will open certain media types.
+# By default your default application will be used to open the file when you select "Open".
+# You only need to configure this section if you want to override your default application,
+# or do special things like streaming.
+#
+# Note the use of single quotes for commands, so that backslashes will not be escaped.
+#
+#
+# To open jpeg files with the feh command:
+#
+# [[mediatype-handlers]]
+# cmd = ['feh']
+# types = ["image/jpeg"]
+#
+# Each command that you specify must come under its own [[mediatype-handlers]]. You may
+# specify as many [[mediatype-handlers]] as you want to setup multiple commands.
+#
+# If the subtype is omitted then the specified command will be used for the
+# entire type:
+#
+# [[mediatype-handlers]]
+# command = ['vlc', '--flag']
+# types = ["audio", "video"]
+#
+# A catch-all handler can by specified with "*".
+# Note that there are already catch-all handlers in place for all OSes,
+# that open the file using your default application. This is only if you
+# want to override that.
+#
+# [[mediatype-handlers]]
+# cmd = ['some-command']
+# types = [
+#         "application/pdf",
+#         "*",
+# ]
+#
+# You can also choose to stream the data instead of downloading it all before
+# opening it. This is especially useful for large video or audio files, as
+# well as radio streams, which will never complete. You can do this like so:
+#
+# [[mediatype-handlers]]
+# cmd = ['vlc', '-']
+# types = ["audio", "video"]
+# stream = true
+#
+# This uses vlc to stream all video and audio content.
+# By default stream is set to off for all handlers
+#
+#
+# If you want to always open a type in its viewer without the download or open
+# prompt appearing, you can add no_prompt = true
+#
+# [[mediatype-handlers]]
+# cmd = ['feh']
+# types = ["image"]
+# no_prompt = true
+#
+# Note: Multiple handlers cannot be defined for the same full media type, but
+# still there needs to be an order for which handlers are used. The following
+# order applies regardless of the order written in the config:
+#
+# 1. Full media type: "image/jpeg"
+# 2. Just type: "image"
+# 3. Catch-all: "*"
+
+
+[cache]
+# Options for page cache - which is only for text pages
+# Increase the cache size to speed up browsing at the expense of memory
+# Zero values mean there is no limit
+
+max_size = 16777216  # Size in bytes
+max_pages = 32 # The maximum number of pages the cache will store
+
+# How long a page will stay in cache, in seconds.
+timeout = 1200 # 20 mins
+
+[proxies]
+http = "stargate.gemi.dev:1994"
+https = "stargate.gemi.dev:1994"
+
+[subscriptions]
+
+# Whether a pop-up appears when viewing a potential feed
+popup = true
+
+# how often to check for updates to subscriptions in the background, in seconds
+# set to 0 to disable periodic checking (updates happen when amfora loads anyway)
+update_interval = 0
+
+# How many subscriptions can be checked at the same time when updating.
+# If you have many subscriptions you may want to increase this for faster
+# update times. Any value below 1 will be corrected to 1.
+workers = 4
+
+# The number of subscription updates displayed per page.
+entries_per_page = 20
+
+# use basic term colors
+[theme]
+fg = "white"
+bg = "default"
+hdg_1 = "red"
+hdg_2 = "green"
+hdg_3 = "purple"
+regular_text = "white"
+bkmk_modal_bg = "black"
+bkmk_modal_field_bg = "black"
+bkmk_modal_text = "white"
+bkmk_modal_label = "white"
+bkmk_modal_field_text = "gray"
+tab_num = "aqua"
+tab_divider = "white"
+bottombar_label = "white"
+bottombar_text = "white"
+bottombar_bg = "blue"
+yesno_modal_bg = "black"
+yesno_modal_text = "white"
+scrollbar = "black"
+link_number = "white"
+amfora_link = "blue"
+foreign_link = "aqua"
+list_text = "white"
+btn_bg = "blue"
+btn_text = "white"
+subscription_modal_bg = "black"
+subscription_modal_text = "white"
+error_modal_bg = "black"
+error_modal_text = "red"
+preformatted_text = "white"
+quote_text = "white"
+dl_modal_bg = "black"
+dl_modal_text = "white"
+dl_choice_modal_bg = "black"
+dl_choice_modal_text = "white"
+info_modal_bg = "black"
+info_modal_text = "white"
+# tofu_modal_bg
+# tofu_modal_text
+# input_modal_bg
+# input_modal_text
+# input_modal_field_bg: The bg of the input field, where you type the text
+# input_modal_field_text: The color of the text you type

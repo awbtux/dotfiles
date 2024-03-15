@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# weather script for waybar
+
+# need these
+require-cmd curl sed || exit 127
+
+# initialize these
+i="0"
+text=""
+tooltip=""
+
+# formatting
+main_fmt='%c%C,+%t'
+tooltip_fmt='%c%l:+%C,+%h+humidity,+%t+(feels+like+%f),+%w+winds'
+
+# keep trying
+while [ -z "$text" -o -z "$tooltip" ]; do
+    # increase try count
+    i="$((i+1))"
+
+    # get main text
+    printf "Querying https://wttr.in/ for bar text (attempt ${i}/5)...\n" >&2
+    text="$(curl --retry 0 --max-time 20 -s "https://wttr.in/?format=$main_fmt" 2>/dev/null)"
+
+    # get the tooltip
+    printf "Querying https://wttr.in/ for tooltip text (attempt ${i}/5)...\n" >&2
+    tooltip="$(curl --retry 0 --max-time 20 -s "https://wttr.in/?format=$tooltip_fmt" 2>/dev/null | sed -e 's/+\([0-9][0-9]*\)/\1/g')"
+
+    # give up eventually
+    [ "$i" -ge 5 ] && break
+done
+
+# print in json format
+printf '{"text": "%s", "tooltip": "%s"}\n' "${text:-⛅ no data}" "${tooltip:-failed to access weather information from https://wttr.in.}"
+
+# exit with status
+test -z "$text" -o -z "$tooltip"
+exit $?

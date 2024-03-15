@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# load the X resource file
+[ -r "$HOME/.local/share/themes/Xresources" ] && {
+    command -v xrdb >/dev/null 2>&1 && exec xrdb "$HOME/.themes/Xresources" &
+}
+
+# set the wallpaper
+[ -r "$HOME/.local/share/bg" ] && {
+    exec set-wallpaper "$HOME/.wallpapers/bg" &
+}
+
+# wallpaper & compositor
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/picom/picom.conf" ] && {
+    command -v picom >/dev/null 2>&1 && exec picom -b --config "${XDG_CONFIG_HOME:-$HOME/.config}/picom/picom.conf" &
+}
+
+# run dwm commands
+[ "$X_WM_USE" = "dwm" ] && {
+    command -v dwmblocks >/dev/null 2>&1 && exec dwmblocks &
+    exec dbus-run-session dwm
+    exit
+}
+
+# invalid wm_use at this point
+[ -n "$X_WM_USE" ] && {
+    printf "\n${0##*/}: error: No startup rule for $X_WM_USE\n\n"
+} || {
+    printf "\n${0##*/}: error: No X_WM_USE specified\n\n"
+}

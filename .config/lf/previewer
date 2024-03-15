@@ -1,0 +1,188 @@
+#!/bin/sh
+exec 2>&1
+
+file="$1"
+width="$2"
+height="$3"
+horizp="$4"
+vertp="$5"
+
+# error msg
+preview_exit() {
+    [ "$1" -gt 0 ] && printf -- "error $1 when generating preview for \"$file\"\n"
+    exit $1
+}
+
+# whether we have a command
+has() {
+    while [ "$#" -gt 0 ]; do
+        for i in $1; do
+            command -v "$i" >/dev/null 2>&1 || return 1
+        done
+        shift
+    done
+    return 0
+}
+
+# print text
+display_text() {
+    # strip a space in the beginning
+    has bat && {
+        bat --tabs=0 --color=always --style=numbers --pager=never "$@" | sed -e 's/\s//' -e 's/\t/[2;30m>---[0m/g'
+        preview_exit $?
+    }
+
+    # classic `nl` utility with a few color improvements using sed
+    # this is standard but I figured I'd check for it anyway
+    has nl && {
+        nl -n'rn' -ha -ba -fa -p -s' ' -w "$(printf "$width" | wc -c)" $@ | sed \
+            -e 's/\t/[2;30m>---[0m/g' \
+            -e 's/^\(\s*\)\([0-9][0-9]*\)\(\s*\)/\1[90m\2[0m\3/g'
+        preview_exit $?
+    }
+
+    # it's better than nothing...
+    has cat && {
+        cat $@
+        preview_exit $?
+    }
+
+    # literally nothing
+    preview_exit 127
+}
+
+# display a torrent info, using the torrent command available on the system
+display_torrent() {
+    # nicer imo
+    has imdl && imdl --color=always torrent show "$file"; preview_exit $?
+
+    # also works
+    has transmission-show && transmission-show "$file"; preview_exit $?
+
+    # doesn't work
+    preview_exit 127
+}
+
+# render an html page using a terminal-based browser, if possible; otherwise show its text
+display_html() {
+    # nicer imo
+    has elinks && elinks -dump "$file"; preview_exit $?
+
+    # also works
+    has lynx && lynx -dump -xhtml_parsing "$file"; preview_exit $?
+
+    # doesn't work
+    preview_exit 127
+}
+
+# test mimetypes first
+case "$(file --dereference --brief --mime-type -- "$file")" in
+    application/x-gtar | application/x-tar)
+        tar tf "$file"; preview_exit $? ;;
+    application/vnd.rar | application/x-rar-compressed)
+        unrar l "$file"; preview_exit $? ;;
+    application/vnd.android.package-archive | application/zip | application/java-archive | \
+    application/vnd.openofficeorg.extension | application/x-xpinstall | application/vnd.debian.binary-package | application/x-rpm)
+        unzip -l "$file"; preview_exit $? ;;
+    application/x-7z-compressed)
+        7z l "$file"; preview_exit $? ;;
+    application/x-iso9660-image)
+        iso-info --no-header -l "$file"; preview_exit $? ;;
+    application/x-object | application/x-sharedlib | application/x-executable | application/x-pie-executable)
+        objdump -xe "$file" 2>/dev/null; preview_exit $? ;;
+    application/vnd.oasis.opendocument.text | application/vnd.oasis.opendocument.spreadsheet | application/vnd.sun.xml.writer |\
+    application/vnd.oasis.opendocument.spreadsheet-template | application/vnd.oasis.opendocument.presentation)
+        odt2txt "$file"; preview_exit $? ;;
+    application/x-bittorrent)
+        display_torrent ;;
+    application/msword)
+        catdoc "$file"; preview_exit $? ;;
+    application/vnd.openxmlformats-officedocument.wordprocessingml.document)
+        docx2txt "$file"; preview_exit $? ;;
+    application/vnd.ms-excel | application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)
+        ssconvert --export-type=Gnumeric_stf:stf_csv "$file" "fd://1" | display_text --language=csv; preview_exit $? ;;
+    application/xhtml+xml | text/html)
+        display_html ;;
+    audio/ogg | application/ogg | audio/mp4 | audio/aac | audio/aacp | audio/mpeg | audio/x-aiff | audio/aiff | \
+    audio/basic | audio/flac | audio/opus | audio/wav | audio/x-wav | audio/vnd.wave | audio/wave | audio/vnd.dts.hd | \
+    audio/x-pn-wav | audio/webm | audio/x-ms-wax | audio/x-ms-wma | audio/adpcm | audio/midi | audio/mp4a-latm | \
+    audio/x-matroska | audio/x-mpegurl)
+        exiftool "$file" 2>&1; preview_exit $? ;;
+    text/troff)
+        man "$file" | col -b | fmt -w $((width-2)); preview_exit $? ;;
+    application/x-perl | application/x-sh | application/x-shellscript | application/x-tcl | application/x-tex | application/x-subrip | \
+    application/x-tex-tfm | application/x-texinfo | application/yaml | application/x-yaml | application/ecmascript | \
+    application/json | application/relax-ng-compact-syntax | application/ecmascript | application/javascript | \
+    application/x-ecmascript | application/x-javascript | application/json | application/x-ndjson | text/* | *[/+]xml | \
+    application/mathematica | application/sparql-query | application/srgs | application/wasm | application/x-csh)
+        display_text "$file" ;;
+esac
+
+# needed because mime type detection SUCKS on void
+case "$file" in
+    *.tar)
+        tar tf "$file"; preview_exit $? ;;
+    *.tgz | *.tar.gz)
+        tar tzf "$file"; preview_exit $? ;;
+    *.tbz2 | *.tar.bz2)
+        tar tjf "$file"; preview_exit $? ;;
+    *.tlzo | *.tar.lzo)
+        lzop --list "$file"; tar tf "$file" --lzop; preview_exit $? ;;
+    *.tlz | *.tar.lz)
+        lzip --list "$file"; tar tf "$file" --lzip; preview_exit $? ;;
+    *.tzst | *.tar.zst)
+        zstd --list "$file"; tar tf "$file" --zstd; preview_exit $? ;;
+    *.txz | *.tar.xz)
+        xz --list "$file"; tar tJf "$file"; preview_exit $? ;;
+    *.rar)
+        unrar l "$file"; preview_exit $? ;;
+    *.zip | *.jar | *.war | *.ear | *.oxt | *.xpi | *.apk | *.deb | *.udeb | *.rpm)
+        unzip -l "$file"; preview_exit $? ;;
+    *.7z)
+        7z l "$file"; preview_exit $? ;;
+    *.iso)
+        iso-info --no-header -l "$file"; preview_exit $? ;;
+    *.o | *.a)
+        objdump -xe "$file" ;;
+    *.odt | *.ods | *.odp | *.sxw)
+        odt2txt "$file"; preview_exit $? ;;
+    *.torrent)
+        display_torrent ;;
+    *.doc | *.dot)
+        catdoc "$file"; preview_exit $? ;;
+    *.docx)
+        docx2txt "$file"; preview_exit $? ;;
+    *.xla | *.xlb | *.xlc | *.xlm | *.xls | *.xlt | *.xlw | *.xlsx)
+        ssconvert --export-type=Gnumeric_stf:stf_csv "$file" "fd://1" | display_text --language=csv; preview_exit $? ;;
+    *.html | *.htm | *.xhtml)
+        display_html ;;
+    *.[1-9])
+        man "$file" | col -b | fmt -w $((width-2)); preview_exit $? ;;
+    *.pl | *.pm | *.sh | *.bash | *.tcl | *.tex | *.texi | *.tfm | *.texinfo | *.yaml | *.yml | *.js | \
+    *.json | *.rnc | *.txt | *.text| *.xml | *.xpdl | *.*xml | *.dtd | *.xsl | *.xslt | *.xspf | *.ass | \
+    *.gcode | *.ecma | *.emma | *.shf | *.nc | *.mathml | *.mml | *.mscml | *.prf | *.pls | *.xhvml | \
+    *.xvm | *.xvml | *.md | *.markdown | *.mdown | *.markdn | *.conf | *.def | *.xer | *.diff | *.in | *.ksh | \
+    *.list | *.log | *.xdp | *.rdf | *.rif | *.sbml | *.smi | *.smil | *.rl | *.rld | *.rs | *.rsd | *.rss | *.rq | \
+    *.gram | *.srx | *.ssml | *.es3 | *.et3 | *.wbs | *.kml | *.zmm | *.irp | *.lbd | *.xul | *.xsm | *.bdm | \
+    *.xdm | *.c | *.lst | *.css | *.jad | *.rtx | *.wmls | *.sgm | *.sgml | *.tsv | *.man | *.man | *.me | *.ms | \
+    *.roff | *.t | *.tr | *.uri | *.uris | *.urls | *.asm | *.s | *.cc | *.cpp | *.cxx | *.dic | *.h | *.hh | *.f | \
+    *.f77 | *.f90 | *.f95 | *.for | *.java | *.p | *.pas | *.pp | *.inc | *.py | *.xenc | *.xop | *.uoml | *.vxml | \
+    *.wasm | *.wsdl | *.wspolicy | *.csh | *.rc | *.zsh | *.ncx | *.dtb | *.res | *.latex | *.dd2)
+        display_text "$file"; preview_exit $? ;;
+    *.spx | *.og[agx] | *.3g[a2p] | *.3gp[a2p] | *.aac | *.aacp | *.m[234]a | *.mp2a | *.mp[23] | *.mpga | *.aiff | \
+    *.a[if]f | *.au | *.snd | *.flac | *.opus | *.wav | *.weba | *.wax | *.wma | *.m4a | *.adpcm | *.kar | *.mid | \
+    *.midi | *.rmi | *.m4b)
+        exiftool "$file" 2>&1; preview_exit $? ;;
+    *.gz)
+        gzip --list "$file"; preview_exit $? ;;
+    *.boz | *.bz2)
+        preview_exit ;;
+    *.lzo)
+        lzop --list "$file"; preview_exit $? ;;
+    *.lz)
+        lzip --list "$file"; preview_exit $? ;;
+    *.zst)
+        zstd --list "$file"; preview_exit $? ;;
+    *.xz)
+        xz --list "$file"; preview_exit $? ;;
+esac

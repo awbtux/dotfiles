@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# script to open a program
+
+# update the user profile
+[ -r "$HOME/.profile" ] && . "$HOME/.profile"
+
+case "$1" in
+    browser)
+        setsid -f $BROWSER "$2"
+        ;;
+    file-manager)
+        setsid -f $FILEMGR "$2"
+        ;;
+    document-reader)
+        setsid -f $READER "$2"
+        ;;
+    image-viewer)
+        setsid -f $IMGVIEWER "$2"
+        ;;
+    text-editor)
+        [ "$EDITOR_GUI" = "y" ] && {
+            setsid -f $EDITOR "$2"
+        } || {
+            setsid -f xdg-terminal-exec $EDITOR "$2"
+        }
+        ;;
+    video-player)
+        setsid -f $VPLAYER "$2"
+        ;;
+    audio-player)
+        ;;
+esac

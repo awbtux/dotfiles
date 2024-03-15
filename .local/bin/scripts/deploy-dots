@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# script to deploy the current dotfiles
+# if the login shell doesn't find .local/share/dots/.configured.txt, this runs automatically
+
+# useless comment
+cd
+
+# generate the theme
+require-cmd generate-theme && generate-theme
+
+# run the wizard to generate a git configuration file if none is present
+[ ! -f "${GIT_CONFIG_GLOBAL:-$HOME/.config/gitconfig}" ] && require-cmd git-wizard && git-wizard
+
+# if $HOME is the worktree of a git repo, pull from origin and init submodules
+[ -r "$HOME/.git" ] && command -v git >/dev/null 2>&1 && {
+    git pull
+    git submodule update --init --recursive
+}
+
+# prevent this script from getting run again
+:>${XDG_DATA_HOME:-$HOME/.local/share}/dots/.configured.txt

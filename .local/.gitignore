@@ -1,0 +1,13 @@
+cache
+state
+share/Trash
+share/history
+share/*history
+share/amfora
+share/gnupg
+share/nvim
+share/lf
+share/themes/Xresources
+share/recently-used.xbel
+share/dots/.configured.txt
+share/zathura

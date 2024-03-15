@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# script to run a program in a terminal
+dpy="${WAYLAND_DISPLAY:-$DISPLAY}"
+
+# wrap arguments in quotes
+while [ "$#" -gt 0 ]; do
+    # check if the shell will split it into separate args
+    [ "$(n=0; for i in $1; do n=$((n+1)); done; echo $n)" -gt 1 >&- 2>&- ] && {
+        args="${args:+$args }\"$(printf "$1" | sed -e 's/\([^\\]\)"/\1\\"/g')\""
+    } || {
+        args="${args:+$args }$1"
+    }
+
+    # add to list
+    shift
+done
+
+eval "exec ${dpy:+$TERMINAL -e }$args"

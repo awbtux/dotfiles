@@ -1,0 +1,87 @@
+#!/bin/sh
+
+# tags
+all_tags="$(((1 << 32) - 1))"
+
+# move the cursor to the center of the new focused window
+riverctl set-cursor-warp on-focus-change
+
+# self explanatory
+riverctl focus-follows-cursor normal
+
+# don't hide the cursor
+riverctl hide-cursor timeout 0
+
+# repeat 50 times per second, after a 200ms delay
+riverctl set-repeat 50 200
+
+# set app-ids of views which should float
+riverctl float-filter-add "float"
+riverctl float-filter-add "popup"
+
+# set trackpad by grabbing the event
+for pad in $(riverctl list-inputs | grep -i touchpad); do
+    riverctl input $pad events enabled
+    riverctl input $pad tap enabled
+done
+
+# passthrough mode for nested compositors/vms
+riverctl declare-mode passthrough
+
+# include theme if possible
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/river/theme" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/river/theme"
+
+# binds: input          mode        modkey              key                     command
+riverctl map            normal      Super+Shift         Return                  spawn "xdg-terminal-exec"
+riverctl map            normal      Control+Mod1        T                       spawn "xdg-terminal-exec"
+riverctl map            normal      Super+Shift         C                       close
+riverctl map            normal      Super               R                       spawn "$HOME/.config/river/config"
+riverctl map            normal      Super               P                       spawn "RUNCMD_USE_WAYLAND=y run-cmd"
+riverctl map            normal      Super               J                       focus-view next
+riverctl map            normal      Super               K                       focus-view previous
+riverctl map            normal      Super+Shift         J                       swap next
+riverctl map            normal      Super+Shift         K                       swap previous
+riverctl map            normal      Super+Shift         x                       spawn "wl_lock_session"
+riverctl map            normal      Super               F                       toggle-fullscreen
+riverctl map            normal      Super               Space                   toggle-float
+riverctl map            normal      Super               Period                  focus-output next
+riverctl map            normal      Super               Comma                   focus-output previous
+riverctl map            normal      Super+Shift         Period                  send-to-output next
+riverctl map            normal      Super+Shift         Comma                   send-to-output previous
+riverctl map            normal      Super               F11                     enter-mode passthrough
+riverctl map            passthrough Super               F11                     enter-mode normal
+riverctl map            normal      Super               H                       send-layout-cmd rivertile "main-ratio -0.05"
+riverctl map            normal      Super               L                       send-layout-cmd rivertile "main-ratio +0.05"
+riverctl map            normal      Super+Shift         H                       send-layout-cmd rivertile "main-count +1"
+riverctl map            normal      Super+Shift         L                       send-layout-cmd rivertile "main-count -1"
+riverctl map            normal      Super               0                       set-focused-tags $all_tags
+riverctl map            normal      Super+Shift         0                       set-view-tags $all_tags
+riverctl map-pointer    normal      Super               BTN_LEFT                move-view
+riverctl map-pointer    normal      Super               BTN_RIGHT               resize-view
+riverctl map            normal      None                Print                   spawn "take-screenshot"
+
+# tag keys
+for i in $(seq 1 9); do tags=$((1 << ($i - 1)))
+
+# binds: input          mode        modkey              key                     command
+riverctl map            normal      Super               $i                      set-focused-tags $tags
+riverctl map            normal      Super+Shift         $i                      set-view-tags $tags
+riverctl map            normal      Super+Control       $i                      toggle-focused-tags $tags
+riverctl map            normal      Super+Shift+Control $i                      toggle-view-tags $tags
+
+done
+
+# bind these keys both when locked and when in normal mode
+for mode in locked normal; do
+
+# binds: input          mode        modkey              key                     command
+riverctl map            $mode       None                XF86Eject               spawn 'eject -T'
+riverctl map            $mode       None                XF86AudioRaiseVolume    spawn 'volumectl up'
+riverctl map            $mode       None                XF86AudioLowerVolume    spawn 'volumectl down'
+riverctl map            $mode       None                XF86AudioMute           spawn 'volumectl mute_toggle'
+riverctl map            $mode       None                XF86AudioMedia          spawn 'playerctl play-pause'
+riverctl map            $mode       None                XF86AudioPlay           spawn 'playerctl play-pause'
+riverctl map            $mode       None                XF86AudioPrev           spawn 'playerctl previous'
+riverctl map            $mode       None                XF86AudioNext           spawn 'playerctl next'
+
+done

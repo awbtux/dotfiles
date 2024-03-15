@@ -1,0 +1,5 @@
+--audio-format flac
+--extract-audio
+--format "bestaudio"
+--embed-thumbnail
+--config-locations "config"

@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# bash init file
+
+# if our session isn't a login shell, source ~/.config/shell/profile
+case "${ZSH_ARGZERO:-$0}" in
+    -*) ;;
+     *) [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ;;
+esac
+
+# check if the proper shell is sourcing this file
+case "$SHNAME" in
+    bash) ;;
+       *) . "$ENV"; return 0 ;;
+esac
+
+# functions
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
+
+# ps1 string to export to scripts
+export PS1="\\u@\\h:\\w\\\$ "
+
+# enable vi editing mode
+set -o vi
+
+# bash settings
+shopt -s checkwinsize
+shopt -s cmdhist
+shopt -s histappend
+shopt -s huponexit
+shopt -s xpg_echo
+
+# if not running interactively, don't do anything else
+case "$-" in
+    *i*) ;;
+      *) return 0 ;;
+esac
+
+# if we have access to the 'stty' binary, specify args for it
+command -v stty >/dev/null 2>&1 && stty -ixon
+
+# set the PS1 using print-prompt if the shell supports it
+PROMPT_COMMAND="PS1=\"\$(print_prompt)\""
+
+# load ~/.config/shell/aliases
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"
+
+# load scripts in bashrc.d
+[ -d "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bashrc.d" ] && {
+    for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/bashrc.d/*.sh; do
+        [ -r "$i" ] && . "$i"
+    done
+}

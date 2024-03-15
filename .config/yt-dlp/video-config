@@ -1,0 +1,8 @@
+--remux-video mkv
+--format "bestaudio+bestvideo/best"
+--embed-subs
+--sub-langs en
+--convert-subs ass
+--embed-thumbnail
+--embed-chapters
+--config-locations "config"

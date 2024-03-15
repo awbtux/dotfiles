@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# set the title of a terminal
+# easier than remembering the escape sequence
+printf "\033]2;%s\007" "$*"

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Terminal=true
+Name=Text Editor
+Exec=open-program text-editor %F
+Name[C]=text.desktop

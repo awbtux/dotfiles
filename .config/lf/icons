@@ -1,0 +1,311 @@
+# standard file types
+ln        # LINK
+or        # ORPHAN
+tw        # STICKY_OTHER_WRITABLE
+ow        # OTHER_WRITABLE
+st        # STICKY
+di        # DIR
+pi        # FIFO
+so        # SOCK
+bd        # BLK
+cd        # CHR
+su        # SETUID
+sg        # SETGID
+ex        # EXEC
+fi        # FILE
+
+
+# image formats
+*.bmp        󰋩
+*.cgm        󰋩
+*.g3         󰋩
+*.gif        󰋩
+*.ief        󰋩
+*.jpe        󰋩
+*.jpeg       󰋩
+*.jpg        󰋩
+*.pjpg       󰋩
+*.jfif       󰋩
+*.jfif-tnbl  󰋩
+*.jif        󰋩
+*.png        󰋩
+*.btif       󰋩
+*.tif        󰋩
+*.tiff       󰋩
+*.dwg        󰋩
+*.fbs        󰋩
+*.fpx        󰋩
+*.fst        󰋩
+*.mmr        󰋩
+*.rlc        󰋩
+*.mdi        󰋩
+*.npx        󰋩
+*.npx        󰋩
+*.wbmp       󰋩
+*.xif        󰋩
+*.xiff       󰋩
+*.webp       󰋩
+*.fh         󰋩
+*.fh4        󰋩
+*.fh5        󰋩
+*.fh7        󰋩
+*.fhc        󰋩
+*.raf        󰋩
+*.ico        󰋩
+*.dcr        󰋩
+*.kdc        󰋩
+*.pcx        󰋩
+*.pct        󰋩
+*.pic        󰋩
+*.pnm        󰋩
+*.pbm        󰋩
+*.pgm        󰋩
+*.ppm        󰋩
+*.rgb        󰋩
+*.xbm        󰋩
+*.xpm        󰋩
+
+# audio formats
+*.aac   󰎄
+*.au    󰎄
+*.flac  󰎄
+*.m4a   󰎄
+*.mid   󰎄
+*.midi  󰎄
+*.mka   󰎄
+*.mp3   󰎄
+*.mpc   󰎄
+*.ogg   󰎄
+*.ra    󰎄
+*.wav   󰎄
+*.oga   󰎄
+*.opus  󰎄
+*.spx   󰎄
+*.xspf  󰎄
+
+# video formats
+*.3gp    󰎁
+*.3g2    󰎁
+*.h261   󰎁
+*.h263   󰎁
+*.h264   󰎁
+*.jpgv   󰎁
+*.jpgm   󰎁
+*.jpm    󰎁
+*.mj2    󰎁
+*.mjp2   󰎁
+*.mp4    󰎁
+*.mp4v   󰎁
+*.mpg4   󰎁
+*.m1v    󰎁
+*.m2v    󰎁
+*.mpa    󰎁
+*.mpe    󰎁
+*.mpeg   󰎁
+*.mpg    󰎁
+*.ogv    󰎁
+*.mov    󰎁
+*.qt     󰎁
+*.fvt    󰎁
+*.m4u    󰎁
+*.mxu    󰎁
+*.pyv    󰎁
+*.viv    󰎁
+*.webm   󰎁
+*.f4v    󰎁
+*.fli    󰎁
+*.flv    󰎁
+*.m4v    󰎁
+*.mkv    󰎁
+*.asf    󰎁
+*.asx    󰎁
+*.wm     󰎁
+*.wmv    󰎁
+*.wvx    󰎁
+*.avi    󰎁
+*.movie  󰎁
+
+# archive formats
+*.tar   
+*.tgz   
+*.arc   
+*.arj   
+*.taz   
+*.lha   
+*.lz4   
+*.lzh   
+*.lzma  
+*.tlz   
+*.txz   
+*.t7z   
+*.zip   
+*.z     
+*.dz    
+*.gz    
+*.lrz   
+*.lz    
+*.lzo   
+*.xz    
+*.zst   
+*.tzst  
+*.bz2   
+*.bz    
+*.tbz   
+*.tbz2  
+*.tz    
+*.deb   
+*.rpm   
+*.sar   
+*.rar   
+*.alz   
+*.ace   
+*.zoo   
+*.cpio  
+*.7z    
+*.rz    
+
+# other archive formats
+*.tzo  
+*.cab  
+*.wim  
+*.swm  
+*.dwm  
+*.esd  
+*.iso  
+
+# game rom formats
+*.z64  
+*.v64  
+*.n64  
+*.gba  
+*.nes  
+*.gdi  
+
+# info / manpage formats
+*.1     ℹ
+*.2     ℹ
+*.3     ℹ
+*.4     ℹ
+*.5     ℹ
+*.6     ℹ
+*.7     ℹ
+*.8     ℹ
+*.nfo   ℹ
+*.info  ℹ
+
+# ruby
+*.rb  󰴭
+*.erb 󰴭
+
+# rust
+*.rs 󱘗
+
+# go
+*.go 󰟓
+
+# css
+*.css 󰌜
+
+# haskell
+*.hs 󰲒
+
+# download-related formats
+*.torrent  󰇚
+*.part     󰇚
+*.magnet   󰇚
+
+# vim script
+*.vim      
+.*vimrc.*  
+*vimrc     
+
+# python
+*.py   
+*.pyc  
+
+# object files
+*.o   
+*.exe 
+*.a   󱝑
+*.so  󱝑
+
+# c/cpp
+*.c   
+*.h   
+*.cpp 
+*.hpp 
+
+# html
+*.html  󰌝
+*.xhtml 󰌝
+*.htm   󰌝
+
+# javascript
+*.js  󰌞
+*.ts  󰛦
+
+# lua
+*.lua 
+
+# document formats
+*.pdf   
+*.djvu  
+*.epub  
+*.ps    
+*.xps   
+*.mobi  
+*.prc   
+*.pub   
+*.txt   
+*.rtf   
+*.me    
+*.mm    
+*.ms    
+*.www   
+
+# extension-less files
+*Makefile        
+*makefile        
+*CMakeLists.txt  
+*cmakelists.txt  
+
+# mail file formats
+*mbox   
+*.mbox  
+*.dbx   
+*.eml   
+*.ldif  
+*.mht   
+*.msg   
+*.pst   
+*.vcf   
+
+# feed formats
+*atom.xml  
+*rss.xml   
+*.rss      
+*.atomcat  
+*.atomsvc  
+
+# cursor formats
+*.cur   
+*.ani   
+*.smes  
+
+# font formats
+*.ttf      
+*.ttc      
+*.otf      
+*.bdf      
+*.psf      
+*.afm      
+*.pfb      
+*.pcf      
+*.pcf.gz   
+*.cp       
+*.cp.gz    
+*.psfu     
+*.psfu.gz  
+*.fnt      
+*.fon      
+*.fnt.gz   

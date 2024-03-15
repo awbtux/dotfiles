@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# status bar module printing the date/time in my preferred format
+require-cmd date || exit 1
+
+date +'%a, %b %d %Y, %I:%M:%S %p %Z'

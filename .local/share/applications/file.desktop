@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=File Manager
+Exec=open-program file-manager %f
+Name[C]=file.desktop

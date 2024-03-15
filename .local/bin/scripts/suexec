@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# drop-in replacement for the 'sudo' command
+# for when neither it nor doas are available
+require-cmd su || exit 1
+
+# operate on each arg
+while [ "$#" -gt 0 ]; do
+    # get the arg
+    arg="$1"
+    shift
+
+    # check if the shell will split it into separate args
+    [ "$(n=0; for i in $arg; do n=$((n+1)); done; echo $n)" -gt 1 >&- 2>&- ] &&
+        arg="\"$(printf "$arg" | sed -e 's/"/\\"/g')\""
+
+    # add to list
+    args="${args:+$args }$arg"
+done
+
+# run the command and return its args
+su -c "$args"
+exit $?

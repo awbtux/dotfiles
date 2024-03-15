@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# script to require a command
+while [ "$#" -gt 0 ]; do
+    command -v "$1" >/dev/null 2>&1 && shift && continue
+    printf "$1: command not found\n" >&2
+    exit 127
+done
