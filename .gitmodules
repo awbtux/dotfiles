@@ -1,0 +1,6 @@
+[submodule ".local/share/fonts"]
+	path = .local/share/fonts
+	url = https://github.com/awbtux/user-fonts
+[submodule ".config/nvim/plugins/themecomp.nvim"]
+	path = .config/nvim/plugins/themecomp.nvim
+	url = https://github.com/awbtux/themecomp.nvim
