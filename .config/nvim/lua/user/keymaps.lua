@@ -80,15 +80,14 @@ bind("i", "<ESC>", "<C-o>:echo \"Press \'k\' and \'j\' in quick succession to ex
 --bind("v", "<ESC>", ":<C-u>echo \"Press \'k\' and \'j\' in quick succession to exit visual mode.\"<LF>gv", opts)
 --bind("x", "<ESC>", ":<C-u>echo \"Press \'k\' and \'j\' in quick succession to exit visual-block mode.\"<LF>gv", opts)
 
--- split movement
-bind("n", "<C-h>", "<C-w>h", opts)
-bind("n", "<C-j>", "<C-w>j", opts)
-bind("n", "<C-k>", "<C-w>k", opts)
-
 -- redraw screen, just like in bash
--- also use ctrl-l for split navigation
-bind("n", "<C-M-l>", ":nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<LF><LF><C-l>", opts)
-bind("n", "<C-l>", "<C-w>l", opts)
+bind("n", "<C-l>", ":nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<LF><LF><C-l>", opts)
+
+-- split movement
+bind("n", "<M-S-h>", "<C-w>h", opts)
+bind("n", "<M-S-j>", "<C-w>j", opts)
+bind("n", "<M-S-k>", "<C-w>k", opts)
+bind("n", "<M-S-l>", "<C-w>l", opts)
 
 -- lazy keybinds
 bind("n", "<leader>p", ":Lazy<LF>", opts)
