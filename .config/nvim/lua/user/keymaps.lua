@@ -87,7 +87,8 @@ bind("n", "<C-k>", "<C-w>k", opts)
 
 -- redraw screen, just like in bash
 -- also use ctrl-l for split navigation
-bind("n", "<C-l>", ":nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<LF><LF><C-l><C-w>l", opts)
+bind("n", "<C-M-l>", ":nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<LF><LF><C-l>", opts)
+bind("n", "<C-l>", "<C-w>l", opts)
 
 -- lazy keybinds
 bind("n", "<leader>p", ":Lazy<LF>", opts)
