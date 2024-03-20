@@ -19,7 +19,7 @@ vim.opt.rtp:prepend(install_path)
 
 local plugins = {
     -- lsp stuff
-    require("user.plugins.lsp"),
+    --require("user.plugins.lsp"),
 
     -- tab / buffer line
     --{ "romgrk/barbar.nvim",

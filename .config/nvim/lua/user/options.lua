@@ -113,9 +113,3 @@ end
 for k, v in pairs(globals) do
     vim.g[k] = v
 end
-
--- disable termguicolors on framebuffers
-if os.getenv('TERM') == "linux" then
-    vim.opt.termguicolors = false
-    vim.g.termmodern = false
-end
