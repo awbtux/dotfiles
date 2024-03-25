@@ -36,7 +36,7 @@ done
 printf "\n\033[1mMounted devices:\033[22m\n"
 
 # interate on a list of numbers
-seq() {
+command -v seq >/dev/null 2>&1 || seq() {
     from="$1"
     while [ "$from" -le "$2" ]; do
         printf "$from "

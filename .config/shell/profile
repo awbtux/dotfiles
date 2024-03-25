@@ -94,6 +94,17 @@ done
 # load other functions
 [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
 
+
+# ------------------------------ Part 2: Run in interactive sessions -------------------------------
+
+# if our session is interactive, source the shell init file and scripts
+case "$-" in
+    *i*) for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/interactive/*.sh; do
+             [ -r "$i" ] && . "$i"
+         done ;;
+      *) ;;
+esac
+
 # end execution here
 case "$USERPROFILE" in
     "") export USERPROFILE="y" ;;
@@ -101,7 +112,7 @@ case "$USERPROFILE" in
 esac
 
 
-# ---------------------------------------- Part 2: Run once ----------------------------------------
+# ---------------------------------------- Part 3: Run once ----------------------------------------
 
 # source everything in ~/.config/shell/scripts/run-once/
 for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/once/*.sh; do
@@ -115,13 +126,10 @@ case "$-" in
 esac
 
 
-# ------------------------- Part 3: Run once, when on an interactive shell -------------------------
+# ------------------------- Part 4: Run once, when in an interactive shell -------------------------
 
-# source the shell init file if needed
-[ -r "$ENV" ] && . "$ENV"
-
-# source everything in ~/.config/shell/scripts/interactive/
-for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/interactive/*.sh; do
+# source everything in ~/.config/shell/scripts/once/interactive/
+for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/once/interactive/*.sh; do
     [ -r "$i" ] && . "$i"
 done
 
@@ -132,7 +140,7 @@ case "$0" in
 esac
 
 
-# ---------------------------- Part 4: Run once, when on a login shell -----------------------------
+# ---------------------------- Part 5: Run once, when in a login shell -----------------------------
 
 # store the login shell pid
 export LOGIN_PID="$$"
@@ -147,9 +155,4 @@ trap '{
 # execute everything in ~/.config/shell/scripts/login
 for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/login/*.sh; do
     [ -r "$i" ] && . "$i"
-done
-
-# execute everything in ~/.config/shell/scripts/session
-for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/session/*.sh; do
-    ("$i" &) >/dev/null 2>&1
 done

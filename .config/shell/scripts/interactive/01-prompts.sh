@@ -2,15 +2,15 @@
 
 # shell prompt based on permission level
 case "${EUID:-${UID:-$(id -u)}}" in
-    0) export PS1="# " ;;
-    *) export PS1='$ ' ;;
+    0) PS1="# " ;;
+    *) PS1='$ ' ;;
 esac
 
 # command splitting into multiple lines
-export PS2=">"
+PS2=">"
 
 # 'select' menu
-export PS3="#? "
+PS3="#? "
 
 # output tracing
-export PS4="++ "
+PS4="++ "
