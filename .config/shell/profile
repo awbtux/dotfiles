@@ -156,3 +156,6 @@ trap '{
 for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/login/*.sh; do
     [ -r "$i" ] && . "$i"
 done
+
+# load the shell init file
+[ -r "$ENV" ] && . "$ENV"
