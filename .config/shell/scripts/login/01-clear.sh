@@ -4,4 +4,4 @@
 #sleep 5
 
 # hide previous sessions/login attempts by clearing the screen
-printf "\033[H\033[3J"
+printf "\033[H\033[2J\033[3J"
