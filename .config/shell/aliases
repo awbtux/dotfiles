@@ -24,14 +24,12 @@ aliascmd() {
     done
 }
 
-# sudo links to suexec if it doesn't exist
-command -v sudo >/dev/null 2>&1 || {
-    # not optimal, but it's distributed here in ~/.local/bin/scripts
-    aliascmd sudo="suexec"
-
-    # preferred when it's available
-    aliascmd sudo="doas"
-}
+# choose privilege escalator & expand aliases
+aliascmd \
+    doas="doas " \
+    sudo="suexec " \
+    sudo="doas " \
+    sudo="sudo "
 
 # run riverwm under dbus if it's installed
 command -v river >/dev/null 2>&1 && alias river="dbus-run-session river"

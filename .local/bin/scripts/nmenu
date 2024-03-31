@@ -1,5 +1,4 @@
 #!/bin/sh
-#
 
 # print a numbered menu and allow the user to choose between its items
 

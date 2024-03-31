@@ -12,7 +12,7 @@
     img="${img%%.bmp}"
 } || {
     command -v date >/dev/null 2>&1 && {
-        img="${XDG_PICTURES_DIR:-$HOME/Pictures}/screenshot$(date +'_%Y%m%d_%H%M%S')"
+        img="${XDG_PICTURES_DIR:-$HOME/Pictures}/$(date +'%Y-%m-%d-%H%M%S_')screenshot"
     } || {
         img="${XDG_PICTURES_DIR:-$HOME/Pictures}/screenshot"
     }

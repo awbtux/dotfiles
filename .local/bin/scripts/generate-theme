@@ -122,16 +122,13 @@ for i in $(find "${XDG_CONFIG_HOME:-$HOME/.config}" "${XDG_DATA_HOME:-$HOME/.loc
         -e "s/#::brightcyan::#/$theme_brightcyan/g" \
         -e "s%#::configdir::#%${XDG_CONFIG_HOME:-$HOME/.config}%g" \
         -e "s%#::datadir::#%${XDG_DATA_HOME:-$HOME/.local/share}%g" \
+        -e "s%#::statedir::#%${XDG_DATA_HOME:-$HOME/.local/state}%g" \
         -e "s%#::cachedir::#%${XDG_CACHE_HOME:-$HOME/.cache}%g" \
         -e "s%#::docdir::#%${XDG_DOCUMENTS_DIR:-$HOME/Documents}%g" \
         -e "s%#::dldir::#%${XDG_DOWNLOAD_DIR:-$HOME/Downloads}%g" \
         -e "s%#::musicdir::#%${XDG_MUSIC_DIR:-$HOME/Music}%g" \
         -e "s%#::picdir::#%${XDG_PICTURES_DIR:-$HOME/Pictures}%g" \
         -e "s%#::videodir::#%${XDG_VIDEOS_DIR:-$HOME/Videos}%g" \
-        -e "s%#::configdir::#%${XDG_CONFIG_HOME:-$HOME/.config}%g" \
-        -e "s%#::sharedir::#%${XDG_DATA_HOME:-$HOME/.local/share}%g" \
-        -e "s%#::statedir::#%${XDG_DATA_HOME:-$HOME/.local/state}%g" \
-        -e "s%#::cachedir::#%${XDG_DATA_HOME:-$HOME/.cache}%g" \
     <"$i" >"$dir/$name"
 done
 
