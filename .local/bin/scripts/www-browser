@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# open the system browser
+# TODO: add more, wl/x11 separation
+
 # use a terminal browser
 for i in amfora w3m links lynx elinks links2
     do command -v $i >/dev/null 2>&1 && browser="xdg-terminal-exec $i"
@@ -16,4 +19,4 @@ done
 command -v "$BROWSER" >/dev/null 2>&1 && browser="$BROWSER"
 
 # run the browser
-exec $browser "$@"
+exec "$browser" "$@"

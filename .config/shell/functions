@@ -1,6 +1,9 @@
 #!/bin/sh
 
-# function to abbreviate a path
+# additional functionality and compatibility layers
+# simple scripts in ~/.local/share/bin are also reimplemented here
+
+# abbreviate a path
 pathabbrev() {
     # start
     case "$1" in

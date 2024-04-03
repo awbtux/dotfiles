@@ -2,33 +2,23 @@
 
 # weather script for waybar
 
-# need these
+# load shell functions
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
+
+# we need these
 require-cmd curl sed || exit 127
 
-# initialize these
-i="0"
+# vars
+main_fmt='%c%C,+%t'
+tooltip_fmt='%c%l:+%C,+%h+humidity,+%t+(feels+like+%f),+%w+winds'
 text=""
 tooltip=""
 
-# formatting
-main_fmt='%c%C,+%t'
-tooltip_fmt='%c%l:+%C,+%h+humidity,+%t+(feels+like+%f),+%w+winds'
-
-# keep trying
-while [ -z "$text" -o -z "$tooltip" ]; do
-    # increase try count
-    i="$((i+1))"
-
-    # get main text
-    printf "Querying https://wttr.in/ for bar text (attempt ${i}/5)...\n" >&2
-    text="$(curl --retry 0 --max-time 20 -s "https://wttr.in/?format=$main_fmt" 2>/dev/null)"
-
-    # get the tooltip
-    printf "Querying https://wttr.in/ for tooltip text (attempt ${i}/5)...\n" >&2
-    tooltip="$(curl --retry 0 --max-time 20 -s "https://wttr.in/?format=$tooltip_fmt" 2>/dev/null | sed -e 's/+\([0-9][0-9]*\)/\1/g')"
-
-    # give up eventually
-    [ "$i" -ge 5 ] && break
+# try to set text/tooltip
+for i in $(seq 1 5); do
+    test -n "$text" -a -n "$tooltip" && break
+    test -z "$text" && printf "Querying https://wttr.in/ for bar text (attempt ${i}/5)...\n" >&2 && text="$(curl --retry 0 --max-time 20 -s "https://wttr.in/?format=$main_fmt" 2>/dev/null)"
+    test -z "$tooltip" && printf "Querying https://wttr.in/ for tooltip text (attempt ${i}/5)...\n" >&2 && tooltip="$(curl --retry 0 --max-time 20 -s "https://wttr.in/?format=$tooltip_fmt" 2>/dev/null | sed -e 's/+\([0-9][0-9]*\)/\1/g')"
 done
 
 # print in json format

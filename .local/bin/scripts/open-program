@@ -1,9 +1,13 @@
 #!/bin/sh
 
-# script to open a program
+# open a file with an available program
+# TODO: add more versatile filetype detection, wl/x11 separation
 
 # update the user profile
 [ -r "$HOME/.profile" ] && . "$HOME/.profile"
+
+# load shell functions
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
 
 case "$1" in
     browser)

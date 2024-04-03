@@ -1,6 +1,12 @@
 #!/bin/sh
 
 # status bar module printing the date/time in my preferred format
-require-cmd date || exit 1
 
+# load shell functions
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
+
+# require the date command
+require-cmd date || exit 127
+
+# do the thing
 date +'%a, %b %d %Y, %I:%M:%S %p %Z'

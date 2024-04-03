@@ -1,34 +1,15 @@
 #!/bin/sh
 
-# wrapper over elinks that deletes .rndjk
+# wrapper around `elinks` for post-usage cleanup
 
-# add to path
-pathadd() {
-    case ":$PATH:" in
-        *:"${1%/}":*) ;;
-        *) [ -d "$1" ] && { [ "$2" = "-a" ] && export PATH="${PATH:+$PATH:}${1%/}" || export PATH="${1%/}${PATH:+:$PATH}"; } ;;
-    esac
-}
+# load shell functions
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
 
-# stuff
-OLDPATH="$PATH"
-OLDIFS="$IFS"
-PATH=""
-IFS=":"
+# we need these
+require-cmd syspath rm || exit 127
 
-# discard path elements in the home directory (ex. this script)
-for i in $OLDPATH; do
-    case "$i" in *"$HOME"*) continue ;; esac; pathadd "$i"
-done
+# find the system's elinks and run it
+syspath elinks "$@"
 
-# get old ifs
-IFS="$OLDIFS"
-
-# run elinks
-if command -v elinks >/dev/null 2>&1; then
-    elinks "$@"
-    rm -rf "$HOME/.rnd"
-else
-    printf "${SHELL##*/}: elinks: command not found\n" >&2
-    exit 127
-fi
+# clean up the junk 'random seed' file
+rm -rf "$HOME/.rnd"

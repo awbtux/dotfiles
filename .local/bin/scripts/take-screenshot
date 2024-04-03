@@ -2,20 +2,17 @@
 
 # screenshot utility frontend
 
-# name of the screenshot
-[ "$#" -gt 0 ] && {
-    # strip file formats
-    img="${1%%.png}"
-    img="${img%%.jpg}"
-    img="${img%%.jpeg}"
-    img="${img%%.webp}"
-    img="${img%%.bmp}"
-} || {
-    command -v date >/dev/null 2>&1 && {
-        img="${XDG_PICTURES_DIR:-$HOME/Pictures}/$(date +'%Y-%m-%d-%H%M%S_')screenshot"
-    } || {
-        img="${XDG_PICTURES_DIR:-$HOME/Pictures}/screenshot"
-    }
+# load shell functions
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
+
+# use $1 as img name
+[ "$#" -gt 0 ] && img="${1%.png}" && img="${img%.jpg}" && img="${img%.jpeg}" && img="${img%.webp}" && img="${img%.bmp}"
+
+# otherwise set img name
+[ -z "$img" ] && {
+    img="${XDG_PICTURES_DIR:-$HOME/Pictures}/screenshot"
+    command -v date >/dev/null 2>&1 && img="${XDG_PICTURES_DIR:-$HOME/Pictures}/$(date +'%Y-%m-%d-%H%M%S_')screenshot"
+    test ! -d "${XDG_PICTURES_DIR:-$HOME/Pictures}" && ! mkdir -p "${XDG_PICTURES_DIR:-$HOME/Pictures}" && exit $1
 }
 
 # numbered suffix for duplicate files
@@ -32,7 +29,7 @@
 # take a screenshot on wayland
 [ -n "$WAYLAND_DISPLAY" ] && {
     # `grim` is required for taking wayland screenshots
-    require-cmd grim || exit 1
+    require-cmd grim || exit 127
 
     # get a selection using slurp if installed
     command -v slurp >/dev/null 2>&1 && {
@@ -48,7 +45,7 @@
 # take a screenshot on x11
 [ -n "$DISPLAY" ] && {
     # `scrot` is required for taking x11 screeenshots
-    require-cmd scrot || exit 1
+    require-cmd scrot || exit 127
 
     # take the screenshot
     scrot "$img" -s >/dev/null 2>&1
@@ -56,7 +53,7 @@
 }
 
 # fbgrab is required to take framebuffer screenshots
-require-cmd fbgrab || exit 1
+require-cmd fbgrab || exit 127
 
 # take a screenshot of a framebuffer console
 fbgrab "$img" >/dev/null 2>&1

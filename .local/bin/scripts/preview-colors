@@ -1,8 +1,10 @@
 #!/bin/sh
 
+# preview ANSI color codes
 # Copyright (c) 2020-2024, Firas Khalil Khana
-# Distributed under the terms of the ISC License
+# Distributed under the terms of the ISC license
 
+# loop over different color combinations
 for i in $(seq 30 37) $(seq 40 47) $(seq 90 97) $(seq 100 107); do
     for j in $(seq 0 9); do
         printf "\033[$j;${i}m\\\033[$j;%-4s\033[0m " "${i}m"

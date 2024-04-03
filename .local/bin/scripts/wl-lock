@@ -1,3 +1,4 @@
 #!/bin/sh
 
 # lock a wayland session
+# TODO: write this script

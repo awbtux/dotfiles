@@ -1,6 +1,10 @@
 #!/bin/sh
 
 # print a numbered menu and allow the user to choose between its items
+# TODO: clean this up
+
+# load shell functions
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
 
 # handle signals
 for i in HUP INT QUIT ABRT KILL SEGV TERM STOP TSTP PWR; do

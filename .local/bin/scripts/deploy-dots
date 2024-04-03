@@ -2,11 +2,15 @@
 
 # script to deploy the current dotfiles
 # if the login shell doesn't find .local/share/dots/.configured.txt, this runs automatically
+# TODO: finish this script
+
+# load shell functions
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
 
 # useless comment
 cd
 
-# generate the theme
+# we need these
 require-cmd generate-theme && generate-theme
 
 # run the wizard to generate a git configuration file if none is present
