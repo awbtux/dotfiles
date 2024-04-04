@@ -4,32 +4,15 @@
 
 # --------------------------------------- Part 1: Run always ---------------------------------------
 
-# basic xdg directory definitions - rest in ~/.config/shell/scripts/01-xdg.sh
+# basic xdg directory definitions - rest in ~/.config/shell/scripts/01-env.sh
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_CACHE_HOME="$HOME/.local/cache"
 
-# browser homepage
-export WWW_HOME="https://lite.duckduckgo.com"
-
-# uncomment to disable gnupg in this setup
-#export DISABLE_GNUPG="y"
-
-# session type, can be 'x11' or 'wayland'
-export XDG_SESSION_TYPE="wayland"
-
-# specify the window manager to use, see xinitrc for information
-export X_WM_USE="dwm"
-
-# rust install dir
+# add cargo & npm packages to path
 export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
-
-# npm install dir
 export NPM_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/node"
-
-# zsh script dir
-export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/shell"
 
 # function to add directories to our path
 pathadd() {
@@ -55,10 +38,10 @@ command -v find >/dev/null 2>&1 && {
 # use filename globbing if `find` isn't available (it should be...)
 } || {
     for i in $HOME/.local/bin/*; do
-        # add path
-        [ -d "$i" ] && pathadd "$i"
+        # add directory $i
+        [ -d "$i" ] || continue
 
-        # add subdirs to path as well
+        # and its subdirs
         for j in $i/*; do
             [ -d "$j" ] && pathadd "$j"
         done

@@ -1,7 +1,10 @@
 #!/bin/sh
 
-# whether or not custom xdg-utils should use system applications
-export XDG_SYSTEM_DESKTOP_ENTRIES="n"
+# TODO:
+#  - set filetype defaults more precisely (ex. separate djvu/epub/pdf readers)
+#  - test the capabilities of programs (ex. zathura plugins) for filetype support
+#  - search repositories of various distros for packages to support here
+#  - separate x11 and wayland stuff
 
 # choose the terminal emulator
 for i in xterm urxvt aterm terminator kitty konsole gnome-terminal mate-terminal qterminal lxterminal wezterm roxterm st foot alacritty

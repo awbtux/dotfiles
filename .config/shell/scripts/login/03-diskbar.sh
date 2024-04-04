@@ -2,7 +2,7 @@
 
 # command dependencies
 for i in df awk wc
-    do command -v "$i" >/dev/null 2>&1 || return 1
+do command -v "$i" >/dev/null 2>&1 || return 1
 done
 
 # initialize these
@@ -12,7 +12,7 @@ done
 
 # set columns if needed
 : "${COLUMNS:=$(tput cols 2>/dev/null)}"
-: "${COLUMNS:=$(stty size | awk '{print $2}')}"
+: "${COLUMNS:=$(stty size 2>/dev/null | awk '{print $2}')}"
 
 # bar size
 barlen="$((COLUMNS/5))"
@@ -23,7 +23,7 @@ disks="$(df | awk 'NR > 1 {print $1}' | awk '/\/dev\//')"
 # determine how much space to pad fields
 for i in $(printf "$disks"); do
     # get percentage of disk used
-    perc="$(df "$i" | awk 'NR > 1 {print $5}' | awk -F'%' '{print $1}')"
+    perc="$(df "$i" 2>/dev/null | awk 'NR > 1 {print $5}' | awk -F'%' '{print $1}')"
 
     # length of disk name
     [ "$(printf "$i" | wc -c)" -gt ${disknamelen:-0} ] && disknamelen="$(printf "$i" | wc -c)"
@@ -46,6 +46,9 @@ command -v seq >/dev/null 2>&1 || seq() {
 
 # print the line
 for i in $(printf "$disks"); do
+    # check if the disk is accessible
+    df -h "$i" >/dev/null 2>&1 || continue
+
     # get metrics
     total="$(df -h "$i" | awk 'NR > 1 {print $2}')"
     used="$(df -h "$i" | awk 'NR > 1 {print $3}')"
