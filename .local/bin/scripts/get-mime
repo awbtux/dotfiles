@@ -1,0 +1,45 @@
+#!/bin/sh
+
+# get the mime type of a file
+# currently just a placeholder holding the methods used in `xdg-mime`
+# TODO: write this script
+
+## mimeo:
+
+## gnome:
+#if gio help info 2>/dev/null 1>&2; then
+#    DEBUG 1 "Running gio info \"$1\""
+#    gio info "$1" 2> /dev/null | grep standard::content-type | cut -d' ' -f4
+#elif gvfs-info --help 2>/dev/null 1>&2; then
+#    DEBUG 1 "Running gvfs-info \"$1\""
+#    gvfs-info "$1" 2> /dev/null | grep standard::content-type | cut -d' ' -f4
+#elif gnomevfs-info --help 2>/dev/null 1>&2; then
+#    DEBUG 1 "Running gnomevfs-info \"$1\""
+#    gnomevfs-info --slow-mime "$1" 2> /dev/null | grep "^MIME" | cut -d ":" -f 2 | sed s/"^ "//
+#fi
+#
+## generic:
+#if mimetype --version >/dev/null 2>&1; then
+#    DEBUG 1 "Running mimetype --brief --dereference \"$1\""
+#    mimetype --brief --dereference "$1"
+#else
+#    DEBUG 1 "Running file --brief --dereference --mime-type \"$1\""
+#    /usr/bin/file --brief --dereference --mime-type "$1" 2> /dev/null
+#fi
+#
+## kde:
+#if [ -n "${KDE_SESSION_VERSION}" ]; then
+#    case "${KDE_SESSION_VERSION}" in
+#        4)
+#            DEBUG 1 "Running kmimetypefinder \"$1\""
+#            kmimetypefinder "$1" 2>/dev/null | head -n 1
+#            ;;
+#        5)
+#            DEBUG 1 "Running kmimetypefinder${KDE_SESSION_VERSION} \"$1\""
+#            kmimetypefinder${KDE_SESSION_VERSION} "$1" 2>/dev/null | head -n 1
+#            ;;
+#    esac
+#else
+#    DEBUG 1 "Running kfile \"$1\""
+#    kfile "$1" 2> /dev/null | head -n 1 | cut -d "(" -f 2 | cut -d ")" -f 1
+#fi

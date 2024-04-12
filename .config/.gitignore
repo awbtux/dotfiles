@@ -30,3 +30,4 @@ glib-2.0/
 vim/.netrwhist
 waybar/style.css
 vim/*.un~
+yambar/config.yml

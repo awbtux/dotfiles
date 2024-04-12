@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# script to run a program in a terminal
+
+# make it work on wayland
+: "${DISPLAY:=$WAYLAND_DISPLAY}"
+
+# some stupid terminals don't support '-e'
+case "$TERMINAL" in
+    gnome-terminal) opt="--" ;;
+    *) opt="-e" ;;
+esac
+
+# run the command through a terminal if applicable
+eval "exec ${DISPLAY:+$TERMINAL $opt} \"\$@\""

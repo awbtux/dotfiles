@@ -1,11 +1,9 @@
 #!/bin/sh
 
-# yash init file
+# yash init file; todo: look at https://github.com/magicant/yash/blob/trunk/share/initialization/common
 
-# todo: look at https://github.com/magicant/yash/blob/trunk/share/initialization/common
-
-# yash doesn't read .profile by default so this needs to be done manually
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && [ -z "$USERPROFILE" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile"
+# source our profile if needed
+[ -z "$USERPROFILE_CURRENT" -a -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile"
 
 # check if the proper shell is sourcing this file
 case "$SHNAME" in
@@ -13,8 +11,8 @@ case "$SHNAME" in
        *) . "$ENV"; return 0 ;;
 esac
 
-# ps1 string to export to scripts
-export PS1="\${USER:-\$LOGNAME}\${HOSTNAME:+@\$HOSTNAME}:\$(pathabbrev \"\$PWD\"\\\$ "
+# enable vi editing mode
+set -o vi
 
 # if not running interactively, don't do anything else
 case "$-" in
@@ -28,11 +26,14 @@ esac
 # if we have access to the 'stty' binary, specify args for it
 command -v stty >/dev/null 2>&1 && stty -ixon
 
-# enable vi editing mode
-set -o vi
+# default prompt
+case "$TERM" in
+    linux|*color*) PS1="$(printf "\[\033[1;35m\]\${USER:-\$LOGNAME}\@\${HOSTNAME:-\$(hostname 2>/dev/null || cat /proc/sys/kernel/hostname 2>/dev/null || printf \"localhost\")}\[\033[0m\]:\[\033[1;34m\]\$(pathabbrev \"\$PWD\")\[\033[0m\]\\\$ ")" ;;
+                *) PS1="\${USER:-\$LOGNAME}\${HOSTNAME:+@\$HOSTNAME}:\$(pathabbrev \"\$PWD\")\\\$ " ;;
+esac
 
-# set the PS1 using print-prompt if the shell supports it
-PROMPT_COMMAND="PS1=\"\$(print_prompt)\""
+# set the PS1 using set_ps1 if the shell supports it
+PROMPT_COMMAND="set_ps1"
 
 # load ~/.config/shell/aliases
 [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"

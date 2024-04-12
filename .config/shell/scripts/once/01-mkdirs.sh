@@ -1,16 +1,17 @@
 #!/bin/sh
 
-# create .hushlogin
+# don't print junk from /etc/motd and friends
 :>$HOME/.hushlogin
 
 # create XDG directories
 mkdir -p \
-    ${XDG_CONFIG_HOME:-$HOME/.config} \
-    ${XDG_DATA_HOME:-$HOME/.local/share} \
-    ${XDG_CACHE_HOME:-$HOME/.cache} \
-    ${XDG_DESKTOP_DIR:-$HOME/Desktop} \
-    ${XDG_DOCUMENTS_DIR:-$HOME/Documents} \
-    ${XDG_DOWNLOAD_DIR:-$HOME/Downloads} \
-    ${XDG_MUSIC_DIR:-$HOME/Music} \
-    ${XDG_PICTURES_DIR:-$HOME/Pictures} \
-    ${XDG_VIDEOS_DIR:-$HOME/Videos}
+    "${XDG_CONFIG_HOME:-$HOME/.config}" \
+    "${XDG_DATA_HOME:-$HOME/.local/share}" \
+    "${XDG_CACHE_HOME:-$HOME/.cache}" \
+    "${XDG_DESKTOP_DIR:-$HOME/Desktop}" \
+    "${XDG_DOCUMENTS_DIR:-$HOME/Documents}" \
+    "${XDG_DOWNLOAD_DIR:-$HOME/Downloads}" \
+    "${XDG_MUSIC_DIR:-$HOME/Music}" \
+    "${XDG_PICTURES_DIR:-$HOME/Pictures}" \
+    "${XDG_VIDEOS_DIR:-$HOME/Videos}" \
+    "${HISTORY_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/history}"

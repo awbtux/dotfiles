@@ -3,13 +3,10 @@
 # pause all mpv instances
 # TODO: replace this with a more versatile mpv-sockets wrapper
 
-# load shell functions
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
-
-# we need this
-require-cmd socat || exit 127
+# check for commands
+command -v socat >/dev/null 2>&1 || ! printf "socat: command not found\n" >&2 || exit 127
 
 # do the thing
 for i in /tmp/mpvSockets/*; do
-    [ -r "$i" ] && echo '{ "command": ["set_property", "pause", true] }' | socat - "$i";
+    test -r "$i" && echo '{ "command": ["set_property", "pause", true] }' | socat - "$i";
 done

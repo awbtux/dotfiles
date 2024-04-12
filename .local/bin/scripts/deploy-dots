@@ -4,23 +4,24 @@
 # if the login shell doesn't find .local/share/dots/.configured.txt, this runs automatically
 # TODO: finish this script
 
-# load shell functions
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
-
-# useless comment
-cd
-
 # we need these
-require-cmd generate-theme && generate-theme
+command -v generate-theme >/dev/null 2>&1 && generate-theme
 
 # run the wizard to generate a git configuration file if none is present
-[ ! -f "${GIT_CONFIG_GLOBAL:-$HOME/.config/gitconfig}" ] && require-cmd git-wizard && git-wizard
+test ! -r "${GIT_CONFIG_GLOBAL:-$HOME/.gitconfig}" && command -v git-wizard >/dev/null 2>&1 && git-wizard
 
 # if $HOME is the worktree of a git repo, pull from origin and init submodules
-[ -r "$HOME/.git" ] && command -v git >/dev/null 2>&1 && {
+test -d "$HOME/.git" && command -v git >/dev/null 2>&1 && {
+    cd "$HOME"
     git pull
     git submodule update --init --recursive
+    cd "$OLDPWD"
 }
 
-# prevent this script from getting run again
-:>${XDG_DATA_HOME:-$HOME/.local/share}/dots/.configured.txt
+# prevent this script from getting automatically sourced by login scripts
+printf "%s\n%s\n%s\n%s\n" \
+    "This file was created by ~/.local/bin/scripts/deploy-dots when the script" \
+    "finished, so the login script responsible for one-time setup knows there" \
+    "isn't anything else \`deploy-dots\` needs to do. If you delete it, the session" \
+    "will invoke \`deploy-dots\` next time you log in." \
+>"${XDG_DATA_HOME:-$HOME/.local/share}/dots/.configured.txt"

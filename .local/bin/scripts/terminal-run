@@ -1,5 +1,0 @@
-#!/bin/sh
-
-# script to run a program in a terminal
-dpy="${WAYLAND_DISPLAY:-$DISPLAY}"
-eval "exec ${dpy:+$TERMINAL} ${dpy:+-e} \"\$@\""

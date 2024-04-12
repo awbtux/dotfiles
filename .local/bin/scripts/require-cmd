@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# ensure a command is provided by the environment
-
-# operate on each argument passed to $0
-for i in "$@"; do
-    ! command -v "$i" >/dev/null 2>&1 && printf "$i: command not found\n" >&2 && exit 127
-done

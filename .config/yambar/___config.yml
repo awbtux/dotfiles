@@ -1,0 +1,205 @@
+# main yambar configuration file, more unused applets in extra.yml
+
+mainfont: &mainfont sans-serif:size=13,Symbols Nerd Font:size=13
+boldfont: &boldfont sans-serif:size=13:style=bold,Symbols Nerd Font:size=13
+
+bar:
+    height: 24
+    location: top
+    right-spacing: 11
+    font: *mainfont
+    spacing: 2
+    margin: 0
+    layer: bottom
+    foreground: #::darkfg::#ff
+    background: #::statusbg::#ff
+
+    left:
+        - river:
+            anchors:
+                - tags: &river_tags
+                    left-margin: 8
+                    right-margin: 9
+                    default: {string: {text: "", font: *mainfont}}
+                    conditions:
+                        id == 1 && state == focused: {string: {text: 1, font: *boldfont}}
+                        id == 1: {string: {text: 1, font: *mainfont}}
+                        id == 2 && state == focused: {string: {text: 2, font: *boldfont}}
+                        id == 2: {string: {text: 2, font: *mainfont}}
+                        id == 3 && state == focused: {string: {text: 3, font: *boldfont}}
+                        id == 3: {string: {text: 3, font: *mainfont}}
+                        id == 4 && state == focused: {string: {text: 4, font: *boldfont}}
+                        id == 4: {string: {text: 4, font: *mainfont}}
+                        id == 5 && state == focused: {string: {text: 5, font: *boldfont}}
+                        id == 5: {string: {text: 5, font: *mainfont}}
+                        id == 6 && state == focused: {string: {text: 6, font: *boldfont}}
+                        id == 6: {string: {text: 6, font: *mainfont}}
+                        id == 7 && state == focused: {string: {text: 7, font: *boldfont}}
+                        id == 7: {string: {text: 7, font: *mainfont}}
+                        id == 8 && state == focused: {string: {text: 8, font: *boldfont}}
+                        id == 8: {string: {text: 8, font: *mainfont}}
+                        id == 9 && state == focused: {string: {text: 9, font: *boldfont}}
+                        id == 9: {string: {text: 9, font: *mainfont}}
+                - tag_selected: &tag_selected
+                - tag_urgent: &tag_urgent
+                    background:
+                        color: #::darkred::#ff
+            content:
+                map:
+                    on-click:
+                        left: sh -c "riverctl set-focused-tags $((1 << ({id} - 1)))"
+                        right: sh -c "riverctl toggle-focused-tags $((1 << ({id} - 1)))"
+                        middle: sh -c "riverctl toggle-view-tags $((1 << ({id} - 1)))"
+                    conditions:
+                        state == urgent:
+                            map:
+                                <<: *river_tags
+                                deco:
+                                    background:
+                                        color: #::darkred::#ff
+                        state == focused:
+                            map:
+                                <<: *river_tags
+                                deco:
+                                    background:
+                                        color: #::brightbg::#ff
+                        state == visible && ~occupied:
+                            map:
+                                <<: *river_tags
+                        state == visible && occupied:
+                            map:
+                                <<: *river_tags
+                        state == unfocused:
+                            map:
+                                <<: *river_tags
+                        state == invisible && ~occupied:
+                            map:
+                                <<: *river_tags
+                        state == invisible && occupied:
+                            map:
+                                <<: *river_tags
+    center:
+        - foreign-toplevel:
+            content:
+                map:
+                    conditions:
+                        ~activated: {empty: {}}
+                        activated:
+                            - string:
+                                text: "{title}"
+                                font: *mainfont
+    right:
+        - script:
+            poll-interval: 10000
+            path: /bin/sh
+            args:
+                - '-c'
+                - 'bar=yambar use_icon=y sb-cpu'
+            content:
+                string:
+                    text: "{script}"
+                    foreground: #::mainmagenta::#ff
+        - script:
+            poll-interval: 10000
+            path: /bin/sh
+            args:
+                - '-c'
+                - 'bar=yambar use_icon=y sb-mem'
+            content:
+                string:
+                    text: "{script}"
+                    foreground: #::mainblue::#ff
+        - battery:
+            name: BAT0
+            poll-interval: 10000
+            anchors:
+                discharging: &discharging
+                    list:
+                        items:
+                            - ramp:
+                                tag: capacity
+                                items:
+                                    - string:
+                                        text: "󰁺 {capacity}% {estimate}"
+                                        foreground: #::mainred::#ff
+                                    - string:
+                                        text: "󰁻 {capacity}% {estimate}"
+                                        foreground: #::mainred::#ff
+                                    - string:
+                                        text: "󰁼 {capacity}% {estimate}"
+                                        foreground: #::brightyellow::#ff
+                                    - string:
+                                        text: "󰁽 {capacity}% {estimate}"
+                                        foreground: #::brightyellow::#ff
+                                    - string:
+                                        text: "󰁾 {capacity}% {estimate}"
+                                        foreground: #::brightyellow::#ff
+                                    - string:
+                                        text: "󰁿 {capacity}% {estimate}"
+                                        foreground: #::maingreen::#ff
+                                    - string:
+                                        text: "󰂀 {capacity}% {estimate}"
+                                        foreground: #::maingreen::#ff
+                                    - string:
+                                        text: "󰂁 {capacity}% {estimate}"
+                                        foreground: #::maingreen::#ff
+                                    - string:
+                                        text: "󰂂 {capacity}% {estimate}"
+                                        foreground: #::maingreen::#ff
+                                    - string:
+                                        text: "󰁹 {capacity}% {estimate}"
+                                        foreground: #::maingreen::#ff
+            content:
+                map:
+                    conditions:
+                        state == unknown:
+                            <<: *discharging
+                        state == discharging:
+                            <<: *discharging
+                        state == charging:
+                            - string:
+                                text: " {capacity}% {estimate}"
+                                foreground: #::maingreen::#ff
+                        state == full:
+                            - string:
+                                text: "󰁹 {capacity}% full"
+                                foreground: #::maingreen::#ff
+                        state == "not charging":
+                            - ramp:
+                                tag: capacity
+                                items:
+                                    - string:
+                                        text: "  󰁺 {capacity}% {estimate}"
+                                        foreground: #::mainred::#ff
+                                    - string:
+                                        text: "  󰁻 {capacity}% {estimate}"
+                                        foreground: #::mainred::#ff
+                                    - string:
+                                        text: "  󰁼 {capacity}% {estimate}"
+                                        foreground: #::brightyellow::#ff
+                                    - string:
+                                        text: "  󰁽 {capacity}% {estimate}"
+                                        foreground: #::brightyellow::#ff
+                                    - string:
+                                        text: "  󰁾 {capacity}% {estimate}"
+                                        foreground: #::brightyellow::#ff
+                                    - string:
+                                        text: "  󰁿 {capacity}% {estimate}"
+                                        foreground: #::maingreen::#ff
+                                    - string:
+                                        text: "  󰂀 {capacity}% {estimate}"
+                                        foreground: #::maingreen::#ff
+                                    - string:
+                                        text: "  󰂁 {capacity}% {estimate}"
+                                        foreground: #::maingreen::#ff
+                                    - string:
+                                        text: "  󰂂 {capacity}% {estimate}"
+                                        foreground: #::maingreen::#ff
+                                    - string:
+                                        text: "  󰁹 {capacity}% {estimate}"
+                                        foreground: #::maingreen::#ff
+        - clock:
+            time-format: "%a, %b %d %Y %I:%M:%S %p %Z"
+            content:
+                - string:
+                    text: "{time}"

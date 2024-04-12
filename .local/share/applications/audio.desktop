@@ -1,5 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Audio Player
-Exec=open-program audio-player %F
-Name[C]=audio.desktop

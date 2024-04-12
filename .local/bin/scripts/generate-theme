@@ -3,11 +3,15 @@
 # generate theme configurations
 # TODO: overhaul macros and use a preprocessor instead of sed
 
-# load shell functions
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
+# check for commands
+require_cmd() {
+    for i in "$@"; do
+        command -v "$i" >/dev/null 2>&1 || ! printf "$i: command not found\n" >&2 || return 127
+    done
+}
 
 # we need these
-require-cmd find sed chmenu || exit 127
+require_cmd find sed chmenu || exit 127
 
 # get name of theme from $1
 [ -r "${XDG_DATA_HOME:-$HOME/.local/share}/dots/themes/${1:+$1/}theme.conf" ] && . "${XDG_DATA_HOME:-$HOME/.local/share}/dots/themes/${1:+$1/}theme.conf"
@@ -93,6 +97,9 @@ command -v fc-cache >/dev/null 2>&1 && fc-cache
 
 # reload waybar
 command -v waybar >/dev/null 2>&1 && pidof waybar >/dev/null 2>&1 && command -v setsid >/dev/null 2>&1 && test -n "$WAYLAND_DISPLAY" && pkill waybar && setsid -f waybar >/dev/null 2>&1
+
+# reload yambar
+command -v yambar >/dev/null 2>&1 && pidof yambar >/dev/null 2>&1 && command -v setsid >/dev/null 2>&1 && test -n "$WAYLAND_DISPLAY" && pkill yambar && setsid -f yambar >/dev/null 2>&1
 
 # reload river theme if riverwm is active
 command -v riverctl >/dev/null 2>&1 && pidof river >/dev/null 2>&1 && test -n "$WAYLAND_DISPLAY" && sh "${XDG_CONFIG_HOME:-$HOME/.config}/river/theme" >/dev/null

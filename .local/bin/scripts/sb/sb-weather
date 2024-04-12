@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# print an empty status line if dependencies arent met
+test -z "$(command -v curl)" -o -z "$(command -v sed)" && {
+    test "$bar" = "yambar" && printf "script|string|\n"
+    printf "\n"
+    exit 0
+}
+
+# vars
+main_fmt='%C,+%t'
+text=""
+tooltip_fmt='%l:+%C,+%h+humidity,+%t+(feels+like+%f),+%w+winds'
+tooltip=""
+
+# don't get tooltip for yambar
+test "$bar" = "yambar" && tooltip="NA" && test "$use_icon" = "y" && main_fmt="${main_fmt#%C,}"
+
+# try to set text/tooltip
+for i in $(seq 1 5); do
+    test -n "$text" -a -n "$tooltip" && break
+    test -z "$text" && printf "Querying https://wttr.in/ for bar text (attempt ${i}/5)...\n" >&2 && text="$(curl --retry 0 --max-time 20 -s "https://wttr.in/?format=${use_icon:+%c}$main_fmt" 2>/dev/null)"
+    test -z "$tooltip" && test "$bar" = "waybar" && printf "Querying https://wttr.in/ for tooltip text (attempt ${i}/5)...\n" >&2 && tooltip="$(curl --retry 0 --max-time 20 -s "https://wttr.in/?format=${use_icon:+%c}$tooltip_fmt" 2>/dev/null | sed -e 's/+\([0-9][0-9]*\)/\1/g')"
+done
+
+# print in json format
+test "$bar" = "waybar" && printf '{"text": "%s", "tooltip": "%s"}\n' "${text:-⛅ no data}" "${tooltip:-failed to access weather information from https://wttr.in.}"
+test "$bar" = "yambar" && printf "script|string|%s\n\n" "${text:-⛅ no data}"
+test -z "$bar" && printf "%s\n" "$text"
+
+# exit with status
+test -z "$text" -o -z "$tooltip"
+exit $?

@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# print an empty status line if dependencies arent met
+test -z "$(command -v free)" -o -z "$(command -v awk)" && {
+    test "$bar" = "yambar" && printf "script|string|\n"
+    printf "\n"
+    exit 0
+}
+
+# get units
+total="$(free -h | awk '/Mem/ {print $2}' | awk -Fi '{print $1}')"
+used="$(free -h | awk '/Mem/ {print $3}' | awk -Fi '{print $1}')"
+perc="$(awk -v a="$(free | awk '/Mem/ {print $3}')" -v b="$(free | awk '/Mem/ {print $2}')" 'BEGIN{print int((a / b) * 100)}')"
+
+# print msg
+test "$bar" = "yambar" && printf "script|string|"
+test "$use_icon" = "y" && printf "  "
+#printf "%s" "$perc%"
+printf "%s (%s/%s)" "$perc%" "$used" "$total"
+test "$bar" = "yambar" && printf "\n"
+printf "\n"

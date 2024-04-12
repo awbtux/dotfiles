@@ -5,6 +5,13 @@ for i in uname head bc
     do command -v "$i" >/dev/null 2>&1 || return 1
 done
 
+# alternative implementation of 'cat' works since we just use it to read files
+command -v cat >/dev/null 2>&1 || cat() {
+    while IFS= read -r line; do
+        printf "%s\n" "$line"
+    done <"$1"
+}
+
 # check the operating system name
 case "$(uname -s)" in
     Linux) ;;
@@ -86,5 +93,7 @@ for i in /sys/class/power_supply/BAT*; do
     printf "    \033[1mHealth: ${b_usecol}${b_wh_perc}.${b_wh_decperc}%%\033[39m (${b_wh_full}${b_wh_full_dec:+.$b_wh_full_dec}Wh/${b_wh_design}${b_wh_design_dec:+.$b_wh_design_dec}Wh, cycle $b_cc)\033[22m;\n"
 
     # clean variables
-    unset b_mfr b_rmng_suffix b_wh_perc b_wh_full b_wh_design b_wh_decperc b_wh_full_dec b_wh_design_dec b_model b_perc b_usecol b_decperc b_status b_cc b_energy_design b_energy_full b_energy_now b_power_now b_volt_min b_volt_now b_rmng b_rmng_mins
+    for cvar in b_mfr b_rmng_suffix b_wh_perc b_wh_full b_wh_design b_wh_decperc b_wh_full_dec b_wh_design_dec b_model b_perc b_usecol b_decperc b_status b_cc b_energy_design b_energy_full b_energy_now b_power_now b_volt_min b_volt_now b_rmng b_rmng_mins; do
+        eval "$cvar="
+    done
 done

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # volume control independent of the sound server used
-for i in amixer sndioctl wpctl pactl pamixer; do
+for i in wpctl sndioctl amixer pactl pamixer; do
     command -v $i >/dev/null 2>&1 && volcmd="$i"
 done
 

@@ -1,6 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Video Player
-Exec=open-program video-player %F
-Name[C]=video.desktop
-PrefersNonDefaultGPU=true

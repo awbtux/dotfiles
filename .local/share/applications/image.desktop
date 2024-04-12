@@ -1,5 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Image Viewer
-Exec=open-program image-viewer %F
-Name[C]=image.desktop

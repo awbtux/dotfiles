@@ -3,11 +3,15 @@
 # set the wallpaper
 # TODO: support more wallpaper commands
 
-# load shell functions
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
+# check for commands
+require_cmd() {
+    for i in "$@"; do
+        command -v "$i" >/dev/null 2>&1 || ! printf "$i: command not found\n" >&2 || return 127
+    done
+}
 
 # we need these
-require-cmd readlink file ln shuf || exit 127
+require_cmd readlink file ln shuf || exit 127
 
 # location of link to current wallpaper
 bgloc="${XDG_DATA_HOME:-$HOME/.local/share}/bg"

@@ -1,0 +1,45 @@
+# cpu usage indicators per thread
+- cpu:
+    poll-interval: 1000
+    content:
+        map:
+            conditions:
+                id >= 0:
+                    - ramp:
+                        tag: cpu
+                        items:
+                            - string:
+                                text: "▁"
+                                foreground: #::mainmagenta::#b0
+                            - string:
+                                text: "▂"
+                                foreground: #::mainmagenta::#b0
+                            - string:
+                                text: "▃"
+                                foreground: #::mainmagenta::#b0
+                            - string:
+                                text: "▄"
+                                foreground: #::mainmagenta::#b0
+                            - string:
+                                text: "▅"
+                                foreground: #::mainmagenta::#b0
+                            - string:
+                                text: "▆"
+                                foreground: #::mainmagenta::#b0
+                            - string:
+                                text: "▇"
+                                foreground: #::mainmagenta::#b0
+                            - string:
+                                text: "█"
+                                foreground: #::mainmagenta::#b0
+# weather applet
+- script:
+    poll-interval: 1800000
+    path: /bin/sh
+    args:
+        - '-c'
+        - 'bar=yambar use_icon=y sb-weather'
+    content:
+        string:
+            text: "{script}"
+            foreground: #::darkfg::#ff

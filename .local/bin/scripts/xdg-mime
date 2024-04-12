@@ -1,0 +1,158 @@
+#!/bin/sh
+
+# wrapper script providing a no-op `xdg-mime` interface
+
+# usage info
+usage() {
+    printf "Usage: $0 [CMD] [ARGS] [--help|--manual|--usage|--version]
+
+Faux commands:
+  xdg-mime query {filetype|default} [FILE]...
+  xdg-mime default [ENTRY] [MIME]...
+  xdg-mime install [--mode mode] [--novendor] [MIMETYPES_FILE]
+  xdg-mime uninstall [--mode mode] [MIMETYPES_FILE]
+
+This reimplementation of xdg-mime exists purely to facilitate system-wide use of
+\`opener\`, which is configured separately; see '~/.config/shell/programs'.
+
+If you need 'install', 'uninstall', or 'default', you need to have a copy of
+xdg-mime(1) that supports these commands in your system PATH. When said copy is
+present, this script can wrap function calls to it for you.
+
+To see help information for the system's copy of xdg-mime, use the flags
+'--manual' or '--usage'. Running \`$0 --help\` shows this help message.\n"
+}
+
+# exit with a specified message and error code
+die() {
+    printf "%s: error: %s\n" "$0" "${1:-no error specified}" >&2
+    exit ${2:-1}
+}
+
+# get a desktop entry key
+get_entry_key() {
+    test -r "$2" || die "get_entry_key: ${2:-''}: No such file or directory"
+    while IFS="" read -r line; do
+        test -n "${line%%$1=*}" && continue; printf "%s" "${line##$1=}"; return 0
+    done <"$2"
+    return 1
+}
+
+# add to path, used below
+path_add() {
+    case ":$PATH:" in
+        *:"${1%/}":*) ;;
+        *) test -d "$1" -a "$2" = "-a" && export PATH="${PATH:+$PATH:}${1%/}"
+           test -d "$1" && export PATH="${1%/}${PATH:+:$PATH}" ;;
+    esac
+}
+
+# `which` implementation
+command -v which >/dev/null 2>&1 || which() {
+    IFS=":"
+    for dir in $PATH; do
+        test -x "$dir/$1" && printf "%s\n" "$dir/$1" && return 0
+    done
+    IFS="$(printf ' \t\n')"
+    return 1
+}
+
+# filter user-specific path entries to access system binaries
+sys_exec() {
+    IFS=":"; OLDPATH="$PATH"; PATH=""; cmd="$1"; shift
+    for p in $OLDPATH; do
+        case "$p" in *"$HOME"*) continue ;; esac; path_add "$p"
+    done
+    IFS="$(printf ' \t\n')"
+    which "$cmd" >/dev/null || exit 127
+    "$cmd" "$@"
+    return "$?"
+}
+
+# thwart recursive executions
+test "${XDG_MIME_LVL:=0}" -ge 1 && die "recursion: the replacement \`$0\` shouldn't be calling itself"
+
+# parse cmdline options
+for i in "$@"; do
+    case "$i" in
+        --help) usage; exit 0 ;;
+        --usage) XDG_MIME_LVL="$((XDG_MIME_LVL+1))" sys_exec xdg-mime --help; exit "$?" ;;
+        --manual) XDG_MIME_LVL="$((XDG_MIME_LVL+1))" sys_exec xdg-mime --manual; exit "$?" ;;
+        --version) printf "Not xdg-mime 1.1.3 😉\n"; exit 0 ;;
+    esac
+done
+
+# create ~/.local/share/applications if neither it nor ~/.local/share/applnk exists
+! test -d "${XDG_DATA_HOME:-$HOME/.local/share}/applications" -o \
+       -d "${XDG_DATA_HOME:-$HOME/.local/share}/applnk" && \
+! mkdir -p "${XDG_DATA_HOME:-$HOME/.local/share}/applications" && die "failed to create directory ${XDG_DATA_HOME:-$HOME/.local/share}/applications"
+
+# check both application directories for opener.desktop and install it if needed
+for dir in "${XDG_DATA_HOME:-$HOME/.local/share}/applnk" "${XDG_DATA_HOME:-$HOME/.local/share}/applications"; do
+    test -d "$dir" || continue
+
+    # if opener.desktop executes the correct program, don't do anything else
+    test -r "$dir/opener.desktop" && test "$(get_entry_key Exec "$dir/opener.desktop")" = "opener %U" && break
+
+    # check if we can write to $dir
+    test -w "$dir" || die "$dir: No write permission"
+
+    # handle existing files
+    test -e "$dir/opener.desktop" -a -e "$dir/opener.desktop.old" && {
+        i="2"
+        while test -e "$dir/opener.desktop.old~$i"; do
+            i="$((i+1))"
+        done
+        ! mv "$dir/opener.desktop" "$dir/opener.desktop.old~$i" && die "failed to rename old entry 'opener.desktop' to 'opener.desktop.old~$i'"
+    } || {
+        test -e "$dir/opener.desktop" && ! mv "$dir/opener.desktop" "$dir/opener.desktop.old" && die "failed to rename old entry 'opener.desktop' to 'opener.desktop.old'"
+    }
+
+    # create the new file
+    printf "%s\n%s\n%s\n%s\n%s\n%s\n" \
+        "[Desktop Entry]" \
+        "Type=Application" \
+        "Name=Opener" \
+        "Comment=handle a file or url scheme" \
+        "Exec=opener %U" \
+        "Name[C]=opener.desktop" >"$dir/opener.desktop" || die "failed to write new entry '$dir/opener.desktop'"
+    break
+done
+
+# parse cmdline options
+case "$1" in
+    # logic for install/uninstall will be implementated later
+    install|uninstall)
+        printf "note: install and uninstall are no-op, invoking the system's copy of xdg-mime(1)\n" >&2
+        XDG_MIME_LVL="$((XDG_MIME_LVL+1))" sys_exec xdg-mime "$@"
+        exit "$?"
+        ;;
+    query)
+        shift
+        # `get-mime` is used to query types (using `file` as a backup), so we don't need to decide how to do so
+        # program associations are processed by the `opener` script that 'opener.desktop' invokes, so no processing is needed
+        case "$1" in
+            "")
+                die "query type argument missing" ;;
+            filetype)
+                test -z "$2" && die "query: FILE argument missing"
+                ! get-mime "$2" 2>/dev/null && ! file -b --mime-type "$2" && die "failed to get mime type for $2"
+                exit 0
+                ;;
+            default)
+                printf "opener.desktop\n"
+                exit 0
+                ;;
+            *)
+                die "invalid query type '$1'" ;;
+        esac
+        ;;
+    default)
+        #printf "note: setting defaults isn't implemented, using the system's copy of xdg-mime(1)" >&2
+        #XDG_MIME_LVL="$((XDG_MIME_LVL+1))" sys_exec xdg-mime "$@"; exit "$?"
+        printf "note: setting defaults isn't implemented, use your system's xdg-mime instead.\n" >&2
+        exit 0
+        ;;
+    "") usage; exit 0 ;;
+    *) die "unknown command '$1'" ;;
+esac

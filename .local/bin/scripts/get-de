@@ -1,0 +1,3 @@
+#!/bin/sh
+
+# probe the current environment to decide which components to use

@@ -1,40 +1,10 @@
 #!/bin/sh
 
-# standard (but better) console colors
-case "$TERM" in
-    linux)
-        printf "\033]P0%s\033]P1%s\033]P2%s\033]P3%s\033]P4%s\033]P5%s\033]P6%s\033]P7%s\033]P8%s\033]P9%s\033]PA%s\033]PB%s\033]PC%s\033]PD%s\033]PE%s\033]PF%s" \
-        "000000" \
-        "ce3023" \
-        "2c7032" \
-        "c68b38" \
-        "2265b9" \
-        "9360a1" \
-        "7daac3" \
-        "a2a2a2" \
-        "4a4a4a" \
-        "e43627" \
-        "40a349" \
-        "ffc068" \
-        "397cd0" \
-        "dd91f3" \
-        "93aee5" \
-        "ffffff"
-        #"100c0c" \
-        #"905443" \
-        #"7e8854" \
-        #"bf7143" \
-        #"5b6c6c" \
-        #"90696b" \
-        #"838e76" \
-        #"b3a481" \
-        #"4a3637" \
-        #"bd6e58" \
-        #"98a451" \
-        #"db8553" \
-        #"819858" \
-        #"ae7f81" \
-        #"a2b092" \
-        #"dbca9f"
-        ;;
-esac
+# change the colors on the linux console
+test "${TERM%%-*}" = "linux" || return
+
+# familiar palette with improvements
+printf "\033]P0000000\033]P1ce3023\033]P22c7032\033]P3c68b38\033]P42265b9\033]P59360a1\033]P67daac3\033]P7a2a2a2\033]P84a4a4a\033]P9e43627\033]PA40a349\033]PBffc068\033]PC397cd0\033]PDdd91f3\033]PE93aee5\033]PFffffff"
+
+# s3r0 modified
+#printf "\033]P0100c0c\033]P1905443\033]P27e8854\033]P3bf7143\033]P45b6c6c\033]P590696b\033]P6838e76\033]P7b3a481\033]P84a3637\033]P9bd6e58\033]PA98a451\033]PBdb8553\033]PC819858\033]PDae7f81\033]PEa2b092\033]PFdbca9f"

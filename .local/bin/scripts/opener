@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# open a file with an available program
+# TODO: add more versatile filetype detection, wl/x11 separation
+
+# load software configuration
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/programs" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/programs"
+
+# check if the inputted string is a url using the file:// handler or a local path
+is_file() {
+    test "$1" != "${1#file://}" && return 0
+    ! printf "$1" | grep -Eq '^[[:alpha:]+\.\-]+:' && return 0
+    return 1
+}
+
+# convert a file:// URL to a local path
+file_url_to_path() {
+    file="$1"
+    test "$file" != "${file#file://}" && {
+        file="${file#file://}"
+        file="${file%%#*}"
+        file="$(printf "$file" | sed -r 's/\?.*$//')"
+        file="$(printf "$(printf "$file" | sed -e 's@%\([a-f0-9A-F]\{2\}\)@\\x\1@g')")"
+    }
+    test "$file" != "${file#/}" || file="$PWD/$file"
+    printf "$file\n"
+}
+
+# check if a display is available
+has_display() {
+    test -n "${WAYLAND_DISPLAY:-$DISPLAY}" && return 0
+    return 1
+}

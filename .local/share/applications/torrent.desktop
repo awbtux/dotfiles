@@ -1,5 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Add Torrent
-Exec=add-torrent %U
-Name[C]=torrent.desktop

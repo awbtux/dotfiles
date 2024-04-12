@@ -1,12 +1,12 @@
 #!/bin/sh
 
-# status bar module printing the date/time in my preferred format
+# print an empty status line if dependencies arent met
+test -z "$(command -v date)" && {
+    test "$bar" = "yambar" && printf "script|string|\n\n"
+    exit 0
+}
 
-# load shell functions
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
-
-# require the date command
-require-cmd date || exit 127
-
-# do the thing
+# print msg
+test "$bar" = "yambar" && printf "script|string|"
 date +'%a, %b %d %Y, %I:%M:%S %p %Z'
+test "$bar" = "yambar" && printf "\n"

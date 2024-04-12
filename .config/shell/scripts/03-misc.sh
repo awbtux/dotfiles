@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# use wayland if needed
-[ "$XDG_SESSION_TYPE" = "wayland" ] && export MOZ_ENABLE_WAYLAND="1"
-
 # browser homepage
 export WWW_HOME="https://lite.duckduckgo.com"
 
@@ -28,25 +25,33 @@ export GROFF_NO_SGR="1"
 export MPV_LEAK_REPORT="1"
 export DVDCSS_VERBOSE="1"
 
-# fzf config
+# fzf stuff
 export FZF_DEFAULT_OPTS="--color=16 --extended"
 export FZF_DEFAULT_COMMAND="find . -xdev"
 
 # 'watch' update interval
 export WATCH_INTERVAL="0.5"
 
-# other misc. environment variables
-export MOZ_USE_XINPUT2="2"
-export QT_QPA_PLATFORMTHEME="gtk3"
-export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
-export _JAVA_AWT_WM_NONREPARENTING="1"
-
 # options for less
 export LESS="-# 4 -s -R -M +Gg"
-export LESS_TERMCAP_mb="[33m"
-export LESS_TERMCAP_md="[32m"
-export LESS_TERMCAP_me="[0m"
-export LESS_TERMCAP_us="[1;34m"
-export LESS_TERMCAP_ue="[22;39m"
-export LESS_TERMCAP_so="[1;31m"
-export LESS_TERMCAP_se="[22;39m"
+export LESS_TERMCAP_mb="$(printf "\033[33m")"
+export LESS_TERMCAP_md="$(printf "\033[32m")"
+export LESS_TERMCAP_me="$(printf "\033[0m")"
+export LESS_TERMCAP_us="$(printf "\033[1;34m")"
+export LESS_TERMCAP_ue="$(printf "\033[22;39m")"
+export LESS_TERMCAP_so="$(printf "\033[1;31m")"
+export LESS_TERMCAP_se="$(printf "\033[22;39m")"
+
+# display/driver configuration type stuff
+export GDK_BACKEND="$XDG_SESSION_TYPE"
+export CLUTTER_BACKEND="$XDG_SESSION_TYPE"
+export QT_QPA_PLATFORM="wayland;xcb"
+export SDL_VIDEODRIVER="wayland,x11"
+export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+export GTK_CSD="0"
+export MOZ_USE_XINPUT2="2"
+export MOZ_ENABLE_WAYLAND="$(test "$XDG_SESSION_TYPE" = "wayland" && printf "1")"
+export _JAVA_AWT_WM_NONREPARENTING="1"
+
+# note: some DEs need this to be ~/.Xauthority or unset
+export XAUTHORITY="${XDG_CACHE_HOME:-$HOME/.cache}/xauthority"

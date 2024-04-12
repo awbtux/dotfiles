@@ -3,47 +3,45 @@
 # additional functionality and compatibility layers
 # simple scripts in ~/.local/share/bin are also reimplemented here
 
+# `source` is just a bashism for `.` anyways
+command -v source >/dev/null 2>&1 || eval "alias source='.'"
+
+# rudimentary 'unset' for shells that don't have it
+command -v unset >/dev/null 2>&1 || eval 'unset() {
+    for _k in "$@"; do
+        eval "$_k="
+    done
+}'
+
+# rudimentary 'local' for shells that don't have it
+command -v local >/dev/null 2>&1 || eval 'local() {
+    for _kv in "$@"; do
+        _key="${_kv%%=*}"; _val="${_kv##$_key=}"; eval "$_key=\"\$_val\""
+    done
+}'
+
+# rudimentary 'seq' for environments that don't have it
+command -v seq >/dev/null 2>&1 || seq() {
+    start="$1"
+    while [ "$start" -lt "$2" ]; do
+        printf "$start\n"; start="$((start+1))"
+    done
+}
+
+# rudimentary `which` implementation for environments that don't have it
+command -v which >/dev/null 2>&1 || which() {
+    IFS=":"
+    for dir in $PATH; do
+        test -x "$dir/$1" && printf "%s\n" "$dir/$1" && return 0
+    done
+    IFS="$(printf ' \t\n')"
+    return 1
+}
+
 # abbreviate a path
 pathabbrev() {
-    # start
     case "$1" in
-        $HOME*) dir="~${PWD##$HOME}" ;;
-             *) dir="$PWD"; dpathpre="/" ;;
+        "$HOME"*) printf "~${1##$HOME}" ;;
+               *) printf "$1" ;;
     esac
-
-    # start
-    pathct=0 dirct=0
-
-    # operate on path components
-    _IFS="$IFS"
-    IFS="/"
-
-    # get the amount of path components
-    for i in $dir; do
-        # iterate on the path
-        pathct="$((pathct+1))"
-    done
-
-    # abbreviate directory names
-    for i in $dir; do
-        # iterate on the path again
-        dirct="$((dirct+1))"
-
-        # add to the path veriable
-        [ "$dirct" -ge "$((pathct-2))" ] && {
-            dpath="${dpath:+$dpath/}$i"
-        } || {
-            [ "$i" != "${i#.}" ] && {
-                dpath="${dpath:+$dpath/}$(printf "$i" | head -c 2)"
-            } || {
-                dpath="${dpath:+$dpath/}$(printf "$i" | head -c 1)"
-            }
-        }
-    done
-
-    # print the abbreviated path
-    printf "$dpathpre$dpath"
-
-    # unset stuff
-    unset dir dpathpre pathct dirct dpath
 }

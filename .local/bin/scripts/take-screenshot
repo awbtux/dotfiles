@@ -2,17 +2,23 @@
 
 # screenshot utility frontend
 
-# load shell functions
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
+# check for commands
+require_cmd() {
+    for i in "$@"; do
+        command -v "$i" >/dev/null 2>&1 || ! printf "$i: command not found\n" >&2 || exit 127
+    done
+}
 
 # use $1 as img name
-[ "$#" -gt 0 ] && img="${1%.png}" && img="${img%.jpg}" && img="${img%.jpeg}" && img="${img%.webp}" && img="${img%.bmp}"
+test "$#" -gt 0 && img="$1" && for i in png jpg jpeg jfif avif webp bmp; do
+    img="${img%".$i"}"
+done
 
 # otherwise set img name
-[ -z "$img" ] && {
+test -z "$img" && {
     img="${XDG_PICTURES_DIR:-$HOME/Pictures}/screenshot"
     command -v date >/dev/null 2>&1 && img="${XDG_PICTURES_DIR:-$HOME/Pictures}/$(date +'%Y-%m-%d-%H%M%S_')screenshot"
-    test ! -d "${XDG_PICTURES_DIR:-$HOME/Pictures}" && ! mkdir -p "${XDG_PICTURES_DIR:-$HOME/Pictures}" && exit $1
+    test -d "${XDG_PICTURES_DIR:-$HOME/Pictures}" || mkdir -p "${XDG_PICTURES_DIR:-$HOME/Pictures}" || exit $1
 }
 
 # numbered suffix for duplicate files
@@ -29,32 +35,32 @@
 # take a screenshot on wayland
 [ -n "$WAYLAND_DISPLAY" ] && {
     # `grim` is required for taking wayland screenshots
-    require-cmd grim || exit 127
+    require_cmd grim
 
     # get a selection using slurp if installed
     command -v slurp >/dev/null 2>&1 && {
         xypos="$(slurp 2>/dev/null)"
         eval "grim${xypos:+ -g \"$xypos\"} \"$img\"" >/dev/null 2>&1
-        exit $?
+        exit "$?"
     } || {
         grim "$img" >/dev/null 2>&1
-        exit $?
+        exit "$?"
     }
 }
 
 # take a screenshot on x11
 [ -n "$DISPLAY" ] && {
     # `scrot` is required for taking x11 screeenshots
-    require-cmd scrot || exit 127
+    require_cmd scrot
 
     # take the screenshot
     scrot "$img" -s >/dev/null 2>&1
-    exit $?
+    exit "$?"
 }
 
 # fbgrab is required to take framebuffer screenshots
-require-cmd fbgrab || exit 127
+require_cmd fbgrab
 
 # take a screenshot of a framebuffer console
 fbgrab "$img" >/dev/null 2>&1
-exit $?
+exit "$?"

@@ -16,7 +16,7 @@ export PASSWORD_STORE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/password-store"
 export GPG_TTY="$(tty 2>/dev/null)"
 
 # create the gnupg home dir
-[ -d "${GNUPGHOME:-$HOME/.gnupg}" ] || mkdir -pm 700 "${GNUPGHOME:-$HOME/.gnupg}"
+test ! -d "${GNUPGHOME:-$HOME/.gnupg}" && mkdir -pm 700 "${GNUPGHOME:-$HOME/.gnupg}"
 
 # soulseek-cli stuff
 export SOULSEEK_ACCOUNT="$(tr -dc A-Za-z0-9 </dev/urandom 2>/dev/null | head -c7 2>/dev/null)"

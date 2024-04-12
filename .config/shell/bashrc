@@ -1,24 +1,13 @@
-#!/bin/bash
+#!/bin/sh
 
-# bash init file
-
-# if our session isn't a login shell, source ~/.config/shell/profile
-case "${ZSH_ARGZERO:-$0}" in
-    -*) ;;
-     *) [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ;;
-esac
+# source our profile if needed
+[ -z "$USERPROFILE_CURRENT" -a -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile"
 
 # check if the proper shell is sourcing this file
 case "$SHNAME" in
     bash) ;;
        *) . "$ENV"; return 0 ;;
 esac
-
-# functions
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
-
-# ps1 string to export to scripts
-export PS1="\\u@\\h:\\w\\\$ "
 
 # enable vi editing mode
 set -o vi
@@ -36,11 +25,20 @@ case "$-" in
       *) return 0 ;;
 esac
 
+# functions
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
+
 # if we have access to the 'stty' binary, specify args for it
 command -v stty >/dev/null 2>&1 && stty -ixon
 
-# set the PS1 using print-prompt if the shell supports it
-PROMPT_COMMAND="PS1=\"\$(print_prompt)\""
+# default prompt
+case "$TERM" in
+    linux|*color*) PS1="\[\033[1;35m\]\\u@\\h\[\033[0m\]:\[\033[1;34m\]\\w\[\033[0m\]\\\$ " ;;
+                *) PS1="\\u@\\h:\\w\\\$ " ;;
+esac
+
+# set it using set_ps1 if the shell supports it
+PROMPT_COMMAND="set_ps1"
 
 # load ~/.config/shell/aliases
 [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"

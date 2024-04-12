@@ -2,11 +2,11 @@
 
 # posix-compatible shell init file
 
-# if our session isn't a login shell, source ~/.config/shell/profile
-case "${ZSH_ARGZERO:-$0}" in
-    -*) ;;
-     *) [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ;;
-esac
+# source our profile if needed
+[ -z "$USERPROFILE_CURRENT" -a -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile"
+
+# enable vi editing mode
+set -o vi
 
 # if not running interactively, don't do anything else
 case "$-" in
@@ -19,9 +19,6 @@ esac
 
 # if we have access to the 'stty' binary, specify args for it
 command -v stty >/dev/null 2>&1 && stty -ixon
-
-# enable vi editing mode
-set -o vi
 
 # load ~/.config/shell/aliases
 [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"

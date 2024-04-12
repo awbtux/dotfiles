@@ -15,7 +15,7 @@
     // modules
     "modules-left": ["river/tags"],
     "modules-center": ["river/window"],
-    "modules-right": ["idle_inhibitor", "pulseaudio", "network", "cpu", "memory", "disk", "temperature", "battery", "battery#bat2", "clock"],
+    "modules-right": ["idle_inhibitor", /*"pulseaudio", */ "network", "cpu", "memory", "disk", "temperature", "battery", "battery#bat2", "clock"],
 
     // clock
     "clock": {
@@ -89,25 +89,25 @@
     },
 
     // pulseaudio (& properly configured pipewire)
-    "pulseaudio": {
-        // "scroll-step": 1, // %, can be a float
-        "format": "{volume}% {icon} {format_source}",
-        "format-bluetooth": "{volume}% {icon} {format_source}",
-        "format-bluetooth-muted": " {icon} {format_source}",
-        "format-muted": " {format_source}",
-        "format-source": "{volume}% ",
-        "format-source-muted": "",
-        "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": ["", "", ""]
-        },
-        "on-click": "volumectl toggle"
-    },
+    //"pulseaudio": {
+    //    // "scroll-step": 1, // %, can be a float
+    //    "format": "{volume}% {icon} {format_source}",
+    //    "format-bluetooth": "{volume}% {icon} {format_source}",
+    //    "format-bluetooth-muted": " {icon} {format_source}",
+    //    "format-muted": " {format_source}",
+    //    "format-source": "{volume}% ",
+    //    "format-source-muted": "",
+    //    "format-icons": {
+    //        "headphone": "",
+    //        "hands-free": "",
+    //        "headset": "",
+    //        "phone": "",
+    //        "portable": "",
+    //        "car": "",
+    //        "default": ["", "", ""]
+    //    },
+    //    "on-click": "volumectl toggle"
+    //},
 
     // idle inhibitor
     "idle_inhibitor": {

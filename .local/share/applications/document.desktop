@@ -1,5 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Document Reader
-Exec=open-program document-reader %f
-Name[C]=document.desktop

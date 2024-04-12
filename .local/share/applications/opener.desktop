@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Opener
+Comment=handle a file or url scheme
+Exec=opener %U
+Name[C]=opener.desktop

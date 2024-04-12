@@ -1,21 +1,9 @@
-#!/bin/zsh
+#!/bin/sh
 
 # zsh init file
 
-# if our session isn't a login shell, source ~/.config/shell/profile
-case "${ZSH_ARGZERO:-$0}" in
-    -*) ;;
-     *) [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ;;
-esac
-
-# if not running interactively, don't do anything else
-case "$-" in
-    *i*) ;;
-      *) return 0 ;;
-esac
-
-# ps1 string to export to scripts
-export PS1="%n@%m:%~%(!.#.\$) "
+# source our profile if needed
+[ -z "$USERPROFILE_CURRENT" -a -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile"
 
 # check if the proper shell is sourcing this file
 case "$SHNAME" in
@@ -23,14 +11,20 @@ case "$SHNAME" in
       *) . "$ENV"; return 0 ;;
 esac
 
+# enable vi editing mode
+set -o vi
+
+# if not running interactively, don't do anything else
+case "$-" in
+    *i*) ;;
+      *) return 0 ;;
+esac
+
 # functions
 [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
 
 # if we have access to the 'stty' binary, specify args for it
 command -v stty >/dev/null 2>&1 && stty -ixon
-
-# enable vi editing mode
-set -o vi
 
 # zsh shell opts
 setopt CDABLE_VARS CD_SILENT POSIX_CD PUSHD_IGNORE_DUPS PUSHD_SILENT ALWAYS_TO_END \
@@ -63,6 +57,12 @@ unsetopt AUTO_CD AUTO_PUSHD CHASE_DOTS CHASE_LINKS PUSHD_TO_HOME ALWAYS_LAST_PRO
          CSH_JUNKIE_LOOPS CSH_JUNKIE_QUOTES KSH_AUTOLOAD KSH_ARRAYS KSH_TYPESET \
          KSH_ZERO_SUBSCRIPT SH_FILE_EXPANSION SH_OPTION_LETTERS TRAPS_ASYNC OVERSTRIKE \
          SINGLE_LINE_ZLE
+
+# default prompt
+case "$TERM" in
+    linux|*color*) PROMPT="$(printf "\e[1;35m%%n@%%m\e[0m:\e[1;34m%%~\e[0m%%(!.#.$) ")" ;;
+                *) PROMPT="%n@%m:%~%(!.#.\$) " ;;
+esac
 
 # load ~/.config/shell/aliases
 [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"

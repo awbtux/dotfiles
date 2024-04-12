@@ -89,3 +89,8 @@ for i in $(printf "$disks"); do
     # newline etc
     printf "\033[22m\033[1;39m] ${usedcol}${used}\033[39m of \033[22m\033[2m${total}\033[22;39m\033[1m ($mount)\033[22m\n"
 done
+
+# clear these
+for i in disks barlen disknamelen diskperclen total used avail perc mount barusage from; do
+    eval "$i="
+done

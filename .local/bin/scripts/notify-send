@@ -2,6 +2,3 @@
 
 # notification handler
 # TODO: write this script
-
-# load shell functions
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"

@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# print an empty status line if dependencies arent met
+test -z "$(command -v vmstat)" -o -z "$(command -v awk)" && {
+    test "$bar" = "yambar" && printf "script|string|\n"
+    printf "\n"
+    exit 0
+}
+
+# get percentage
+cpu_perc="$(vmstat 1 2 | awk 'END{print 100-$15}')"
+
+# print msg
+test "$bar" = "yambar" && printf "script|string|"
+test "$use_icon" = "y" && printf "  "
+printf "%s" "$cpu_perc%"
+test -r "/sys/class/hwmon/hwmon0/temp1_input" && printf " %s°C" "$(awk '{print $1/1000}' <"/sys/class/hwmon/hwmon0/temp1_input")"
+test "$bar" = "yambar" && printf "\n"
+printf "\n"
