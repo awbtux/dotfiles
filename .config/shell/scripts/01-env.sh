@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# populate some bash-specific environment variables
+: "${UID:=$(id -ur 2>/dev/null)}"
+: "${EUID:=$(id -u 2>/dev/null)}"
+: "${USER:=${LOGNAME:-$(whoami 2>/dev/null || logname 2>/dev/null || id -un 2>/dev/null || ps -o user= -p "$$" 2>/dev/null || printf "${HOME##*/}")}}"
+: "${HOSTNAME:=$(hostname 2>/dev/null || uname -n 2>/dev/null || hostnamectl --static 2>/dev/null || cat /proc/sys/kern/hostname 2>/dev/null || cat /proc/sys/kernel/hostname 2>/dev/null || cat /etc/hostname 2>/dev/null)}"
+export HOSTNAME
+
 # set up the runtime dir if needed
 test -d "${XDG_RUNTIME_DIR:=/tmp/runtime/${EUID:-${UID:-$(id -u)}}}" || mkdir -pm 0700 "$XDG_RUNTIME_DIR"
 export XDG_RUNTIME_DIR

@@ -25,9 +25,6 @@ case "$-" in
       *) return 0 ;;
 esac
 
-# functions
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
-
 # if we have access to the 'stty' binary, specify args for it
 command -v stty >/dev/null 2>&1 && stty -ixon
 

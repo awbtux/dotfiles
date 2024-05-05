@@ -5,13 +5,6 @@ for i in uname head bc
     do command -v "$i" >/dev/null 2>&1 || return 1
 done
 
-# alternative implementation of 'cat' works since we just use it to read files
-command -v cat >/dev/null 2>&1 || cat() {
-    while IFS= read -r line; do
-        printf "%s\n" "$line"
-    done <"$1"
-}
-
 # check the operating system name
 case "$(uname -s)" in
     Linux) ;;
@@ -23,26 +16,26 @@ printf "\n\033[1mPower information:\033[22m\n"
 # for each battery
 for i in /sys/class/power_supply/BAT*; do
     [ -r "$i" ] || continue
-    b_mfr="$(cat $i/manufacturer)"
-    b_model="$(cat $i/model_name)"
-    b_perc="$(cat $i/capacity)"
-    b_status="$(cat $i/status)"
-    b_cc="$(cat $i/cycle_count)"
-    b_energy_design="$(cat $i/energy_full_design)"
-    b_energy_full="$(cat $i/energy_full)"
-    b_energy_now="$(cat $i/energy_now)"
-    b_power_now="$(cat $i/power_now)"
-    b_volt_min="$(cat $i/voltage_min_design)"
-    b_volt_now="$(cat $i/voltage_now)"
+    b_mfr="$(cat $i/manufacturer 2>/dev/null)"
+    b_model="$(cat $i/model_name 2>/dev/null)"
+    b_perc="$(cat $i/capacity 2>/dev/null)"
+    b_status="$(cat $i/status 2>/dev/null)"
+    b_cc="$(cat $i/cycle_count 2>/dev/null)"
+    b_energy_design="$(cat $i/energy_full_design 2>/dev/null)"
+    b_energy_full="$(cat $i/energy_full 2>/dev/null)"
+    b_energy_now="$(cat $i/energy_now 2>/dev/null)"
+    b_power_now="$(cat $i/power_now 2>/dev/null)"
+    b_volt_min="$(cat $i/voltage_min_design 2>/dev/null)"
+    b_volt_now="$(cat $i/voltage_now 2>/dev/null)"
     b_decperc="$(printf "( $b_energy_now * 100 ) / $b_energy_full\n" | bc -ql 2>/dev/null)"
-    b_decperc="$(printf "${b_decperc##*.}" | head -c 1)"
+    b_decperc="$(printf "${b_decperc##*.}" | head -c 1 2>/dev/null)"
     b_wh_full="$(printf "$b_energy_full / 1000000\n" | bc -ql 2>/dev/null)"
     b_wh_design="$(printf "$b_energy_design / 1000000\n" | bc -ql 2>/dev/null)"
     b_wh_perc="$(printf "( $b_energy_full / $b_energy_design ) * 100\n" | bc -ql 2>/dev/null)"
-    b_wh_decperc="$(printf "${b_wh_perc##*.}" | head -c 1)"
+    b_wh_decperc="$(printf "${b_wh_perc##*.}" | head -c 1 2>/dev/null)"
     b_wh_perc="${b_wh_perc%%.*}"
-    b_wh_full_dec="$(printf "${b_wh_full##*.}" | head -c 1)"
-    b_wh_design_dec="$(printf "${b_wh_design##*.}" | head -c 1)"
+    b_wh_full_dec="$(printf "${b_wh_full##*.}" | head -c 1 2>/dev/null)"
+    b_wh_design_dec="$(printf "${b_wh_design##*.}" | head -c 1 2>/dev/null)"
     b_wh_full="${b_wh_full%%.*}"
     b_wh_design="${b_wh_design%%.*}"
 

@@ -120,11 +120,14 @@ bar:
                                 tag: capacity
                                 items:
                                     - string:
+                                        text: "󰂎 {capacity}% {estimate}"
+                                        foreground: #::mainred::#ff
+                                    - string:
                                         text: "󰁺 {capacity}% {estimate}"
                                         foreground: #::mainred::#ff
                                     - string:
                                         text: "󰁻 {capacity}% {estimate}"
-                                        foreground: #::mainred::#ff
+                                        foreground: #::brightyellow::#ff
                                     - string:
                                         text: "󰁼 {capacity}% {estimate}"
                                         foreground: #::brightyellow::#ff
@@ -169,11 +172,14 @@ bar:
                                 tag: capacity
                                 items:
                                     - string:
+                                        text: "  󰂎 {capacity}% {estimate}"
+                                        foreground: #::mainred::#ff
+                                    - string:
                                         text: "  󰁺 {capacity}% {estimate}"
                                         foreground: #::mainred::#ff
                                     - string:
                                         text: "  󰁻 {capacity}% {estimate}"
-                                        foreground: #::mainred::#ff
+                                        foreground: #::brightyellow::#ff
                                     - string:
                                         text: "  󰁼 {capacity}% {estimate}"
                                         foreground: #::brightyellow::#ff

@@ -11,8 +11,26 @@ case "$SHNAME" in
        *) . "$ENV"; return 0 ;;
 esac
 
-# enable vi editing mode
+# shell options
 set -o vi
+set -o lealwaysrp
+set -o lepredict
+
+# keymaps
+for mode in -v -a; do
+    bindkey "$mode" '\^A' beginning-of-line
+    bindkey "$mode" '\^E' end-of-line
+    bindkey "$mode" '\^K' forward-kill-line
+    bindkey "$mode" '\^L' clear-and-redraw-all
+    bindkey "$mode" '\^U' backward-delete-line
+    bindkey "$mode" '\^W' backward-delete-viword
+    bindkey "$mode" '\^[[1;5D' backward-viword
+    bindkey "$mode" '\^[[1;5C' end-of-viword
+    bindkey "$mode" '\^Q' backward-bigword
+    bindkey "$mode" '\^R' end-of-bigword
+done
+bindkey -v '\^F' setmode-vicommand
+bindkey -a '\^F' setmode-viinsert
 
 # if not running interactively, don't do anything else
 case "$-" in
@@ -20,20 +38,15 @@ case "$-" in
       *) return 0 ;;
 esac
 
-# functions
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
-
 # if we have access to the 'stty' binary, specify args for it
 command -v stty >/dev/null 2>&1 && stty -ixon
 
-# default prompt
-case "$TERM" in
-    linux|*color*) PS1="$(printf "\[\033[1;35m\]\${USER:-\$LOGNAME}\@\${HOSTNAME:-\$(hostname 2>/dev/null || cat /proc/sys/kernel/hostname 2>/dev/null || printf \"localhost\")}\[\033[0m\]:\[\033[1;34m\]\$(pathabbrev \"\$PWD\")\[\033[0m\]\\\$ ")" ;;
-                *) PS1="\${USER:-\$LOGNAME}\${HOSTNAME:+@\$HOSTNAME}:\$(pathabbrev \"\$PWD\")\\\$ " ;;
-esac
-
+# alias !! to the last command, and
 # set the PS1 using set_ps1 if the shell supports it
-PROMPT_COMMAND="set_ps1"
+PROMPT_COMMAND="alias !!=\"\$(history | sed -e '/\!!$/d' -e 's/^[0-9][0-9]*\t//' | sed -n '\$p')\"; set_ps1"
+
+# command prediction font style
+PS1P="\[\e[90m\]"
 
 # load ~/.config/shell/aliases
 [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"

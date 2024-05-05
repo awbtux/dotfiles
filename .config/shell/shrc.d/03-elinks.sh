@@ -2,6 +2,9 @@
 
 # prevent elinks from creating junk in ~, and spoof the terminal name if applicable
 
+# some stupid shells don't support aliases
+command -v alias >/dev/null 2>&1 || return
+
 # ensure lf is installed
 command -v elinks >/dev/null 2>&1 || return
 

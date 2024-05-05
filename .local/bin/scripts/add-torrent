@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# add a torrent to transmission-daemon
+
+# start transmission-daemon if needed
+command -v transmission-daemon >/dev/null 2>&1 && test -z "$(pidof transmission-daemon)" && setsid -f transmission-daemon
+
+# if no torrent specified, exit
+test -z "$1" && exit 1
+
+# run this script in a terminal if needed
+test -z "$TERM" -a -n "${WAYLAND_DISPLAY:-$DISPLAY}" && exec setsid -f "$0" "$@"
+
+# store current directory
+PWD_="$PWD"
+
+# choose a default download directory
+test -d "${XDG_DOWNLOAD_DIR:-$HOME/Downloads}" && {
+    default="${XDG_DOWNLOAD_DIR:-$HOME/Downloads}"
+} || {
+    default="$PWD"
+}
+
+# decide whether to change the default dir
+while test "$(chmenu "Should $(for i in "$@"; do printf "%s " "$i"; done)be downloaded to $default?" "yes" "no")" != "yes"; do
+    while newdir="`(echo ..; find . -maxdepth 1 -type d -not -name '.') | sed -e 's/\.\///g' -e 's/$/\//g' | fzf`" && test -n "$newdir"; do
+        cd "$newdir"
+    done
+    default="$PWD"
+done
+
+# cd back to where the script was invoked
+cd "$PWD_"
+
+# add torrents to transmission
+for i in "$@"; do
+    transmission-remote -a "$i" -w "$default"
+done

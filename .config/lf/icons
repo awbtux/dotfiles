@@ -1,5 +1,5 @@
 # standard file types
-ln        # LINK
+ln        # LINK
 or        # ORPHAN
 tw        # STICKY_OTHER_WRITABLE
 ow        # OTHER_WRITABLE
@@ -11,7 +11,7 @@ bd        # BLK
 cd        # CHR
 su        # SETUID
 sg        # SETGID
-ex        # EXEC
+ex        # EXEC
 fi        # FILE
 
 

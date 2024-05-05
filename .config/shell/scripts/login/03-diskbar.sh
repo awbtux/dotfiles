@@ -1,13 +1,13 @@
 #!/bin/sh
 
 # command dependencies
-for i in df awk wc
-do command -v "$i" >/dev/null 2>&1 || return 1
+for i in df awk wc; do
+    command -v "$i" >/dev/null 2>&1 || return 1
 done
 
 # initialize these
 for i in disks barlen disknamelen diskperclen total used avail perc mount barusage from; do
-    eval "$i="
+    unset "$i"
 done
 
 # set columns if needed
@@ -18,12 +18,12 @@ done
 barlen="$((COLUMNS/5))"
 
 # get disks
-disks="$(df | awk 'NR > 1 {print $1}' | awk '/\/dev\//')"
+disks="$(df | awk 'NR>1 {print $1}' | awk '/\/dev\//')"
 
 # determine how much space to pad fields
 for i in $(printf "$disks"); do
     # get percentage of disk used
-    perc="$(df "$i" 2>/dev/null | awk 'NR > 1 {print $5}' | awk -F'%' '{print $1}')"
+    perc="$(df "$i" 2>/dev/null | awk 'NR>1 {print $5}' | awk -F'%' '{print $1}')"
 
     # length of disk name
     [ "$(printf "$i" | wc -c)" -gt ${disknamelen:-0} ] && disknamelen="$(printf "$i" | wc -c)"
@@ -35,26 +35,17 @@ done
 # heading
 printf "\n\033[1mMounted devices:\033[22m\n"
 
-# interate on a list of numbers
-command -v seq >/dev/null 2>&1 || seq() {
-    from="$1"
-    while [ "$from" -le "$2" ]; do
-        printf "$from "
-        from="$((from+1))"
-    done
-}
-
 # print the line
 for i in $(printf "$disks"); do
     # check if the disk is accessible
     df -h "$i" >/dev/null 2>&1 || continue
 
     # get metrics
-    total="$(df -h "$i" | awk 'NR > 1 {print $2}')"
-    used="$(df -h "$i" | awk 'NR > 1 {print $3}')"
-    avail="$(df -h "$i" | awk 'NR > 1 {print $4}')"
-    perc="$(df -h "$i" | awk 'NR > 1 {print $5}' | awk -F'%' '{print $1}')"
-    mount="$(df -h "$i" | awk 'NR > 1 {print $6}')"
+    total="$(df -h "$i" | awk 'NR>1 {print $2}')"
+    used="$(df -h "$i" | awk 'NR>1 {print $3}')"
+    avail="$(df -h "$i" | awk 'NR>1 {print $4}')"
+    perc="$(df -h "$i" | awk 'NR>1 {print $5}' | awk -F'%' '{print $1}' || printf "0")"
+    mount="$(df -h "$i" | awk 'NR>1 {print $6}')"
 
     # amount of cells to color in used
     barusage="$(((perc*barlen)/100))"
@@ -71,7 +62,7 @@ for i in $(printf "$disks"); do
     printf "%${disknamelen}s: \033[1m%${diskperclen}s%% [$usedcol" "$i" "$perc"
 
     # print colored (used) cells
-    for j in $(seq 1 $barusage); do
+    for j in $(seq 1 "$barusage"); do
         printf "="
     done
 
@@ -82,15 +73,15 @@ for i in $(printf "$disks"); do
     barusage="$((barusage+1))"
 
     # print dimmed (unused) cells
-    for i in $(seq $barusage $barlen); do
+    for i in $(seq "$barusage" "$barlen"); do
         printf "="
     done
 
     # newline etc
-    printf "\033[22m\033[1;39m] ${usedcol}${used}\033[39m of \033[22m\033[2m${total}\033[22;39m\033[1m ($mount)\033[22m\n"
+    printf "\033[22m\033[1;39m] ${usedcol}%s\033[39m of \033[22m\033[2m%s\033[22;39m\033[1m (%s)\033[22m\n" "$used" "$total" "$mount"
 done
 
 # clear these
 for i in disks barlen disknamelen diskperclen total used avail perc mount barusage from; do
-    eval "$i="
+    unset "$i"
 done

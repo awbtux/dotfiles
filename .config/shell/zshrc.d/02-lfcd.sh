@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 # cd to lf's last path upon exit
 

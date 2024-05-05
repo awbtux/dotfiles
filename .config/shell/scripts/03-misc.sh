@@ -4,6 +4,7 @@
 export WWW_HOME="https://lite.duckduckgo.com"
 
 # shell history configuration
+export HISTRMDUP="1"
 export HISTSIZE="4096"
 export HISTFILESIZE="4096"
 export SAVEHIST="4096"

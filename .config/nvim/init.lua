@@ -19,4 +19,9 @@ local themename = io.open(vim.fn.stdpath("config") .. (vim.fn.has("win32") == 1 
 -- set colorscheme
 vim.cmd.colorscheme(themename and themename:read("*line") or "default")
 
-vim.o.tgc = false
+-- decide whether to use terminal colors
+    if vim.fn.getenv('DISPLAY') ~= vim.NIL then
+    vim.opt.termguicolors = true
+elseif vim.fn.getenv('WAYLAND_DISPLAY') ~= vim.NIL then
+    vim.opt.termguicolors = true
+end

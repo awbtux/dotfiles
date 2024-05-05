@@ -2,6 +2,9 @@
 
 # script to run a program in a terminal
 
+# load program list
+test -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/04-progs.sh" && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/04-progs.sh"
+
 # make it work on wayland
 : "${DISPLAY:=$WAYLAND_DISPLAY}"
 
@@ -12,4 +15,4 @@ case "$TERMINAL" in
 esac
 
 # run the command through a terminal if applicable
-eval "exec ${DISPLAY:+$TERMINAL $opt} \"\$@\""
+eval "exec ${DISPLAY:+$TERMINAL ${1:+$opt}} \"\$@\""

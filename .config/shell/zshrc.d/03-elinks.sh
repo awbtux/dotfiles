@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 # prevent elinks from creating junk in ~, and spoof the terminal name if applicable
 

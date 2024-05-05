@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# shell aliases and user-facing functions
+
+# some stupid shells don't support aliases
+command -v alias >/dev/null 2>&1 || return
+
 # reset aliases to ensure that they don't break
 unalias -a
 
@@ -31,12 +36,22 @@ command -v sudo >/dev/null 2>&1 && {
     aliascmd sudo="doas "
 }
 
+# also when watching commands periodically
+aliascmd _watch="watch -c"
+aliascmd watch="_watch "
+
+# 'source' works on all shells
+command -v . >/dev/null 2>&1 || eval "alias .='source'"
+command -v source >/dev/null 2>&1 || eval "alias source='.'"
+
 # run riverwm under dbus if it's installed
 command -v river >/dev/null 2>&1 && aliascmd river="dbus-run-session river"
 
 # use ~/.config/x11/xinitrc
-aliascmd \
-    startx="startx $XINITRC"
+aliascmd startx="startx $XINITRC"
+
+# clear the screen using the shell
+aliascmd clear="printf '\033[H\033[2J\033[3J'"
 
 # neovim familiarity
 aliascmd \
@@ -70,8 +85,12 @@ aliascmd \
 aliascmd \
     reboot="sudo reboot" \
     poweroff="sudo poweroff" \
+    mount="sudo mount" \
+    umount="sudo umount" \
+    zzz="sudo zzz" \
     rb="reboot" \
-    sd="poweroff"
+    sd="poweroff" \
+    mnt="mount"
 
 # xbps shortcuts
 aliascmd \
@@ -109,6 +128,19 @@ aliascmd \
     ytc="yt --config-locations \"${XDG_CONFIG_HOME:-$HOME/.config}/yt-dlp/video-config\" --concat-playlist always" \
     ytca="yt --config-locations \"${XDG_CONFIG_HOME:-$HOME/.config}/yt-dlp/audio-config\" --concat-playlist always"
 
+# download flacs with soulseek cli
+aliascmd slsk="soulseek d -m flac"
+
+# transmission aliases
+aliascmd \
+    trem="transmission-remote" \
+    tedit="transmission-edit" \
+    tsrv="transmission-daemon" \
+    tdie="transmission-remote --exit"
+
 # lie to elinks about the terminal type if running
 # under a 256-color multiplexer (eg. tmux/screen)
 [ "$TERM" = "screen-256color" ] && aliascmd elinks="TERM=xterm-256color elinks"
+
+# for easy access
+export ALIASES="${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"

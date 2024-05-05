@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/yash
 
 # cd to lf's last path upon exit
 

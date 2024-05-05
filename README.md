@@ -1,0 +1,46 @@
+# dotfiles
+
+## TODO:
+- write this readme
+- replace/improve [yambar](https://codeberg.org/dnkl/yambar)'s battery module
+- adapt and reimplement [shalarm](https://github.com/jahendrie/shalarm)
+- write `get-mime`
+- write `opener`
+  - configure defaults for applications in `.config/shell/scripts/04-progs.sh`
+- write `get-de`
+- support more wallpaper backends in `set-wallpaper`
+- tidy up `chmenu`
+- write `wl-lock`
+- add more browsers to `www-browser` and handle x11/wayland/TTYs properly
+- reimplement other [XDG utilities](https://www.freedesktop.org/wiki/Software/xdg-utils/)
+  - `xdg-email`
+  - `xdg-screensaver`
+  - `xdg-settings`
+- overhaul macro system used in `generate-theme` and handle process respawning more safely
+  - update themes accordingly
+- adapt and reimplement [todo.sh](https://github.com/todotxt/todo.txt-cli/blob/master/todo.sh)
+- write `colorconv`
+- write `deploy-dots`
+- reimplement [notify-send](https://www.man.page/1/notify-send), make it handle x11/wayland/TTYs properly
+- improve filetype support for [lf](https://github.com/gokcehan/lf) previews (videos/images, epub/pdf/ppt and so on)
+- thumbnails/image previews in `lf` on wayland
+  - if this isn't possible, switch to an alternative
+- improve [neovim](https://neovim.io) configuration:
+  - statically link some [treesitter](https://tree-sitter.github.io/tree-sitter) parsers using [ccbuild](https://github.com/antares-linux/ccbuild), so they don't get built when plugins are cleaned
+  - fix [hardline](https://github.com/ojroques/nvim-hardline) theme support
+  - intelligently configure some features (truecolor/[indentline](https://github.com/lukas-reineke/indent-blankline.nvim)) based on `$TERM` type
+  - note-taking solution, likely similar to [obsidian](https://github.com/epwalsh/obsidian.nvim)
+  - saving/restoring sessions
+  - fix or replace [toggleterm](https://github.com/akinsho/toggleterm.nvim)
+- rewrite/reorganize [mpv](https://github.com/mpv-player/mpv) configuration
+- replace `pause-mpvs` with a more versatile [mpv-sockets](https://github.com/wis/mpvSockets) wrapper
+- password/secret storage setup, likely utilizing [GnuPG](https://gnupg.org)/[pass](https://www.passwordstore.org)
+  - [pinentry](https://www.gnupg.org/related_software/pinentry) script that handles x11/wayland/TTYs properly
+- add more WM keybinds for useful operations (eg. `pause-mpvs`)
+- [newsboat](https://newsboat.org) configuration
+- [dmenu](https://tools.suckless.org/dmenu)/[rofi](https://github.com/davatorium/rofi)-type dynamic menus that handle x11/wayland/TTYs properly
+  - program run launcher
+  - unicode emoji/punctuation picker
+- music setup, likely utilizing [mpd](https://www.musicpd.org)/[ncmpcpp](https://github.com/ncmpcpp/ncmpcpp)/[cmus](https://cmus.github.io)
+- adapt and reimplement [mutt-wizard](https://muttwizard.com) and use [neomutt](https://neomutt.org) for email
+- [tmux](https://github.com/tmux/tmux) configuration

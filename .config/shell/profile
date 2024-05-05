@@ -1,6 +1,92 @@
 #!/bin/sh
 
-# supported shells: bash, dash, ksh93, mksh, oksh, posh, yash, zsh
+# supported shells: bash, dash, ksh, ksh93, mksh, oksh, yash, zsh
+
+# ---------------------------------------- Part 0: Function ----------------------------------------
+
+# 'source' and '.' do the same thing
+command -v . >/dev/null 2>&1 || eval "alias .='source' 2>/dev/null"
+command -v source >/dev/null 2>&1 || eval "alias source='.' 2>/dev/null"
+
+# rudimentary 'unset' for shells that don't have it
+command -v unset >/dev/null 2>&1 || eval 'unset() {
+    for _k in "$@"; do
+        eval "$_k="
+        eval "$_k() { return 127; }"
+    done; _k=""
+}'
+
+# rudimentary 'local' for shells that don't have it
+command -v local >/dev/null 2>&1 || eval 'local() {
+    for _kv in "$@"; do
+        eval "${_kv%%=*}=\"\${_kv##${_kv%%=*}=}\""
+    done; unset _kv
+}'
+
+# rudimentary 'seq' for environments that don't have it
+command -v seq >/dev/null 2>&1 || seq() {
+    start="$1"
+    while [ "$start" -gt "${2:-$1}" ]; do
+        printf "%s\n" "$start"; start="$((start-1))"
+    done
+    while [ "$start" -le "${2:-$1}" ]; do
+        printf "%s\n" "$start"; start="$((start+1))"
+    done
+    unset start
+}
+
+# rudimentary 'which' for environments that don't have it
+command -v which >/dev/null 2>&1 || which() {
+    IFS=":"
+    for dir in $PATH; do
+        test -x "$dir/$1" && printf "%s\n" "$dir/$1" && unset dir && return 0
+    done
+    IFS="$(printf ' \t\n')"
+    unset dir
+    return 1
+}
+
+# rudimentary 'cat' for environments that don't have it
+command -v cat >/dev/null 2>&1 || cat() {
+    for i in "$@"; do
+        while IFS="" read -r line; do
+            printf "%s\n" "$line"
+        done <"$i"
+    done
+    unset line
+}
+
+# rudimentary 'realpath' implementation for environments that don't have it
+command -v readlink >/dev/null 2>&1 && ! command -v realpath >/dev/null 2>&1 && realpath() {
+    readlink -f "$@"
+}
+
+# get the current shell
+whichsh() {
+    SHNAME=""
+    SHNAME="${ZSH_ARGZERO:-$0}"
+    SHNAME="${SHNAME##-}"
+    SHNAME="${SHNAME##*/}"
+
+    command -v realpath >/dev/null 2>&1 && SHNAME="$(realpath "$(which "${SHNAME:-$SHELL}")")"
+    SHNAME="${SHNAME##*/}"
+
+    # print the shell name
+    printf "%s\n" "$SHNAME"
+}
+
+# function add directories to our path
+pathadd() {
+    case ":$PATH:" in
+        *:"$1":*) ;;
+        *) test -d "$1" && export PATH="$1${PATH:+:$PATH}" ;;
+    esac
+}
+
+# respawn a new shell &/or terminal if applicable
+respawn() {
+    test -n "${WAYLAND_DISPLAY:-$DISPLAY}" && exec "$(whichsh)" -c "setsid -f xdg-terminal-exec & sleep 0.1" || exec "$(whichsh)"
+}
 
 # --------------------------------------- Part 1: Run always ---------------------------------------
 
@@ -13,14 +99,6 @@ export XDG_CACHE_HOME="$HOME/.local/cache"
 # add cargo & npm packages to path
 export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
 export NPM_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/node"
-
-# function to add directories to our path
-pathadd() {
-    case ":$PATH:" in
-        *:"$1":*) ;;
-        *) test -d "$1" && export PATH="$1${PATH:+:$PATH}" ;;
-    esac
-}
 
 # add more directories to the path
 pathadd "/home/linuxbrew/.linuxbrew/bin"
@@ -39,19 +117,8 @@ done
 # other users/group members can't write to user files
 umask 022
 
-# set to prevent this from getting sourced more than once in the same environment
-USERPROFILE_CURRENT="y"
-
-# determine the name of the shell
-export SHNAME="${ZSH_ARGZERO:-$0}"
-export SHNAME="${SHNAME##-}"
-export SHNAME="${SHNAME##*/}"
-
-# find the shell's actual name
-command -v readlink >/dev/null 2>&1 && {
-    export SHNAME="$(readlink -f $(command -v "${SHNAME:-$SHELL}"))"
-    export SHNAME="${SHNAME##*/}"
-}
+# current shell's name
+export SHNAME="$(whichsh)"
 
 # determine the shell init file based on the name of the shell
 [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/${SHNAME}rc" ] && {
@@ -59,6 +126,9 @@ command -v readlink >/dev/null 2>&1 && {
 } || {
     export ENV="${XDG_CONFIG_HOME:-$HOME/.config}/shell/shrc"
 }
+
+# set to prevent this from getting sourced more than once in the same environment
+USERPROFILE_CURRENT="y"
 
 # source everything in ~/.config/shell/scripts/
 for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/*.sh; do
@@ -104,9 +174,9 @@ for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/once/interactive/*.sh; 
 done
 
 # if our session isn't a login shell, return with success and finish execution
-case "$0" in
-    -*) ;;
-     *) return 0 ;;
+case "$-" in
+    *l*) ;;
+      *) return 0 ;;
 esac
 
 

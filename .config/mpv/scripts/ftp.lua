@@ -1,15 +1,3 @@
---[[
-    This script dynamically changes some settings at runtime while playing files over the ftp protocol
-    available at: https://github.com/CogentRedTester/mpv-scripts
-
-    Settings currently changed:
-
-        - converts filepaths taken directly from a browser into a string format readable by mpv
-            -e.g. "ftp://test%20ing" would become "ftp://test ing"
-
-        - if a directory is loaded it attempts to open a playlist file inside it (default is .folder.m3u)
-]]--
-
 local mp = require 'mp'
 local opt = require 'mp.options'
 local msg = require 'mp.msg'
@@ -25,8 +13,7 @@ local path
 
 --decodes a URL address
 --this piece of code was taken from: https://stackoverflow.com/questions/20405985/lua-decodeuri-luvit/20406960#20406960
-local decodeURI
-do
+local decodeURI do
     local char, gsub, tonumber = string.char, string.gsub, tonumber
     local function _(hex) return char(tonumber(hex, 16)) end
 

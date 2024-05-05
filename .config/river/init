@@ -16,7 +16,7 @@ command -v pipewire >/dev/null 2>&1 && [ -z "$(ps -Aeo user,comm | grep "${USER:
 riverctl map normal Super+Shift Q spawn "kill $pids; riverctl exit"
 
 # load config if possible
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/river/config" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/river/config"
+test -r "${XDG_CONFIG_HOME:-$HOME/.config}/river/config" && . "${XDG_CONFIG_HOME:-$HOME/.config}/river/config"
 
 # start rivertile
 riverctl default-layout rivertile

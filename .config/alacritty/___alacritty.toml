@@ -1,0 +1,77 @@
+live_config_reload = true
+
+[env]
+TERM = "xterm-256color"
+
+[debug]
+log_level = "Off"
+
+[window]
+opacity = 0.925
+dimensions = { columns = 80, lines = 24 }
+decorations = "None"
+blur = false
+startup_mode = "Windowed"
+dynamic_title = true
+decorations_theme_variant = "Dark"
+resize_increments = true
+title = "Terminal"
+
+[font]
+normal = { family = "#::font-monospace::#" }
+bold_italic = { style = "BoldItalic" }
+size = 9
+builtin_box_drawing = true
+
+[colors.primary]
+background = "##::mainbg::#"
+foreground = "##::mainfg::#"
+bright_foreground = "##::brightfg::#"
+dim_foreground = "##::darkerfg::#"
+
+[colors.normal]
+black = "##::mainbg::#"
+red = "##::mainred::#"
+green = "##::maingreen::#"
+yellow = "##::mainyellow::#"
+blue = "##::mainblue::#"
+magenta = "##::mainmagenta::#"
+cyan = "##::maincyan::#"
+white = "##::mainfg::#"
+
+[colors.bright]
+black = "##::brighterbg2::#"
+red = "##::brightred::#"
+green = "##::brightgreen::#"
+yellow = "##::brightyellow::#"
+blue = "##::brightblue::#"
+magenta = "##::brightmagenta::#"
+cyan = "##::brightcyan::#"
+white = "##::brightfg::#"
+
+[colors.dim]
+black = "##::brightbg2::#"
+red = "##::darkred::#"
+green = "##::darkgreen::#"
+yellow = "##::darkyellow::#"
+blue = "##::darkblue::#"
+magenta = "##::darkmagenta::#"
+cyan = "##::darkcyan::#"
+white = "##::darkerfg::#"
+
+[colors]
+transparent_background_colors = true
+draw_bold_text_with_bright_colors = true
+
+[bell]
+animation = "Linear"
+duration = 0
+color = "##::brightfg::#"
+
+[cursor]
+style = { shape = "Block", blinking = "On" }
+vi_mode_style = { shape = "Beam", blinking = "On" }
+blink_interval = 500
+blink_timeout = 0
+unfocused_hollow = true
+thickness = 0.10

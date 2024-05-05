@@ -5,17 +5,14 @@
 # source our profile if needed
 [ -z "$USERPROFILE_CURRENT" -a -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile"
 
-# enable vi editing mode
-set -o vi
-
 # if not running interactively, don't do anything else
 case "$-" in
     *i*) ;;
       *) return 0 ;;
 esac
 
-# functions
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/functions"
+# enable vi editing mode
+set -o vi
 
 # if we have access to the 'stty' binary, specify args for it
 command -v stty >/dev/null 2>&1 && stty -ixon

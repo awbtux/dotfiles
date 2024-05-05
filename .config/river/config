@@ -29,7 +29,7 @@ done
 riverctl declare-mode passthrough
 
 # include theme if possible
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/river/theme" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/river/theme"
+test -r "${XDG_CONFIG_HOME:-$HOME/.config}/river/theme" && . "${XDG_CONFIG_HOME:-$HOME/.config}/river/theme"
 
 # binds: input          mode        modkey              key                     command
 riverctl map            normal      Super+Shift         Return                  spawn "xdg-terminal-exec"

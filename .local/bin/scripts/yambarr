@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# if we don't have yambar, exit
+command -v yambar >/dev/null 2>&1 || exit 1
+
+# kill all current instances of yambar
+pkill '^yambar$'
+
+# if we don't have wlr-randr, just spawn yambar normally
+command -v wlr-randr >/dev/null 2>&1 || {
+    setsid -f yambar
+    exit "$?"
+}
+
+# open yambar on each monitor
+for mon in $(wlr-randr | grep "^[^ ]" | awk '{print $1}'); do
+    riverctl focus-output "$mon"
+    setsid -f yambar
+    sleep 0.1
+done
+
+# exit
+exit 0

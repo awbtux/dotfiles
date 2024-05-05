@@ -3,21 +3,23 @@
 # additional functionality and compatibility layers
 # simple scripts in ~/.local/share/bin are also reimplemented here
 
-# `source` is just a bashism for `.` anyways
+# `source` and `.` do the same thing
+command -v . >/dev/null 2>&1 || eval "alias ='source'"
 command -v source >/dev/null 2>&1 || eval "alias source='.'"
 
-# rudimentary 'unset' for shells that don't have it
+# rudimentary `unset` for shells that don't have it
 command -v unset >/dev/null 2>&1 || eval 'unset() {
     for _k in "$@"; do
         eval "$_k="
-    done
+        eval "$_k() { return 127; }"
+    done; _k=""
 }'
 
 # rudimentary 'local' for shells that don't have it
 command -v local >/dev/null 2>&1 || eval 'local() {
     for _kv in "$@"; do
-        _key="${_kv%%=*}"; _val="${_kv##$_key=}"; eval "$_key=\"\$_val\""
-    done
+        eval "${_kv%%=*}=\"\${_kv##${_kv%%=*}=}\""
+    done; unset _kv
 }'
 
 # rudimentary 'seq' for environments that don't have it
@@ -26,22 +28,34 @@ command -v seq >/dev/null 2>&1 || seq() {
     while [ "$start" -lt "$2" ]; do
         printf "$start\n"; start="$((start+1))"
     done
+    unset start
 }
 
-# rudimentary `which` implementation for environments that don't have it
+# rudimentary `which` for environments that don't have it
 command -v which >/dev/null 2>&1 || which() {
     IFS=":"
     for dir in $PATH; do
-        test -x "$dir/$1" && printf "%s\n" "$dir/$1" && return 0
+        test -x "$dir/$1" && printf "%s\n" "$dir/$1" && unset dir && return 0
     done
     IFS="$(printf ' \t\n')"
+    unset dir
     return 1
 }
 
-# abbreviate a path
-pathabbrev() {
-    case "$1" in
-        "$HOME"*) printf "~${1##$HOME}" ;;
-               *) printf "$1" ;;
-    esac
+# rudimentary `cat` for environments that don't have it
+command -v cat >/dev/null 2>&1 || cat() {
+    for i in "$@"; do
+        while IFS="" read -r line; do
+            printf "%s\n" "$line"
+        done <"$i"
+    done
+}
+
+# rudimentary `realpath` implementation for environments that don't have it
+command -v readlink >/dev/null 2>&1 && ! command -v realpath >/dev/null 2>&1 && realpath() {
+    readlink -f "$@"
+}
+
+# get the current shell
+whichsh() {
 }

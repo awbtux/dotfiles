@@ -14,12 +14,12 @@ require_cmd() {
 require_cmd find sed chmenu || exit 127
 
 # get name of theme from $1
-[ -r "${XDG_DATA_HOME:-$HOME/.local/share}/dots/themes/${1:+$1/}theme.conf" ] && . "${XDG_DATA_HOME:-$HOME/.local/share}/dots/themes/${1:+$1/}theme.conf"
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/themes/${1:+$1/}theme.conf" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/themes/${1:+$1/}theme.conf"
 
 # get name of theme from interactive input
-[ ! -r "${XDG_DATA_HOME:-$HOME/.local/share}/dots/themes/${1:+$1/}theme.conf" ] && {
+[ ! -r "${XDG_CONFIG_HOME:-$HOME/.config}/themes/${1:+$1/}theme.conf" ] && {
     # get a list of themes
-    tchoices="$(for i in $(find "${XDG_DATA_HOME:-$HOME/.local/share}/dots/themes/" -type d -not -path "${XDG_DATA_HOME:-$HOME/.local/share}/dots/themes/"); do test -d "$i" || continue; printf "$i\t"; done)"
+    tchoices="$(for i in $(find "${XDG_CONFIG_HOME:-$HOME/.config}/themes/" -type d -not -path "${XDG_CONFIG_HOME:-$HOME/.config}/themes/"); do test -d "$i" || continue; printf "$i\t"; done)"
 
     # choose the theme
     OLDIFS="$IFS"; IFS="$(printf '\t')"; tchoice="$(chmenu -t -b 'Applying which theme?' $tchoices)"; IFS="$OLDIFS"
@@ -92,14 +92,18 @@ for i in $(find "${XDG_CONFIG_HOME:-$HOME/.config}" "${XDG_DATA_HOME:-$HOME/.loc
     <"$i" >"$dir/$name"
 done
 
-# reload the font cache if the command to do so is provided
+# reload the font cache
 command -v fc-cache >/dev/null 2>&1 && fc-cache
 
 # reload waybar
-command -v waybar >/dev/null 2>&1 && pidof waybar >/dev/null 2>&1 && command -v setsid >/dev/null 2>&1 && test -n "$WAYLAND_DISPLAY" && pkill waybar && setsid -f waybar >/dev/null 2>&1
+command -v waybar >/dev/null 2>&1 && pidof waybar >/dev/null 2>&1 && test -n "$WAYLAND_DISPLAY" && pkill waybar && setsid -f waybar >/dev/null 2>&1
 
 # reload yambar
-command -v yambar >/dev/null 2>&1 && pidof yambar >/dev/null 2>&1 && command -v setsid >/dev/null 2>&1 && test -n "$WAYLAND_DISPLAY" && pkill yambar && setsid -f yambar >/dev/null 2>&1
+command -v yambarr >/dev/null 2>&1 && {
+    command -v yambar >/dev/null 2>&1 && pidof yambar >/dev/null 2>&1 && test -n "$WAYLAND_DISPLAY" && pkill yambar && setsid -f yambarr >/dev/null 2>&1
+} || {
+    command -v yambar >/dev/null 2>&1 && pidof yambar >/dev/null 2>&1 && test -n "$WAYLAND_DISPLAY" && pkill yambar && setsid -f yambar >/dev/null 2>&1
+}
 
-# reload river theme if riverwm is active
+# reload riverwm theme
 command -v riverctl >/dev/null 2>&1 && pidof river >/dev/null 2>&1 && test -n "$WAYLAND_DISPLAY" && sh "${XDG_CONFIG_HOME:-$HOME/.config}/river/theme" >/dev/null
