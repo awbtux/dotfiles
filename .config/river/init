@@ -3,14 +3,17 @@
 # update env
 command -v dbus-update-activation-environment >/dev/null 2>&1 && riverctl spawn "dbus-update-activation-environment SEATD_SOCK DISPLAY WAYLAND_DISPLAY"
 
+# start yambar
+ command -v yambar >/dev/null 2>&1 && yambar & pids="${pids:+$pids }$!"
+
 # start waybar
-command -v waybar >/dev/null 2>&1 && waybar & pids="${pids:+$pids }$!"
+test -z "$(ps -Aeo user,comm | grep "${USER:-$LOGNAME}" | grep "yambar")" && command -v waybar >/dev/null 2>&1 && waybar & pids="${pids:+$pids }$!"
 
 # start way-displays
 command -v way-displays >/dev/null 2>&1 && way-displays & pids="${pids:+$pids }$!"
 
 # start pipewire
-command -v pipewire >/dev/null 2>&1 && [ -z "$(ps -Aeo user,comm | grep "${USER:-$LOGNAME}" | grep "pipewire")" ] && pipewire & pids="${pids:+$pids }$!"
+command -v pipewire >/dev/null 2>&1 && test -z "$(ps -Aeo user,comm | grep "${USER:-$LOGNAME}" | grep "pipewire")" && pipewire & pids="${pids:+$pids }$!"
 
 # kill these cmds on exit
 riverctl map normal Super+Shift Q spawn "kill $pids; riverctl exit"
