@@ -13,29 +13,29 @@ local saved_value = nil
 local saved_sid = nil
 
 function toggle_blackout()
-	if saved_value then
-		mp.set_property(property, saved_value)
-		saved_value = nil
+    if saved_value then
+        mp.set_property(property, saved_value)
+        saved_value = nil
 
-		mp.set_property("sid", saved_sid)
-		saved_sid = nil
+        mp.set_property("sid", saved_sid)
+        saved_sid = nil
 
-		mp.set_property("pause", "no")
-	else
-		mp.set_property("pause", "yes")
+        mp.set_property("pause", "no")
+    else
+        mp.set_property("pause", "yes")
 
-		saved_value = mp.get_property(property)
-		mp.set_property(property, -100)
+        saved_value = mp.get_property(property)
+        mp.set_property(property, -100)
 
-		saved_sid = mp.get_property("sid")
-		mp.set_property("sid", "no")
-	end
+        saved_sid = mp.get_property("sid")
+        mp.set_property("sid", "no")
+    end
 end
 
 function on_pause_change(name, value)
-	if not value and saved_value then
-		toggle_blackout()
-	end
+    if not value and saved_value then
+        toggle_blackout()
+    end
 end
 
 mp.add_key_binding("b", "blackout", toggle_blackout)

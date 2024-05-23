@@ -52,6 +52,7 @@ o = {
     directory_mode = "auto",
     ignore_patterns = ""
 }
+
 options.read_options(o, nil, function(list)
     split_option_exts(list.additional_video_exts, list.additional_audio_exts, list.additional_image_exts)
     if list.videos or list.additional_video_exts or

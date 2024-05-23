@@ -11,7 +11,7 @@ require_cmd() {
 
 # use $1 as img name
 test "$#" -gt 0 && img="$1" && for i in png jpg jpeg jfif avif webp bmp; do
-    img="${img%".$i"}"
+    img="${img%.$i}"
 done
 
 # otherwise set img name
