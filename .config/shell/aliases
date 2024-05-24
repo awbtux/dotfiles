@@ -140,7 +140,10 @@ aliascmd \
 
 # lie to elinks about the terminal type if running
 # under a 256-color multiplexer (eg. tmux/screen)
-[ "$TERM" = "screen-256color" ] && aliascmd elinks="TERM=xterm-256color elinks"
+test "$TERM" = "screen-256color" && aliascmd elinks="TERM=xterm-256color elinks"
+
+# play a specific frequency
+aliascmd 190hz="play -n synth sin 190"
 
 # for easy access
 export ALIASES="${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"

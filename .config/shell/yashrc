@@ -3,12 +3,12 @@
 # yash init file; todo: look at https://github.com/magicant/yash/blob/trunk/share/initialization/common
 
 # source our profile if needed
-[ -z "$USERPROFILE_CURRENT" -a -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile"
+test -z "$USERPROFILE_CURRENT" -a -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile"
 
 # check if the proper shell is sourcing this file
-case "$SHNAME" in
-    yash) ;;
-       *) . "$ENV"; return 0 ;;
+case "${SHNAME:-${ZSH_ARGZERO:-$0}}" in
+    -yash|yash|*/yash) ;;
+    *) . "$ENV"; return 0 ;;
 esac
 
 # shell options
@@ -27,7 +27,7 @@ for mode in -v -a; do
     bindkey "$mode" '\^[[1;5D' backward-viword
     bindkey "$mode" '\^[[1;5C' end-of-viword
     bindkey "$mode" '\^Q' backward-bigword
-    bindkey "$mode" '\^R' end-of-bigword
+    bindkey "$mode" '\^R' forward-bigword
 done
 bindkey -v '\^F' setmode-vicommand
 bindkey -a '\^F' setmode-viinsert
@@ -43,6 +43,7 @@ command -v stty >/dev/null 2>&1 && stty -ixon
 
 # alias !! to the last command, and
 # set the PS1 using set_ps1 if the shell supports it
+# this is pretty janky, but it works
 PROMPT_COMMAND="alias !!=\"\$(history | sed -e '/\!!$/d' -e 's/^[0-9][0-9]*\t//' | sed -n '\$p')\"; set_ps1"
 
 # command prediction font style

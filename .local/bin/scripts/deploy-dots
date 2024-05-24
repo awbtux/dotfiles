@@ -7,9 +7,6 @@
 # we need these
 command -v generate-theme >/dev/null 2>&1 && generate-theme
 
-# run the wizard to generate a git configuration file if none is present
-test ! -r "${GIT_CONFIG_GLOBAL:-$HOME/.gitconfig}" && command -v git-wizard >/dev/null 2>&1 && git-wizard
-
 # if $HOME is the worktree of a git repo, pull from origin and init submodules
 test -d "$HOME/.git" && command -v git >/dev/null 2>&1 && {
     cd "$HOME"

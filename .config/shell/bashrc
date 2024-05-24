@@ -1,12 +1,12 @@
 #!/bin/sh
 
 # source our profile if needed
-[ -z "$USERPROFILE_CURRENT" -a -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile"
+test -z "$USERPROFILE_CURRENT" -a -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile"
 
 # check if the proper shell is sourcing this file
-case "$SHNAME" in
-    bash) ;;
-       *) . "$ENV"; return 0 ;;
+case "${SHNAME:-${ZSH_ARGZERO:-$0}}" in
+    -bash|bash|*/bash) ;;
+    *) . "$ENV"; return 0 ;;
 esac
 
 # enable vi editing mode

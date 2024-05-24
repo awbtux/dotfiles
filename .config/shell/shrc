@@ -3,7 +3,7 @@
 # posix-compatible shell init file
 
 # source our profile if needed
-[ -z "$USERPROFILE_CURRENT" -a -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile"
+test -z "$USERPROFILE_CURRENT" -a -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile" && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/profile"
 
 # if not running interactively, don't do anything else
 case "$-" in

@@ -18,15 +18,6 @@ ctl.dmixer {
     card 0
 }
 
-pcm.plugequal {
-    type equal
-    slave.pcm "plug:dmix"
-}
-
-ctl.equal {
-    type equal
-}
-
 pcm.mixin {
     type dsnoop
     ipc_key 5978293
@@ -45,8 +36,78 @@ pcm.mixin {
     }
 }
 
+pcm.plugeq {
+    type equal
+    slave.pcm "plug:dmix"
+    controls {
+        @func concat
+        strings [
+            {
+                @func getenv
+                vars [ "XDG_CONFIG_HOME" ]
+                default "~/.config"
+            }
+            "/alsa/eq_out.bin"
+        ]
+    }
+}
+
+ctl.eq {
+    type equal
+    controls {
+        @func concat
+        strings [
+            {
+                @func getenv
+                vars [ "XDG_CONFIG_HOME" ]
+                default "~/.config"
+            }
+            "/alsa/eq_out.bin"
+        ]
+    }
+}
+
+pcm.plugeq-in {
+    type equal
+    slave.pcm "plug:dsnoop"
+    controls {
+        @func concat
+        strings [
+            {
+                @func getenv
+                vars [ "XDG_CONFIG_HOME" ]
+                default "~/.config"
+            }
+            "/alsa/eq_in.bin"
+        ]
+    }
+}
+
+ctl.eq-in {
+    type equal
+    controls {
+        @func concat
+        strings [
+            {
+                @func getenv
+                vars [ "XDG_CONFIG_HOME" ]
+                default "~/.config"
+            }
+            "/alsa/eq_in.bin"
+        ]
+    }
+}
+
 pcm.!default {
-    type plug
-    #slave.pcm "dmixer"
-    slave.pcm "plugequal"
+    type asym
+    playback.pcm {
+        type plug
+        #slave.pcm "dmixer"
+        slave.pcm "plugeq"
+    }
+    capture.pcm {
+        type plug
+        #slave.pcm "dsnoop"
+        slave.pcm "plugeq-in"
+    }
 }

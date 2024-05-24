@@ -42,7 +42,6 @@ local settings = {
     foldlevel = 0,
     foldmethod = "indent",
     foldnestmax = 16,
-    go = "a",
     guifont = "monospace:h9",
     hidden = true,
     history = 1024,
