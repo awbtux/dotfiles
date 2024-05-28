@@ -143,7 +143,7 @@ aliascmd \
 test "$TERM" = "screen-256color" && aliascmd elinks="TERM=xterm-256color elinks"
 
 # play a specific frequency
-aliascmd 190hz="play -n synth sin 190"
+aliascmd 190hz="play -n synth sin 190 vol 0.035"
 
 # for easy access
 export ALIASES="${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"
