@@ -53,7 +53,7 @@ command -v which >/dev/null 2>&1 || which() {
     for dir in $PATH; do
         test -x "$dir/$1" && printf "%s\n" "$dir/$1" && return 0
     done
-    IFS="$(printf ' \t\n')"
+    IFS="$(printf ' \n\t')"
     return 1
 }
 
@@ -63,7 +63,7 @@ sys_exec() {
     for p in $OLDPATH; do
         case "$p" in *"$HOME"*) continue ;; esac; path_add "$p"
     done
-    IFS="$(printf ' \t\n')"
+    IFS="$(printf ' \n\t')"
     which "$cmd" >/dev/null || exit 127
     "$cmd" "$@"
     return "$?"

@@ -41,7 +41,7 @@ command -v which >/dev/null 2>&1 || which() {
     for dir in $PATH; do
         test -x "$dir/$1" && printf "%s\n" "$dir/$1" && unset dir && return 0
     done
-    IFS="$(printf ' \t\n')"
+    IFS="$(printf ' \n\t')"
     unset dir
     return 1
 }

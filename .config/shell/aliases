@@ -83,6 +83,7 @@ aliascmd \
 
 # run these as root
 aliascmd \
+    sv="sudo sv" \
     reboot="sudo reboot" \
     poweroff="sudo poweroff" \
     mount="sudo mount" \
@@ -138,12 +139,15 @@ aliascmd \
     tsrv="transmission-daemon" \
     tdie="transmission-remote --exit"
 
-# lie to elinks about the terminal type if running
-# under a 256-color multiplexer (eg. tmux/screen)
-test "$TERM" = "screen-256color" && aliascmd elinks="TERM=xterm-256color elinks"
+# play a specific frequency
+command -v play >/dev/null 2>&1 && hz() { play -n synth sin "$1" vol 0.035; }
 
 # play a specific frequency
-aliascmd 190hz="play -n synth sin 190 vol 0.035"
+aliascmd \
+    190hz="play -n synth sin 190 vol 0.035" \
+    120hz="play -n synth sin 120 vol 0.035" \
+    90hz="play -n synth sin 90 vol 0.035" \
+    42hz="play -n synth sin 42 vol 0.035" \
 
 # for easy access
 export ALIASES="${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"

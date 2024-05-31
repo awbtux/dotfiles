@@ -19,7 +19,6 @@ mpv/mpv_sub-delay.json
 mpv/watch_later
 nvim/colors/.theme_name
 nvim/nvim-qt.conf
-pulse/
 qBittorrent/
 river/theme
 transmission/bandwidth-groups.json

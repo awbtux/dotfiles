@@ -1,5 +1,14 @@
 #!/bin/sh
 
+# alsa hardware input/output PCMs; hw:0,0 selects the system's sound card and usually works for both
+#export ALSA_INPUT_PCM="hw:0,0"
+#export ALSA_OUTPUT_PCM="hw:0,0"
+
+# plugins to use for alsa input/output; use equalizer if available, dmixer/dsnoop if not
+test -n "$(find /lib*/alsa*/ /usr/lib*/alsa*/ /usr/local/lib*/alsa*/ -type f -regex ".*/libasound_module_[pc][ct][ml]_equal.so" 2>/dev/null)" && \
+export ALSA_INPUT_PLUGIN="eq-in" ALSA_OUTPUT_PLUGIN="eq" || \
+export ALSA_INPUT_PLUGIN="mixin" ALSA_OUTPUT_PLUGIN="dmixer"
+
 # browser homepage
 export WWW_HOME="https://lite.duckduckgo.com"
 

@@ -69,20 +69,23 @@ cmd extract ${{
     printf "%s\n\t" "$fx"
     printf "extract? [y/N]\033[0m "
     read ans
-    [ $ans = "y" ] && {
-        case $fx in
-            *.tar.bz2) tar xjf $fx     ;;
-            *.tar.gz)  tar xzf $fx     ;;
-            *.bz2)     bunzip2 $fx     ;;
-            *.gz)      gunzip $fx      ;;
-            *.tar)     tar xf $fx      ;;
-            *.tbz2)    tar xjf $fx     ;;
-            *.tgz)     tar xzf $fx     ;;
-            *.zip)     unzip $fx       ;;
-            *.Z)       uncompress $fx  ;;
-            *.7z)      7z x $fx        ;;
-            *.tar.xz)  tar xf $fx      ;;
-        esac
+    test $ans = "y" && {
+        for f in $fx; do
+            case $f in
+                *.tar.bz2) tar xjf $f     ;;
+                *.tar.gz)  tar xzf $f     ;;
+                *.bz2)     bunzip2 $f     ;;
+                *.gz)      gunzip $f      ;;
+                *.tar)     tar xf $f      ;;
+                *.tbz2)    tar xjf $f     ;;
+                *.tgz)     tar xzf $f     ;;
+                *.zip)     unzip $f       ;;
+                *.Z)       uncompress $f  ;;
+                *.7z)      7z x $f        ;;
+                *.tar.xz)  tar xf $f      ;;
+                *.rar)     unrar x $f     ;;
+            esac
+        done
     }
 }}
 
@@ -92,7 +95,7 @@ cmd delete ${{
     printf "%s\n\t" "$fx"
     printf "delete? [y/N]\033[0m "
     read ans
-    [ $ans = "y" ] && rm -rf -- $fx
+    test $ans = "y" && rm -rf -- $fx
 }}
 
 cmd set-wallpaper "$1"
@@ -101,18 +104,18 @@ cmd bulkrename ${{
     tmpfile_old="$(mktemp)"
     tmpfile_new="$(mktemp)"
 
-    [ -n "$fs" ] && fs=$(basename -a $fs) || fs=$(ls)
+    test -n "$fs" && fs=$(basename -a $fs) || fs=$(ls)
 
     echo "$fs" > "$tmpfile_old"
     echo "$fs" > "$tmpfile_new"
 
     $EDITOR "$tmpfile_new"
 
-    [ "$(wc -l < "$tmpfile_old")" -eq "$(wc -l < "$tmpfile_new")" ] || { rm -f "$tmpfile_old" "$tmpfile_new"; exit 1; }
+    test "$(wc -l < "$tmpfile_old")" -eq "$(wc -l < "$tmpfile_new")" || { rm -f "$tmpfile_old" "$tmpfile_new"; exit 1; }
 
     paste "$tmpfile_old" "$tmpfile_new" | while IFS="$(printf '\t')" read -r src dst
     do
-        [ "$src" = "$dst" ] || [ -e "$dst" ] || mv -- "$src" "$dst"
+        test "$src" = "$dst" || test -e "$dst" || mv -- "$src" "$dst"
     done
 
     rm -f "$tmpfile_old" "$tmpfile_new"
