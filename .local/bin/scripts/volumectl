@@ -1,48 +1,38 @@
 #!/bin/sh
 
-# volume control independent of the sound server used
+# choose volume command
 for i in wpctl sndioctl amixer pactl pamixer; do
     command -v $i >/dev/null 2>&1 && volcmd="$i"
 done
 
-# if no volume control command is available, exit
-[ -n "$volcmd" ] || exit 1
-
-# operation
-case "$1" in
-    up)
-        [ "$volcmd" = "amixer" ] && amixer sset Master 3+
-        [ "$volcmd" = "sndioctl" ] && sndioctl output.level=+0.03
-        [ "$volcmd" = "wpctl" ] && wpctl set-volume @DEFAULT_SINK@ 3%+
-        [ "$volcmd" = "pactl" ] && pactl set-sink-volume @DEFAULT_SINK@ +3%
-        [ "$volcmd" = "pamixer" ] && pamixer -i 3
-        ;;
-    down)
-        [ "$volcmd" = "amixer" ] && amixer sset Master 3-
-        [ "$volcmd" = "sndioctl" ] && sndioctl output.level=-0.03
-        [ "$volcmd" = "wpctl" ] && wpctl set-volume @DEFAULT_SINK@ 3%-
-        [ "$volcmd" = "pactl" ] && pactl set-sink-volume @DEFAULT_SINK@ -3%
-        [ "$volcmd" = "pamixer" ] && pamixer -d 3
-        ;;
-    mute)
-        [ "$volcmd" = "amixer" ] && amixer sset Master mute
-        [ "$volcmd" = "sndioctl" ] && sndioctl output.mute=1
-        [ "$volcmd" = "wpctl" ] && wpctl set-mute @DEFAULT_SINK@ 1
-        [ "$volcmd" = "pactl" ] && pactl set-sink-mute @DEFAULT_SINK@ 1
-        [ "$volcmd" = "pamixer" ] && pamixer -m
-        ;;
-    unmute)
-        [ "$volcmd" = "amixer" ] && amixer sset Master unmute
-        [ "$volcmd" = "sndioctl" ] && sndioctl output.mute=0
-        [ "$volcmd" = "wpctl" ] && wpctl set-mute @DEFAULT_SINK@ 0
-        [ "$volcmd" = "pactl" ] && pactl set-sink-mute @DEFAULT_SINK@ 0
-        [ "$volcmd" = "pamixer" ] && pamixer -u
-        ;;
-    mute_toggle)
-        [ "$volcmd" = "amixer" ] && amixer sset Master toggle
-        [ "$volcmd" = "sndioctl" ] && sndioctl output.mute=!
-        [ "$volcmd" = "wpctl" ] && wpctl set-mute @DEFAULT_SINK@ toggle
-        [ "$volcmd" = "pactl" ] && pactl set-sink-mute @DEFAULT_SINK@ toggle
-        [ "$volcmd" = "pamixer" ] && pamixer -t
-        ;;
-esac
+# change volume/mute status
+test "$1" = "up" && 
+    (test "$volcmd" = "amixer" && amixer sset Master 3+;:) &&
+    (test "$volcmd" = "sndioctl" && sndioctl output.level=+0.03;:) &&
+    (test "$volcmd" = "wpctl" && wpctl set-volume @DEFAULT_SINK@ 3%+;:) &&
+    (test "$volcmd" = "pactl" && pactl set-sink-volume @DEFAULT_SINK@ +3%;:) &&
+    (test "$volcmd" = "pamixer" && pamixer -i 3;:)
+test "$1" = "down" &&
+    (test "$volcmd" = "amixer" && amixer sset Master 3-;:) &&
+    (test "$volcmd" = "sndioctl" && sndioctl output.level=-0.03;:) &&
+    (test "$volcmd" = "wpctl" && wpctl set-volume @DEFAULT_SINK@ 3%-;:) &&
+    (test "$volcmd" = "pactl" && pactl set-sink-volume @DEFAULT_SINK@ -3%;:) &&
+    (test "$volcmd" = "pamixer" && pamixer -d 3;:)
+test "$1" = "mute" &&
+    (test "$volcmd" = "amixer" && amixer sset Master mute;:) &&
+    (test "$volcmd" = "sndioctl" && sndioctl output.mute=1;:) &&
+    (test "$volcmd" = "wpctl" && wpctl set-mute @DEFAULT_SINK@ 1;:) &&
+    (test "$volcmd" = "pactl" && pactl set-sink-mute @DEFAULT_SINK@ 1;:) &&
+    (test "$volcmd" = "pamixer" && pamixer -m;:)
+test "$1" = "unmute" &&
+    (test "$volcmd" = "amixer" && amixer sset Master unmute;:) &&
+    (test "$volcmd" = "sndioctl" && sndioctl output.mute=0;:) &&
+    (test "$volcmd" = "wpctl" && wpctl set-mute @DEFAULT_SINK@ 0;:) &&
+    (test "$volcmd" = "pactl" && pactl set-sink-mute @DEFAULT_SINK@ 0;:) &&
+    (test "$volcmd" = "pamixer" && pamixer -u;:)
+test "$1" = "mute_toggle" &&
+    (test "$volcmd" = "amixer" && amixer sset Master toggle;:) &&
+    (test "$volcmd" = "sndioctl" && sndioctl output.mute=!;:) &&
+    (test "$volcmd" = "wpctl" && wpctl set-mute @DEFAULT_SINK@ toggle;:) &&
+    (test "$volcmd" = "pactl" && pactl set-sink-mute @DEFAULT_SINK@ toggle;:) &&
+    (test "$volcmd" = "pamixer" && pamixer -t;:)

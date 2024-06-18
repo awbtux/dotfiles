@@ -4,16 +4,20 @@
 # if the login shell doesn't find .local/share/dots/.configured.txt, this runs automatically
 # TODO: finish this script
 
-# we need these
-command -v generate-theme >/dev/null 2>&1 && generate-theme
+# run commands
+run() { cmd="$1"; shift; test -z "$(command -v "$cmd")" && return 1; printf "\033[90m\$\033[39;3m %s %s\033[0m\n" "$cmd" "$*" >&2; "$cmd" "$@"; }
+
+# go home
+cd
+
+# generate a theme
+run generate-theme nord </dev/null
+
+# build `bat` theme cache
+run bat cache --build </dev/null &
 
 # if $HOME is the worktree of a git repo, pull from origin and init submodules
-test -d "$HOME/.git" && command -v git >/dev/null 2>&1 && {
-    cd "$HOME"
-    git pull
-    git submodule update --init --recursive
-    cd "$OLDPWD"
-}
+test -d "$PWD/.git" && run sh -c 'git pull; git submodule update --init --recursive' </dev/null &
 
 # prevent this script from getting automatically sourced by login scripts
 printf "%s\n%s\n%s\n%s\n" \
@@ -22,3 +26,6 @@ printf "%s\n%s\n%s\n%s\n" \
     "isn't anything else \`deploy-dots\` needs to do. If you delete it, the session" \
     "will invoke \`deploy-dots\` next time you log in." \
 >"${XDG_DATA_HOME:-$HOME/.local/share}/dots/.configured.txt"
+
+# wait for jobs to finish
+wait

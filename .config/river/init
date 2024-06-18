@@ -1,22 +1,51 @@
 #!/bin/sh
 
+# read PIDs from file
+readfrom() {
+    for f in "$@"; do
+        test -f "$f" -a -r "$f" || continue
+        cat "$f" 2>/dev/null && continue
+        tail -n+0 "$f" 2>/dev/null && continue
+        head -n-0 "$f" 2>/dev/null && continue
+        awk '{print}' "$f" 2>/dev/null && continue
+        (tac "$f" 2>/dev/null | tac 2>/dev/null) && continue
+        grep '.*' "$f" 2>/dev/null && continue
+        tee <"$f" 2>/dev/null && continue
+        while IFS= read -r line; do printf "%s " "$line"; done <"$f"
+    done
+}
+
 # update env
 command -v dbus-update-activation-environment >/dev/null 2>&1 && riverctl spawn "dbus-update-activation-environment SEATD_SOCK DISPLAY WAYLAND_DISPLAY"
 
+# print riverwm pid
+printf "$$\n" >>"/tmp/river.compositor.$LOGIN_PID"
+
 # start yambar
- command -v yambar >/dev/null 2>&1 && yambar & pids="${pids:+$pids }$!"
+command -v yambarr >/dev/null 2>&1 && (command -v yambar >/dev/null 2>&1 && yambarr </dev/null >&0 2>&0 &:) || (command -v yambar >/dev/null 2>&1 && yambar </dev/null >&0 2>&0 & printf "$!\n" >"/tmp/yambar.session.$LOGIN_PID")
 
 # start waybar
-test -z "$(ps -Aeo user,comm | grep "${USER:-$LOGNAME}" | grep "yambar")" && command -v waybar >/dev/null 2>&1 && waybar & pids="${pids:+$pids }$!"
+test -z "$(readfrom "/tmp/yambar.session.$LOGIN_PID")" && command -v waybar >/dev/null 2>&1 && waybar </dev/null >&0 2>&0 & printf "$!\n" >>"/tmp/waybar.session.$LOGIN_PID"
 
 # start way-displays
-command -v way-displays >/dev/null 2>&1 && way-displays & pids="${pids:+$pids }$!"
+command -v way-displays >/dev/null 2>&1 && way-displays </dev/null >&0 2>&0 & printf "$!\n" >"/tmp/way-displays.session.$LOGIN_PID"
 
 # start pipewire
-command -v pipewire >/dev/null 2>&1 && test -z "$(ps -Aeo user,comm | grep "${USER:-$LOGNAME}" | grep "pipewire")" && pipewire & pids="${pids:+$pids }$!"
+#test -z "$(ps -Aeo user,comm | sed -ne "/^$USER\s\+\(pipewire\|wireplumber\|pulseaudio\)$/p")"
+command -v pipewire >/dev/null 2>&1 && test -z "$(readfrom "/tmp/pipewire.session.$LOGIN_PID")" && pipewire </dev/null >&0 2>&0 & printf "$!\n" >>"/tmp/pipewire.session.$LOGIN_PID"
 
 # kill these cmds on exit
-riverctl map normal Super+Shift Q spawn "kill $pids; riverctl exit"
+riverctl map normal Super+Shift Q spawn 'kill $(for f in /tmp/*.session.$LOGIN_PID; do
+    test -f "$f" -a -r "$f" || continue
+    cat "$f" 2>/dev/null && continue
+    tail -n+0 "$f" 2>/dev/null && continue
+    head -n-0 "$f" 2>/dev/null && continue
+    awk "{print}" "$f" 2>/dev/null && continue
+    (tac "$f" 2>/dev/null | tac 2>/dev/null) && continue
+    grep '"'"'.*'"'"' "$f" 2>/dev/null && continue
+    tee <"$f" 2>/dev/null && continue
+    while IFS= read -r line; do printf "%s " "$line"; done <"$f"
+done); rm /tmp/*.session.$LOGIN_PID /tmp/river.compositor.$LOGIN_PID; riverctl exit'
 
 # load config if possible
 test -r "${XDG_CONFIG_HOME:-$HOME/.config}/river/config" && . "${XDG_CONFIG_HOME:-$HOME/.config}/river/config"

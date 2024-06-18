@@ -1,23 +1,39 @@
 #!/bin/sh
 
-# if we don't have yambar, exit
-command -v yambar >/dev/null 2>&1 || exit 1
+# not applicable if we aren't in wayland
+test -z "$WAYLAND_DISPLAY" && exit 0
+
+# read PIDs from file
+readfrom() {
+    for f in "$@"; do
+        test -f "$f" -a -r "$f" || continue
+        cat "$f" 2>/dev/null && continue
+        tail -n+0 "$f" 2>/dev/null && continue
+        head -n-0 "$f" 2>/dev/null && continue
+        awk '{print}' "$f" 2>/dev/null && continue
+        (tac "$f" 2>/dev/null | tac 2>/dev/null) && continue
+        grep '.*' "$f" 2>/dev/null && continue
+        tee <"$f" 2>/dev/null && continue
+        while IFS= read -r line; do printf "%s " "$line"; done <"$f"
+    done
+}
 
 # kill all current instances of yambar
-pkill '^yambar$'
+test -n "$(readfrom "/tmp/yambar.session.$LOGIN_PID")" && kill $(readfrom "/tmp/yambar.session.$LOGIN_PID")
 
 # if we don't have wlr-randr, just spawn yambar normally
 command -v wlr-randr >/dev/null 2>&1 || {
-    setsid -f yambar
+    yambar </dev/null >&0 2>&0 & printf "$!\n" >"/tmp/yambar.session.$LOGIN_PID"
     exit "$?"
 }
+
+# empty the session pid list
+:>"/tmp/yambar.session.$LOGIN_PID"
 
 # open yambar on each monitor
 for mon in $(wlr-randr | grep "^[^ ]" | awk '{print $1}'); do
     riverctl focus-output "$mon"
-    setsid -f yambar
+    yambar </dev/null >&0 2>&0 & printf " $!" >>"/tmp/yambar.session.$LOGIN_PID"
     sleep 0.1
 done
-
-# exit
-exit 0
+printf "\n" >>"/tmp/yambar.session.$LOGIN_PID"

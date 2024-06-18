@@ -2,8 +2,6 @@
 
 # supported shells: bash, dash, ksh, ksh93, mksh, oksh, yash, zsh
 
-# ---------------------------------------- Part 0: Function ----------------------------------------
-
 # 'source' and '.' do the same thing
 command -v . >/dev/null 2>&1 || eval "alias .='source' 2>/dev/null"
 command -v source >/dev/null 2>&1 || eval "alias source='.' 2>/dev/null"
@@ -26,10 +24,10 @@ command -v local >/dev/null 2>&1 || eval 'local() {
 # rudimentary 'seq' for environments that don't have it
 command -v seq >/dev/null 2>&1 || seq() {
     start="$1"
-    while [ "$start" -gt "${2:-$1}" ]; do
+    while test "$start" -gt "${2:-$1}"; do
         printf "%s\n" "$start"; start="$((start-1))"
     done
-    while [ "$start" -le "${2:-$1}" ]; do
+    while test "$start" -le "${2:-$1}"; do
         printf "%s\n" "$start"; start="$((start+1))"
     done
     unset start
@@ -88,8 +86,6 @@ respawn() {
     test -n "${WAYLAND_DISPLAY:-$DISPLAY}" && exec "$(whichsh)" -c "setsid -f xdg-terminal-exec & sleep 0.1" || exec "$(whichsh)"
 }
 
-# --------------------------------------- Part 1: Run always ---------------------------------------
-
 # basic xdg directory definitions - rest in ~/.config/shell/scripts/01-env.sh
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
@@ -121,81 +117,51 @@ umask 022
 export SHNAME="$(whichsh)"
 
 # determine the shell init file based on the name of the shell
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/${SHNAME}rc" ] && {
+test -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/${SHNAME}rc" && {
     export ENV="${XDG_CONFIG_HOME:-$HOME/.config}/shell/${SHNAME}rc"
 } || {
     export ENV="${XDG_CONFIG_HOME:-$HOME/.config}/shell/shrc"
 }
 
-# set to prevent this from getting sourced more than once in the same environment
+# let the rest of the environment know that this profile has been sourced
 USERPROFILE_CURRENT="y"
 
 # source everything in ~/.config/shell/scripts/
 for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/*.sh; do
-    [ -r "$i" ] && . "$i"
+    test -r "$i" && . "$i"
 done
 
-# ------------------------------ Part 2: Run in interactive sessions -------------------------------
-
-# if our session is interactive, source the shell init file and scripts
-case "$-" in
-    *i*) for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/interactive/*.sh; do
-             [ -r "$i" ] && . "$i"
-         done ;;
-      *) ;;
-esac
-
-# end execution here
-case "$USERPROFILE" in
-    "") export USERPROFILE="y";;
-     *) return 0 ;;
-esac
-
-
-# ---------------------------------------- Part 3: Run once ----------------------------------------
-
-# source everything in ~/.config/shell/scripts/run-once/
-for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/once/*.sh; do
-    [ -r "$i" ] && . "$i"
+# source everything in ~/.config/shell/scripts/interactive/
+test "$-" != "${-##*i*}" && for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/interactive/*.sh; do
+    test -r "$i" && . "$i"
 done
 
-# if our session isn't interactive, return with success and finish execution
-case "$-" in
-    *i*) ;;
-      *) return 0 ;;
-esac
-
-
-# ------------------------- Part 4: Run once, when in an interactive shell -------------------------
+# source everything in ~/.config/shell/scripts/once/
+test "$USERPROFILE" != "y" && for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/once/*.sh; do
+    test -r "$i" && . "$i"
+done
 
 # source everything in ~/.config/shell/scripts/once/interactive/
-for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/once/interactive/*.sh; do
-    [ -r "$i" ] && . "$i"
+test "$-" != "${-##*i*}" -a "$USERPROFILE" != "y" && for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/once/interactive/*.sh; do
+    test -r "$i" && . "$i"
 done
 
-# if our session isn't a login shell, return with success and finish execution
-case "$-" in
-    *l*) ;;
-      *) return 0 ;;
-esac
+# let the environment know that this profile has been sourced
+export USERPROFILE="y"
 
-
-# ---------------------------- Part 5: Run once, when in a login shell -----------------------------
+# exit if we aren't in a login shell
+test "$-" = "${-##*l*}" -a "${ZSH_ARGZERO:-$0}" = "${ZSH_ARGZERO##-}" -o "${ZSH_ARGZERO:-$0}" = "${0##-}" && return
 
 # store the login shell pid
 export LOGIN_PID="$$"
 
 # when logging out, execute everything in ~/.config/shell/scripts/logout and kill sessions
-trap '{
-    for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/logout/*.sh; do
-        [ -r "$i" ] && . "$i"
-    done
-}' 0
+trap 'for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/logout/*.sh; do test -r "$i" && . "$i"; done' EXIT
 
 # execute everything in ~/.config/shell/scripts/login
 for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/scripts/login/*.sh; do
-    [ -r "$i" ] && . "$i"
+    test -r "$i" && . "$i"
 done
 
 # load the shell init file
-[ -r "$ENV" ] && . "$ENV"
+test -r "$ENV" && . "$ENV"
