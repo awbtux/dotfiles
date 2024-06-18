@@ -8,7 +8,7 @@
 export HOSTNAME
 
 # set up the runtime dir if needed
-test -d "${XDG_RUNTIME_DIR:=/tmp/runtime/${EUID:-${UID:-$(id -u)}}}" || mkdir -pm 0700 "$XDG_RUNTIME_DIR"
+test -d "${XDG_RUNTIME_DIR:=/tmp/runtime.${EUID:-${UID:-$(id -u)}}}" || mkdir -pm 0700 "$XDG_RUNTIME_DIR"
 export XDG_RUNTIME_DIR
 
 # other base directories
