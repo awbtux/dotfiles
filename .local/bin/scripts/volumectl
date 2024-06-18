@@ -7,13 +7,13 @@ done
 
 # change volume/mute status
 test "$1" = "up" && 
-    (test "$volcmd" = "amixer" && amixer sset Master 3+;:) &&
+    (test "$volcmd" = "amixer" && amixer sset Master 6+;:) &&
     (test "$volcmd" = "sndioctl" && sndioctl output.level=+0.03;:) &&
     (test "$volcmd" = "wpctl" && wpctl set-volume @DEFAULT_SINK@ 3%+;:) &&
     (test "$volcmd" = "pactl" && pactl set-sink-volume @DEFAULT_SINK@ +3%;:) &&
     (test "$volcmd" = "pamixer" && pamixer -i 3;:)
 test "$1" = "down" &&
-    (test "$volcmd" = "amixer" && amixer sset Master 3-;:) &&
+    (test "$volcmd" = "amixer" && amixer sset Master 6-;:) &&
     (test "$volcmd" = "sndioctl" && sndioctl output.level=-0.03;:) &&
     (test "$volcmd" = "wpctl" && wpctl set-volume @DEFAULT_SINK@ 3%-;:) &&
     (test "$volcmd" = "pactl" && pactl set-sink-volume @DEFAULT_SINK@ -3%;:) &&
