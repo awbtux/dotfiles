@@ -2,6 +2,9 @@
 
 # ask the user to provide an option that overrides a specified default
 
+# we need stdin
+test ! -t 0 && printf "%s: error: stdin must be a terminal\n" "${0##*/}" >&2 && exit 4
+
 # we need a title
 test -z "$1" && printf "${0##*/}: error: No prompt provided\n" && exit 1
 

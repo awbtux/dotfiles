@@ -4,20 +4,51 @@
 # if the login shell doesn't find .local/share/dots/.configured.txt, this runs automatically
 # TODO: finish this script
 
-# run commands
-run() { cmd="$1"; shift; test -z "$(command -v "$cmd")" && return 1; printf "\033[90m\$\033[39;3m %s %s\033[0m\n" "$cmd" "$*" >&2; "$cmd" "$@"; }
-
 # go home
 cd
 
+# save cursor position for later
+printf "\0337\033[s"
+
+# run commands
+run() { cmd="$1"; shift; test -z "$(command -v "$cmd")" && return 1; printf "\033[90m\$\033[39;3m %s %s\033[0m\n" "$cmd" "$*" >&2; "$cmd" "$@"; }
+
+# get a timestamp
+get_timestamp() {
+    test "$(date +%N)" = "%N" && printf "%d" "$(date +%s)" && return
+    printf "%1.3f" "$(date +%s.%N)"
+}
+
+# compare timestamps
+diff_timestamp() {
+    awk -v a="${1:-0}" -v b="${2:-0}" 'BEGIN{print b - a; exit}'
+}
+
+# format a timestamp
+fmt_timestamp() {
+    sec="${1%%.*}"; ms="${1##$sec}"; day="$((sec / 86400))"; sec="$((sec % 86400))"; hr="$((sec / 3600))"; sec="$((sec % 3600))"; min="$((sec / 60))"; sec="$((sec % 60))"; sec="$sec$ms"
+    printf "$(test "$day" -gt 0 && printf "%%d%%s%%s%%s")" "$day" "$(test "$time_fmt" = "s" && printf "d" || printf " day")" "$(test "$day" != "1" -a "$time_fmt" != "s" && printf "s")" "$(test "$hr" = "0" -a "$min" = "0" -a "$sec" = "0" || printf ", ")"
+    printf "$(test "$hr" -gt 0 && printf "%%d%%s%%s%%s")" "$hr" "$(test "$time_fmt" = "s" && printf "h" || printf " hour")" "$(test "$hr" != "1" -a "$time_fmt" != "s" && printf "s")" "$(test "$min" = "0" -a "$sec" = "0" || printf ", ")"
+    printf "$(test "$min" -gt 0 && printf "%%d%%s%%s%%s")" "$min" "$(test "$time_fmt" = "s" && printf "h" || printf " minute")" "$(test "$min" != "1" -a "$time_fmt" != "s" && printf "s")" "$(test "$sec" = "0" -a "$sec" = "0" || printf ", ")"
+    printf "$(test "$sec" != "0" && printf "%%s%%s%%s")" "$sec" "$(test "$time_fmt" = "s" -o "${sec%%.*}" = "0" && printf "s" || printf " second")" "$(test "$sec" != "1" -a "$sec" != "1.000" -a "${sec%%.*}" != "0" -a "$time_fmt" != "s" && printf "s")"
+}
+
+# starting time
+start="$(get_timestamp)"
+
+# make vim work if neovim isn't installed
+for c in vim vim.normal vim.tiny vim.huge vim-normal vim-tiny vim-huge; do
+    command -v "$c" >/dev/null 2>&1 && ! (command -v nvim >/dev/null 2>&1) && run ln -sfv ".config/vim" "$HOME/.vim" && break
+done
+
 # generate a theme
-run generate-theme nord </dev/null
+run generate-theme "$(list-theme 2>/dev/null | sed -n '/___/d;s:^.*/\([a-zA-Z0-9._-]\+\)/theme.conf$:\1:gp' | (run shuf -n1 || run sort -R | run sed '1p'))" </dev/null &
 
 # build `bat` theme cache
 run bat cache --build </dev/null &
 
 # if $HOME is the worktree of a git repo, pull from origin and init submodules
-test -d "$PWD/.git" && run sh -c 'git pull; git submodule update --init --recursive' </dev/null &
+test -d "$PWD/.git" && (while ! (run git pull; run git submodule update --init --recursive); do git_tries="$((git_tries+1))"; run sleep 2 2>/dev/null; test "$git_tries" = "7" && break; done) </dev/null &
 
 # prevent this script from getting automatically sourced by login scripts
 printf "%s\n%s\n%s\n%s\n" \
@@ -29,3 +60,6 @@ printf "%s\n%s\n%s\n%s\n" \
 
 # wait for jobs to finish
 wait
+
+# print success message and restore cursor position
+printf "\0338\033[u\033[J\033[0J\033[1;32m✓\033[0m Finished deploying%s\n" " in $(fmt_timestamp "$(diff_timestamp "$start" "$(get_timestamp)")")"

@@ -26,10 +26,10 @@ for i in $(printf "$disks"); do
     perc="$(df "$i" 2>/dev/null | awk 'NR>1 {print $5}' | awk -F'%' '{print $1}')"
 
     # length of disk name
-    [ "$(printf "$i" | wc -c)" -gt ${disknamelen:-0} ] && disknamelen="$(printf "$i" | wc -c)"
+    test "$(printf "$i" | wc -c)" -gt ${disknamelen:-0} && disknamelen="$(printf "$i" | wc -c)"
 
     # length of disk percentage
-    [ "$(printf "$perc" | wc -c)" -gt ${diskperclen:-0} ] && diskperclen="$(printf "$perc" | wc -c)"
+    test "$(printf "$perc" | wc -c)" -gt ${diskperclen:-0} && diskperclen="$(printf "$perc" | wc -c)"
 done
 
 # heading
@@ -51,12 +51,12 @@ for i in $(printf "$disks"); do
     barusage="$(((perc*barlen)/100))"
 
     # ensure at least 1 if >=1%
-    [ "$barusage" -le 1 ] && [ "$perc" -gt 0 ] && barusage="1"
+    test "$barusage" -le 1 && test "$perc" -gt 0 && barusage="1"
 
     # determine the used cell color
-    [ "$perc" -gt 0 ] && usedcol="\033[32m"
-    [ "$perc" -gt 66 ] && usedcol="\033[33m"
-    [ "$perc" -gt 89 ] && usedcol="\033[31m"
+    test "$perc" -gt 0 && usedcol="\033[32m"
+    test "$perc" -gt 66 && usedcol="\033[33m"
+    test "$perc" -gt 89 && usedcol="\033[31m"
 
     # beginning label
     printf "%${disknamelen}s: \033[1m%${diskperclen}s%% [$usedcol" "$i" "$perc"

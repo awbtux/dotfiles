@@ -13,10 +13,14 @@ test "$1" = "-n" && nummode="y" && shift
 # we need a title and at least one option
 test -z "$2" && printf "%s: error: Missing arguments\n" "${0##*/}" >&2 && exit 1
 
+# we need stdin
+test ! -t 0 && printf "%s: error: stdin must be a terminal\n" "${0##*/}" >&2 && exit 4
+
 # print title and get option count
-printf "\n\033[1m%s\033[22m\n" "$1" >&2
+printf "\033[1m%s\033[22m\n" "$1" >&2
 shift
 itmc="$#"
+linec="$(($#+1))"
 
 # list items
 for itm in "$@"; do
@@ -27,9 +31,11 @@ done
 # get the user's choice
 while true; do
     printf "\033[1mEnter your choice [\033[36m1\033[39m-\033[36m$#\033[39m]\033[22m " >&2
+    linec="$((linec+1))"
     read inum
     test "$inum" -gt "0" -a "$inum" -le "$#" >/dev/null 2>&1 && break
 done
 
 # print the option or its number
+printf "\033[${linec}F\033[0J" >&2
 eval "printf \"$(test "$nummode" = "y" || printf '$')$inum\""

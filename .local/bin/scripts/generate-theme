@@ -1,11 +1,11 @@
 #!/bin/sh
 
 # generate theme configurations
-# TODO: overhaul macros and use a preprocessor instead of sed
 
 # theme select menu
 chtheme() {
     test -z "$1" && return 1
+    test ! -t 0 && printf "%s: chtheme: error: stdin must be a terminal\n" "${0##*/}" >&2 && exit 4
     printf "\033[1mApplying which theme?\033[22m\n" >&2
     itmc="$#"
     linec="$(($#+1))"
@@ -22,7 +22,7 @@ chtheme() {
         test "$inum" -gt "0" -a "$inum" -le "$#" >&- 2>&- && break
     done
     eval "printf \"\${$inum##*/}\""
-    printf "\033[${linec}A$(for a in $(seq 1 "$linec"); do printf "\033[2K\n"; done)\n\033[${linec}A" >&2
+    printf "\033[${linec}F\033[0J" >&2
 }
 
 # we need sed
@@ -43,19 +43,18 @@ IFS="$(printf "\n\v")"
 test -z "$themes" && themes="$(find "$themedir" -mindepth 1 -type d 2>/dev/null)"
 test -z "$themes" && themes="$(for d in "$themedir"/* "$themedir"/*/*; do test -d "$d" && printf "%s\n" "$d"; done)"
 test -z "$theme" && theme="$(chtheme $themes)"
+test "$?" = "4" && exit 4
 test ! -r "$themedir/$theme/theme.conf" && printf "%s: error: %s: No such file or directory" "$0" "$themedir/$theme/theme.conf"
-
-# print theme variables
 #sed -n '/^\${theme_[a-zA-Z0-9_]\+} = .*$/s/^\${\([a-zA-Z0-9_]\+\)} = \(.*\)$/\1: "\2"/gp' "$themedir/$theme/theme.conf"
 
 # generate theme-specific config files from templates
-for file in $(find "${XDG_CONFIG_HOME:-$HOME/.config}" "${XDG_DATA_HOME:-$HOME/.local/share}" -type f | sed -n '/\/\.\?___/p'); do
+for file in $(find "${XDG_CONFIG_HOME:-$HOME/.config}" -type f | sed -n '/\/\.\?___/p'); do
     dir="${file%/*}"
     name="${file##*/}"
     test "${name#.}" != "$name" && name=".${name##.___}" || name="${name##___}"
-    printf "%s\r\n" "sed <./${file##*/} >./$name"
+    printf "%s\n" "sed <./${file##*/} >./$name"
     eval "sed $(for sub in $(sed -n '/^\${theme_[a-zA-Z0-9_]\+} = .*$/p' "$themedir/$theme/theme.conf"); do printf -- "-e 's\f%s\f%s\fg' " "${sub%% = *}" "${sub##${sub%% = *} = }"; done)" <"$file" >"$dir/$name" || exit 1
-    printf "\033[1A\033[2KGenerated %s/%s\n" "~${dir##$HOME}" "$name"
+    printf "\033[1F\033[2KGenerated %s/%s\n" "~${dir##$HOME}" "$name"
 done
 
 # reload theme if we can

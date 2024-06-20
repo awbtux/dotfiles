@@ -15,7 +15,7 @@ printf "\n\033[1mPower information:\033[22m\n"
 
 # for each battery
 for i in /sys/class/power_supply/BAT*; do
-    [ -r "$i" ] || continue
+    test -r "$i" || continue
     b_mfr="$(cat $i/manufacturer 2>/dev/null)"
     b_model="$(cat $i/model_name 2>/dev/null)"
     b_perc="$(cat $i/capacity 2>/dev/null)"
@@ -46,7 +46,7 @@ for i in /sys/class/power_supply/BAT*; do
             b_rmng_mins="$(printf "0.${b_rmng##*.} * 60\n" | bc -ql 2>/dev/null)"
             b_rmng="${b_rmng%%.*}"
             b_rmng_mins="${b_rmng_mins%%.*}"
-            [ -z "$b_rmng_mins" ] && b_rmng_mins="0"
+            test -z "$b_rmng_mins" && b_rmng_mins="0"
             b_rmng_prefix="discharging"
             b_rmng_suffix="left"
             ;;
@@ -55,7 +55,7 @@ for i in /sys/class/power_supply/BAT*; do
             b_rmng_mins="$(printf "0.${b_rmng##*.} * 60\n" | bc -ql 2>/dev/null)"
             b_rmng="${b_rmng%%.*}"
             b_rmng_mins="${b_rmng_mins%%.*}"
-            [ -z "$b_rmng_mins" ] && b_rmng_mins="0"
+            test -z "$b_rmng_mins" && b_rmng_mins="0"
             b_rmng_prefix="charging"
             b_rmng_suffix="left"
             ;;
@@ -64,9 +64,9 @@ for i in /sys/class/power_supply/BAT*; do
     esac
 
     # decide the percentage color
-    [ "$b_perc" -ge 0 ] && b_usecol="\033[31m"
-    [ "$b_perc" -gt 20 ] && b_usecol="\033[33m"
-    [ "$b_perc" -gt 49 ] && b_usecol="\033[32m"
+    test "$b_perc" -ge 0 && b_usecol="\033[31m"
+    test "$b_perc" -gt 20 && b_usecol="\033[33m"
+    test "$b_perc" -gt 49 && b_usecol="\033[32m"
 
     # battery name
     printf "  $b_mfr $b_model (${i##*/}):\n"
@@ -78,9 +78,9 @@ for i in /sys/class/power_supply/BAT*; do
     printf "${b_rmng_prefix:+ ($b_rmng_prefix, }${b_rmng:+${b_rmng}h }${b_rmng_mins:+${b_rmng_mins}m $b_rmng_suffix)}\033[22m;\n"
 
     # decide the percentage color
-    [ "$b_wh_perc" -ge 0 ] && b_usecol="\033[31m"
-    [ "$b_wh_perc" -gt 30 ] && b_usecol="\033[33m"
-    [ "$b_wh_perc" -gt 60 ] && b_usecol="\033[32m"
+    test "$b_wh_perc" -ge 0 && b_usecol="\033[31m"
+    test "$b_wh_perc" -gt 30 && b_usecol="\033[33m"
+    test "$b_wh_perc" -gt 60 && b_usecol="\033[32m"
 
     # battery health
     printf "    \033[1mHealth: ${b_usecol}${b_wh_perc}.${b_wh_decperc}%%\033[39m (${b_wh_full}${b_wh_full_dec:+.$b_wh_full_dec}Wh/${b_wh_design}${b_wh_design_dec:+.$b_wh_design_dec}Wh, cycle $b_cc)\033[22m;\n"

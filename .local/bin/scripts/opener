@@ -4,7 +4,7 @@
 # TODO: add more versatile filetype detection, wl/x11 separation
 
 # load software configuration
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/programs" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/programs"
+test -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/programs" && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/programs"
 
 # check if the inputted string is a url using the file:// handler or a local path
 is_file() {

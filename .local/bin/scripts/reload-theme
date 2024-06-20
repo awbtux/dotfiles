@@ -3,29 +3,14 @@
 # reload the font cache
 fc-cache
 
-# read PIDs from file
-readfrom() {
-    for f in "$@"; do
-        test -f "$f" -a -r "$f" || continue
-        cat "$f" 2>/dev/null && continue
-        tail -n+0 "$f" 2>/dev/null && continue
-        head -n-0 "$f" 2>/dev/null && continue
-        awk '{print}' "$f" 2>/dev/null && continue
-        (tac "$f" 2>/dev/null | tac 2>/dev/null) && continue
-        grep '.*' "$f" 2>/dev/null && continue
-        tee <"$f" 2>/dev/null && continue
-        while IFS= read -r line; do printf "%s " "$line"; done <"$f"
-    done
-}
-
 # reload waybar
-test -n "$WAYLAND_DISPLAY" -a -z "$(command -v yambar)" -a -n "$(command -v waybar)" && (test -n "$(readfrom "/tmp/waybar.session.$LOGIN_PID")" && kill $(readfrom "/tmp/waybar.session.$LOGIN_PID");:) && (waybar </dev/null >&0 2>&0 & printf "$!\n" >"/tmp/waybar.session.$LOGIN_PID")
+test -n "$WAYLAND_DISPLAY" -a -z "$(command -v yambar)" -a -n "$(command -v waybar)" && (test -n "$(cat "/tmp/waybar.session.$LOGIN_PID")" && kill $(cat "/tmp/waybar.session.$LOGIN_PID");:) && (waybar </dev/null >&0 2>&0 & printf "$!\n" >"/tmp/waybar.session.$LOGIN_PID")
 
 # reload yambar using its command
-command -v yambar >/dev/null 2>&1 && test -n "$WAYLAND_DISPLAY" -a -z "$(command -v yambarr)" && (test -n "$(readfrom "/tmp/yambar.session.$LOGIN_PID")" && kill $(readfrom "/tmp/yambar.session.$LOGIN_PID");:) && (yambar </dev/null >&0 2>&0 & printf "$!\n" >"/tmp/waybar.session.$LOGIN_PID")
+command -v yambar >/dev/null 2>&1 && test -n "$WAYLAND_DISPLAY" -a -z "$(command -v yambarr)" && (test -n "$(cat "/tmp/yambar.session.$LOGIN_PID")" && kill $(cat "/tmp/yambar.session.$LOGIN_PID");:) && (yambar </dev/null >&0 2>&0 & printf "$!\n" >"/tmp/waybar.session.$LOGIN_PID")
 
 # reload yambar using the helper script
 command -v yambarr >/dev/null 2>&1 && (yambarr </dev/null >&0 2>&0 &:)
 
 # reload riverwm theme
-command -v riverctl >/dev/null 2>&1 && test -n "$WAYLAND_DISPLAY" -a -n "$(readfrom "/tmp/river.compositor.$LOGIN_PID")" && sh "${XDG_CONFIG_HOME:-$HOME/.config}/river/theme" </dev/null >&0 2>&0 &
+command -v riverctl >/dev/null 2>&1 && test -n "$WAYLAND_DISPLAY" -a -n "$(cat "/tmp/river.compositor.$LOGIN_PID")" && sh "${XDG_CONFIG_HOME:-$HOME/.config}/river/theme" </dev/null >&0 2>&0 &

@@ -8,6 +8,6 @@ for i in find rm; do
 done
 
 # rm theme-specific config files
-for i in $(find "${XDG_CONFIG_HOME:-$HOME/.config}" "${XDG_DATA_HOME:-$HOME/.local/share}" -type f -name '___*' -o -name '.___*'); do
+for i in $(find "${XDG_CONFIG_HOME:-$HOME/.config}" -type f -name '___*' -o -name '.___*'); do
     test "${i##*/.___}" != "$i" && rm -v "${i%/*}/.${i##*___}"  || rm -v "${i%/*}/${i##*___}"
 done
