@@ -18,7 +18,6 @@
   - `xdg-settings`
 - adapt and reimplement [todo.sh](https://github.com/todotxt/todo.txt-cli/blob/master/todo.sh)
 - write `colorconv`
-- write `deploy-dots`
 - reimplement [notify-send](https://www.man.page/1/notify-send), make it handle x11/wayland/TTYs properly
 - improve filetype support for [lf](https://github.com/gokcehan/lf) previews (videos/images, epub/pdf/ppt and so on)
 - thumbnails/image previews in `lf` on wayland
