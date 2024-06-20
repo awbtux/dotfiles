@@ -11,8 +11,8 @@ bar:
     spacing: 2
     margin: 0
     layer: bottom
-    foreground: #::darkfg::#ff
-    background: #::statusbg::#ff
+    foreground: ${theme_darkfg}ff
+    background: ${theme_statusbg}ff
 
     left:
         - river:
@@ -43,7 +43,7 @@ bar:
                 - tag_selected: &tag_selected
                 - tag_urgent: &tag_urgent
                     background:
-                        color: #::darkred::#ff
+                        color: ${theme_darkred}ff
             content:
                 map:
                     on-click:
@@ -56,13 +56,13 @@ bar:
                                 <<: *river_tags
                                 deco:
                                     background:
-                                        color: #::darkred::#ff
+                                        color: ${theme_darkred}ff
                         state == focused:
                             map:
                                 <<: *river_tags
                                 deco:
                                     background:
-                                        color: #::brightbg::#ff
+                                        color: ${theme_brightbg}ff
                         state == visible && ~occupied:
                             map:
                                 <<: *river_tags
@@ -98,7 +98,7 @@ bar:
             content:
                 string:
                     text: "{script}"
-                    foreground: #::mainmagenta::#ff
+                    foreground: ${theme_mainmagenta}ff
         - script:
             poll-interval: 10000
             path: /bin/sh
@@ -108,7 +108,7 @@ bar:
             content:
                 string:
                     text: "{script}"
-                    foreground: #::mainblue::#ff
+                    foreground: ${theme_mainblue}ff
         - battery:
             name: BAT0
             poll-interval: 10000
@@ -121,37 +121,37 @@ bar:
                                 items:
                                     - string:
                                         text: "󰂎 {capacity}% {estimate}"
-                                        foreground: #::mainred::#ff
+                                        foreground: ${theme_mainred}ff
                                     - string:
                                         text: "󰁺 {capacity}% {estimate}"
-                                        foreground: #::mainred::#ff
+                                        foreground: ${theme_mainred}ff
                                     - string:
                                         text: "󰁻 {capacity}% {estimate}"
-                                        foreground: #::brightyellow::#ff
+                                        foreground: ${theme_brightyellow}ff
                                     - string:
                                         text: "󰁼 {capacity}% {estimate}"
-                                        foreground: #::brightyellow::#ff
+                                        foreground: ${theme_brightyellow}ff
                                     - string:
                                         text: "󰁽 {capacity}% {estimate}"
-                                        foreground: #::brightyellow::#ff
+                                        foreground: ${theme_brightyellow}ff
                                     - string:
                                         text: "󰁾 {capacity}% {estimate}"
-                                        foreground: #::brightyellow::#ff
+                                        foreground: ${theme_brightyellow}ff
                                     - string:
                                         text: "󰁿 {capacity}% {estimate}"
-                                        foreground: #::maingreen::#ff
+                                        foreground: ${theme_maingreen}ff
                                     - string:
                                         text: "󰂀 {capacity}% {estimate}"
-                                        foreground: #::maingreen::#ff
+                                        foreground: ${theme_maingreen}ff
                                     - string:
                                         text: "󰂁 {capacity}% {estimate}"
-                                        foreground: #::maingreen::#ff
+                                        foreground: ${theme_maingreen}ff
                                     - string:
                                         text: "󰂂 {capacity}% {estimate}"
-                                        foreground: #::maingreen::#ff
+                                        foreground: ${theme_maingreen}ff
                                     - string:
                                         text: "󰁹 {capacity}% {estimate}"
-                                        foreground: #::maingreen::#ff
+                                        foreground: ${theme_maingreen}ff
             content:
                 map:
                     conditions:
@@ -162,48 +162,48 @@ bar:
                         state == charging:
                             - string:
                                 text: " {capacity}% {estimate}"
-                                foreground: #::maingreen::#ff
+                                foreground: ${theme_maingreen}ff
                         state == full:
                             - string:
                                 text: "󰁹 {capacity}% full"
-                                foreground: #::maingreen::#ff
+                                foreground: ${theme_maingreen}ff
                         state == "not charging":
                             - ramp:
                                 tag: capacity
                                 items:
                                     - string:
                                         text: "  󰂎 {capacity}% {estimate}"
-                                        foreground: #::mainred::#ff
+                                        foreground: ${theme_mainred}ff
                                     - string:
                                         text: "  󰁺 {capacity}% {estimate}"
-                                        foreground: #::mainred::#ff
+                                        foreground: ${theme_mainred}ff
                                     - string:
                                         text: "  󰁻 {capacity}% {estimate}"
-                                        foreground: #::brightyellow::#ff
+                                        foreground: ${theme_brightyellow}ff
                                     - string:
                                         text: "  󰁼 {capacity}% {estimate}"
-                                        foreground: #::brightyellow::#ff
+                                        foreground: ${theme_brightyellow}ff
                                     - string:
                                         text: "  󰁽 {capacity}% {estimate}"
-                                        foreground: #::brightyellow::#ff
+                                        foreground: ${theme_brightyellow}ff
                                     - string:
                                         text: "  󰁾 {capacity}% {estimate}"
-                                        foreground: #::brightyellow::#ff
+                                        foreground: ${theme_brightyellow}ff
                                     - string:
                                         text: "  󰁿 {capacity}% {estimate}"
-                                        foreground: #::maingreen::#ff
+                                        foreground: ${theme_maingreen}ff
                                     - string:
                                         text: "  󰂀 {capacity}% {estimate}"
-                                        foreground: #::maingreen::#ff
+                                        foreground: ${theme_maingreen}ff
                                     - string:
                                         text: "  󰂁 {capacity}% {estimate}"
-                                        foreground: #::maingreen::#ff
+                                        foreground: ${theme_maingreen}ff
                                     - string:
                                         text: "  󰂂 {capacity}% {estimate}"
-                                        foreground: #::maingreen::#ff
+                                        foreground: ${theme_maingreen}ff
                                     - string:
                                         text: "  󰁹 {capacity}% {estimate}"
-                                        foreground: #::maingreen::#ff
+                                        foreground: ${theme_maingreen}ff
         - clock:
             time-format: "%a, %b %d %Y %I:%M:%S %p %Z"
             content:

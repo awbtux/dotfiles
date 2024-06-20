@@ -19,46 +19,46 @@ resize_increments = true
 title = "Terminal"
 
 [font]
-normal = { family = "#::font-monospace::#" }
+normal = { family = "${theme_font_monospace}" }
 bold_italic = { style = "BoldItalic" }
 size = 9
 builtin_box_drawing = true
 
 [colors.primary]
-background = "##::mainbg::#"
-foreground = "##::mainfg::#"
-bright_foreground = "##::brightfg::#"
-dim_foreground = "##::darkerfg::#"
+background = "#${theme_mainbg}"
+foreground = "#${theme_mainfg}"
+bright_foreground = "#${theme_brightfg}"
+dim_foreground = "#${theme_darkerfg}"
 
 [colors.normal]
-black = "##::mainbg::#"
-red = "##::mainred::#"
-green = "##::maingreen::#"
-yellow = "##::mainyellow::#"
-blue = "##::mainblue::#"
-magenta = "##::mainmagenta::#"
-cyan = "##::maincyan::#"
-white = "##::mainfg::#"
+black = "#${theme_mainbg}"
+red = "#${theme_mainred}"
+green = "#${theme_maingreen}"
+yellow = "#${theme_mainyellow}"
+blue = "#${theme_mainblue}"
+magenta = "#${theme_mainmagenta}"
+cyan = "#${theme_maincyan}"
+white = "#${theme_mainfg}"
 
 [colors.bright]
-black = "##::brighterbg2::#"
-red = "##::brightred::#"
-green = "##::brightgreen::#"
-yellow = "##::brightyellow::#"
-blue = "##::brightblue::#"
-magenta = "##::brightmagenta::#"
-cyan = "##::brightcyan::#"
-white = "##::brightfg::#"
+black = "#${theme_brighterbg2}"
+red = "#${theme_brightred}"
+green = "#${theme_brightgreen}"
+yellow = "#${theme_brightyellow}"
+blue = "#${theme_brightblue}"
+magenta = "#${theme_brightmagenta}"
+cyan = "#${theme_brightcyan}"
+white = "#${theme_brightfg}"
 
 [colors.dim]
-black = "##::brightbg2::#"
-red = "##::darkred::#"
-green = "##::darkgreen::#"
-yellow = "##::darkyellow::#"
-blue = "##::darkblue::#"
-magenta = "##::darkmagenta::#"
-cyan = "##::darkcyan::#"
-white = "##::darkerfg::#"
+black = "#${theme_brightbg2}"
+red = "#${theme_darkred}"
+green = "#${theme_darkgreen}"
+yellow = "#${theme_darkyellow}"
+blue = "#${theme_darkblue}"
+magenta = "#${theme_darkmagenta}"
+cyan = "#${theme_darkcyan}"
+white = "#${theme_darkerfg}"
 
 [colors]
 transparent_background_colors = true
@@ -67,7 +67,7 @@ draw_bold_text_with_bright_colors = true
 [bell]
 animation = "Linear"
 duration = 0
-color = "##::brightfg::#"
+color = "#${theme_brightfg}"
 
 [cursor]
 style = { shape = "Block", blinking = "On" }

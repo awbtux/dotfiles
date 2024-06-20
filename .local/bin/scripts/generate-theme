@@ -6,20 +6,23 @@
 # theme select menu
 chtheme() {
     test -z "$1" && return 1
-    printf "\n\033[1mApplying which theme?\033[22m\n" >&2
+    printf "\033[1mApplying which theme?\033[22m\n" >&2
     itmc="$#"
+    linec="$(($#+1))"
     for itm in "$@"; do
         itmc="$((itmc-1))"
         printf "\033[1m[\033[36m%s\033[39m]\033[22m " "$(($#-itmc))" >&2
-        printf "$(sed -n '2s/^#\\e\(\[38;2;[0-9]\+;[0-9]\+;[0-9]\+m\)\\e\(\[48;2;[0-9]\+;[0-9]\+;[0-9]\+m\)$/\x1B\1\x1B\2/p' <"$itm/theme.conf" 2>/dev/null)" >&2
+        printf "$(sed -n '1s/^#\\e\(\[38;2;[0-9]\+;[0-9]\+;[0-9]\+m\)\\e\(\[48;2;[0-9]\+;[0-9]\+;[0-9]\+m\)$/\x1B\1\x1B\2/p' <"$itm/theme.conf" 2>/dev/null)" >&2
         printf "%s\033[0m\n" "${itm##*/}" >&2
     done
     while true; do
         printf "\033[1mEnter your choice [\033[36m1\033[39m-\033[36m$#\033[39m]\033[22m " >&2
+        linec="$((linec+1))"
         read inum
         test "$inum" -gt "0" -a "$inum" -le "$#" >&- 2>&- && break
     done
     eval "printf \"\${$inum##*/}\""
+    printf "\033[${linec}A$(for a in $(seq 1 "$linec"); do printf "\033[2K\n"; done)\n\033[${linec}A" >&2
 }
 
 # we need sed
@@ -33,76 +36,27 @@ themedir="${XDG_CONFIG_HOME:-$HOME/.config}/themes"
 # get name of theme from $1
 test -r "$themedir${1:+/$1/}theme.conf" && theme="$1"
 
-# or pick one
-IFS="$(printf "\n\t")"
-test -z "$theme" && theme="$(chtheme $(find "$themedir" -mindepth 1 -type d 2>/dev/null))"
-test -z "$theme" && theme="$(chtheme $(for d in "$themedir"/* "$themedir"/*/*; do test -d "$d" && printf "%s\n" "$d"; done))"
-IFS="$(printf " \n\t")"
+# for loops won't split fields using tabs or spaces
+IFS="$(printf "\n\v")"
 
-# source theme file
-. "$themedir/$theme/theme.conf" || exit "$?"
+# or pick one
+test -z "$themes" && themes="$(find "$themedir" -mindepth 1 -type d 2>/dev/null)"
+test -z "$themes" && themes="$(for d in "$themedir"/* "$themedir"/*/*; do test -d "$d" && printf "%s\n" "$d"; done)"
+test -z "$theme" && theme="$(chtheme $themes)"
+test ! -r "$themedir/$theme/theme.conf" && printf "%s: error: %s: No such file or directory" "$0" "$themedir/$theme/theme.conf"
+
+# print theme variables
+#sed -n '/^\${theme_[a-zA-Z0-9_]\+} = .*$/s/^\${\([a-zA-Z0-9_]\+\)} = \(.*\)$/\1: "\2"/gp' "$themedir/$theme/theme.conf"
 
 # generate theme-specific config files from templates
-for f in $(find "${XDG_CONFIG_HOME:-$HOME/.config}" "${XDG_DATA_HOME:-$HOME/.local/share}" -type f | sed -n '/\/\.\?___/p'); do
-    dir="${f%/*}"
-    name="${f##*/}"
+for file in $(find "${XDG_CONFIG_HOME:-$HOME/.config}" "${XDG_DATA_HOME:-$HOME/.local/share}" -type f | sed -n '/\/\.\?___/p'); do
+    dir="${file%/*}"
+    name="${file##*/}"
     test "${name#.}" != "$name" && name=".${name##.___}" || name="${name##___}"
-
-    # substitution for fonts, colors, vim colorschemes, and directories
-    sed \
-        -e "s/#::font-monospace::#/${theme_font_monospace:-monospace}/g" \
-        -e "s/#::font-serif::#/${theme_font_serif:-serif}/g" \
-        -e "s/#::font-sans-serif::#/${theme_font_sans_serif:-sans-serif}/g" \
-        -e "s/#::vim-colorscheme::#/${theme_vim_colorscheme:-default}/g" \
-        -e "s/#::vim-transparency::#/${theme_vim_transparency:-false}/g" \
-        -e "s/#::rootbg::#/$theme_rootbg/g" \
-        -e "s/#::darkbg::#/$theme_darkbg/g" \
-        -e "s/#::mainbg::#/$theme_mainbg/g" \
-        -e "s/#::mainbg2::#/$theme_mainbg2/g" \
-        -e "s/#::statusbg::#/$theme_statusbg/g" \
-        -e "s/#::statusbg2::#/$theme_statusbg2/g" \
-        -e "s/#::brightbg::#/$theme_brightbg/g" \
-        -e "s/#::brightbg2::#/$theme_brightbg2/g" \
-        -e "s/#::brighterbg::#/$theme_brighterbg/g" \
-        -e "s/#::brighterbg2::#/$theme_brighterbg2/g" \
-        -e "s/#::brightestbg::#/$theme_brightestbg/g" \
-        -e "s/#::brightestbg2::#/$theme_brightestbg2/g" \
-        -e "s/#::darkerfg::#/$theme_darkerfg/g" \
-        -e "s/#::darkfg::#/$theme_darkfg/g" \
-        -e "s/#::mainfg::#/$theme_mainfg/g" \
-        -e "s/#::brightfg::#/$theme_brightfg/g" \
-        -e "s/#::darkred::#/$theme_darkred/g" \
-        -e "s/#::mainred::#/$theme_mainred/g" \
-        -e "s/#::brightred::#/$theme_brightred/g" \
-        -e "s/#::darkgreen::#/$theme_darkgreen/g" \
-        -e "s/#::maingreen::#/$theme_maingreen/g" \
-        -e "s/#::brightgreen::#/$theme_brightgreen/g" \
-        -e "s/#::darkyellow::#/$theme_darkyellow/g" \
-        -e "s/#::mainyellow::#/$theme_mainyellow/g" \
-        -e "s/#::brightyellow::#/$theme_brightyellow/g" \
-        -e "s/#::darkorange::#/$theme_darkorange/g" \
-        -e "s/#::mainorange::#/$theme_mainorange/g" \
-        -e "s/#::brightorange::#/$theme_brightorange/g" \
-        -e "s/#::darkblue::#/$theme_darkblue/g" \
-        -e "s/#::mainblue::#/$theme_mainblue/g" \
-        -e "s/#::brightblue::#/$theme_brightblue/g" \
-        -e "s/#::darkmagenta::#/$theme_darkmagenta/g" \
-        -e "s/#::mainmagenta::#/$theme_mainmagenta/g" \
-        -e "s/#::brightmagenta::#/$theme_brightmagenta/g" \
-        -e "s/#::darkcyan::#/$theme_darkcyan/g" \
-        -e "s/#::maincyan::#/$theme_maincyan/g" \
-        -e "s/#::brightcyan::#/$theme_brightcyan/g" \
-        -e "s%#::configdir::#%${XDG_CONFIG_HOME:-$HOME/.config}%g" \
-        -e "s%#::datadir::#%${XDG_DATA_HOME:-$HOME/.local/share}%g" \
-        -e "s%#::statedir::#%${XDG_DATA_HOME:-$HOME/.local/state}%g" \
-        -e "s%#::cachedir::#%${XDG_CACHE_HOME:-$HOME/.cache}%g" \
-        -e "s%#::docdir::#%${XDG_DOCUMENTS_DIR:-$HOME/Documents}%g" \
-        -e "s%#::dldir::#%${XDG_DOWNLOAD_DIR:-$HOME/Downloads}%g" \
-        -e "s%#::musicdir::#%${XDG_MUSIC_DIR:-$HOME/Music}%g" \
-        -e "s%#::picdir::#%${XDG_PICTURES_DIR:-$HOME/Pictures}%g" \
-        -e "s%#::videodir::#%${XDG_VIDEOS_DIR:-$HOME/Videos}%g" \
-    <"$f" >"$dir/$name"
+    printf "%s\r\n" "sed <./${file##*/} >./$name"
+    eval "sed $(for sub in $(sed -n '/^\${theme_[a-zA-Z0-9_]\+} = .*$/p' "$themedir/$theme/theme.conf"); do printf -- "-e 's\f%s\f%s\fg' " "${sub%% = *}" "${sub##${sub%% = *} = }"; done)" <"$file" >"$dir/$name" || exit 1
+    printf "\033[1A\033[2KGenerated %s/%s\n" "~${dir##$HOME}" "$name"
 done
 
 # reload theme if we can
-test -n "$(command -v reload-theme)" && reload-theme
+command -v reload-theme >/dev/null 2>&1 && reload-theme </dev/null &

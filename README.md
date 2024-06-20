@@ -16,8 +16,6 @@
   - `xdg-email`
   - `xdg-screensaver`
   - `xdg-settings`
-- overhaul macro system used in `generate-theme` and handle process respawning more safely
-  - update themes accordingly
 - adapt and reimplement [todo.sh](https://github.com/todotxt/todo.txt-cli/blob/master/todo.sh)
 - write `colorconv`
 - write `deploy-dots`
