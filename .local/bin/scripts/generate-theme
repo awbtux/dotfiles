@@ -53,7 +53,7 @@ for file in $(find "${XDG_CONFIG_HOME:-$HOME/.config}" -type f | sed -n '/\/\.\?
     name="${file##*/}"
     test "${name#.}" != "$name" && name=".${name##.___}" || name="${name##___}"
     printf "%s\n" "sed <./${file##*/} >./$name"
-    eval "sed $(for sub in $(sed -n '/^\${theme_[a-zA-Z0-9_]\+} = .*$/p' "$themedir/$theme/theme.conf"); do printf -- "-e 's\f%s\f%s\fg' " "${sub%% = *}" "${sub##${sub%% = *} = }"; done)" <"$file" >"$dir/$name" || exit 1
+    eval "sed $(for sub in $(sed -n '/^\${theme_[a-zA-Z0-9_]\+} = .*$/p; s/^\${\(theme_[a-zA-Z0-9_]\+\)}/\$(\1)/gp' "$themedir/$theme/theme.conf"); do printf -- "-e 's\f%s\f%s\fg' " "${sub%% = *}" "${sub##${sub%% = *} = }"; done)" <"$file" >"$dir/$name" || exit 1
     printf "\033[1F\033[2KGenerated %s/%s\n" "~${dir##$HOME}" "$name"
 done
 

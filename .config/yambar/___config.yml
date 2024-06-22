@@ -11,8 +11,8 @@ bar:
     spacing: 2
     margin: 0
     layer: bottom
-    foreground: ${theme_darkfg}ff
-    background: ${theme_statusbg}ff
+    foreground: $(theme_darkfg)ff
+    background: $(theme_statusbg)ff
 
     left:
         - river:
@@ -42,8 +42,7 @@ bar:
                         id == 9: {string: {text: 9, font: *mainfont}}
                 - tag_selected: &tag_selected
                 - tag_urgent: &tag_urgent
-                    background:
-                        color: ${theme_darkred}ff
+                    background: {color: $(theme_darkred)ff}
             content:
                 map:
                     on-click:
@@ -54,15 +53,11 @@ bar:
                         state == urgent:
                             map:
                                 <<: *river_tags
-                                deco:
-                                    background:
-                                        color: ${theme_darkred}ff
+                                deco: {background: {color: $(theme_darkred)ff}}
                         state == focused:
                             map:
                                 <<: *river_tags
-                                deco:
-                                    background:
-                                        color: ${theme_brightbg}ff
+                                deco: {background: {color: $(theme_brightbg)ff}}
                         state == visible && ~occupied:
                             map:
                                 <<: *river_tags
@@ -85,9 +80,7 @@ bar:
                     conditions:
                         ~activated: {empty: {}}
                         activated:
-                            - string:
-                                text: "{title}"
-                                font: *mainfont
+                            - string: {text: "{title}", font: *mainfont}
     right:
         - script:
             poll-interval: 10000
@@ -95,20 +88,14 @@ bar:
             args:
                 - '-c'
                 - 'bar=yambar use_icon=y sb-cpu'
-            content:
-                string:
-                    text: "{script}"
-                    foreground: ${theme_mainmagenta}ff
+            content: {string: {text: "{script}", foreground: $(theme_mainmagenta)ff}}
         - script:
             poll-interval: 10000
             path: /bin/sh
             args:
                 - '-c'
                 - 'bar=yambar use_icon=y sb-mem'
-            content:
-                string:
-                    text: "{script}"
-                    foreground: ${theme_mainblue}ff
+            content: {string: {text: "{script}", foreground: $(theme_mainblue)ff}}
         - battery:
             name: BAT0
             poll-interval: 10000
@@ -119,39 +106,17 @@ bar:
                             - ramp:
                                 tag: capacity
                                 items:
-                                    - string:
-                                        text: "󰂎 {capacity}% {estimate}"
-                                        foreground: ${theme_mainred}ff
-                                    - string:
-                                        text: "󰁺 {capacity}% {estimate}"
-                                        foreground: ${theme_mainred}ff
-                                    - string:
-                                        text: "󰁻 {capacity}% {estimate}"
-                                        foreground: ${theme_brightyellow}ff
-                                    - string:
-                                        text: "󰁼 {capacity}% {estimate}"
-                                        foreground: ${theme_brightyellow}ff
-                                    - string:
-                                        text: "󰁽 {capacity}% {estimate}"
-                                        foreground: ${theme_brightyellow}ff
-                                    - string:
-                                        text: "󰁾 {capacity}% {estimate}"
-                                        foreground: ${theme_brightyellow}ff
-                                    - string:
-                                        text: "󰁿 {capacity}% {estimate}"
-                                        foreground: ${theme_maingreen}ff
-                                    - string:
-                                        text: "󰂀 {capacity}% {estimate}"
-                                        foreground: ${theme_maingreen}ff
-                                    - string:
-                                        text: "󰂁 {capacity}% {estimate}"
-                                        foreground: ${theme_maingreen}ff
-                                    - string:
-                                        text: "󰂂 {capacity}% {estimate}"
-                                        foreground: ${theme_maingreen}ff
-                                    - string:
-                                        text: "󰁹 {capacity}% {estimate}"
-                                        foreground: ${theme_maingreen}ff
+                                    - string: {text: "󰂎 {capacity}% {estimate}", foreground: $(theme_mainred)ff}
+                                    - string: {text: "󰁺 {capacity}% {estimate}", foreground: $(theme_mainred)ff}
+                                    - string: {text: "󰁻 {capacity}% {estimate}", foreground: $(theme_brightyellow)ff}
+                                    - string: {text: "󰁼 {capacity}% {estimate}", foreground: $(theme_brightyellow)ff}
+                                    - string: {text: "󰁽 {capacity}% {estimate}", foreground: $(theme_brightyellow)ff}
+                                    - string: {text: "󰁾 {capacity}% {estimate}", foreground: $(theme_brightyellow)ff}
+                                    - string: {text: "󰁿 {capacity}% {estimate}", foreground: $(theme_maingreen)ff}
+                                    - string: {text: "󰂀 {capacity}% {estimate}", foreground: $(theme_maingreen)ff}
+                                    - string: {text: "󰂁 {capacity}% {estimate}", foreground: $(theme_maingreen)ff}
+                                    - string: {text: "󰂂 {capacity}% {estimate}", foreground: $(theme_maingreen)ff}
+                                    - string: {text: "󰁹 {capacity}% {estimate}", foreground: $(theme_maingreen)ff}
             content:
                 map:
                     conditions:
@@ -162,48 +127,26 @@ bar:
                         state == charging:
                             - string:
                                 text: " {capacity}% {estimate}"
-                                foreground: ${theme_maingreen}ff
+                                foreground: $(theme_maingreen)ff
                         state == full:
                             - string:
                                 text: "󰁹 {capacity}% full"
-                                foreground: ${theme_maingreen}ff
+                                foreground: $(theme_maingreen)ff
                         state == "not charging":
                             - ramp:
                                 tag: capacity
                                 items:
-                                    - string:
-                                        text: "  󰂎 {capacity}% {estimate}"
-                                        foreground: ${theme_mainred}ff
-                                    - string:
-                                        text: "  󰁺 {capacity}% {estimate}"
-                                        foreground: ${theme_mainred}ff
-                                    - string:
-                                        text: "  󰁻 {capacity}% {estimate}"
-                                        foreground: ${theme_brightyellow}ff
-                                    - string:
-                                        text: "  󰁼 {capacity}% {estimate}"
-                                        foreground: ${theme_brightyellow}ff
-                                    - string:
-                                        text: "  󰁽 {capacity}% {estimate}"
-                                        foreground: ${theme_brightyellow}ff
-                                    - string:
-                                        text: "  󰁾 {capacity}% {estimate}"
-                                        foreground: ${theme_brightyellow}ff
-                                    - string:
-                                        text: "  󰁿 {capacity}% {estimate}"
-                                        foreground: ${theme_maingreen}ff
-                                    - string:
-                                        text: "  󰂀 {capacity}% {estimate}"
-                                        foreground: ${theme_maingreen}ff
-                                    - string:
-                                        text: "  󰂁 {capacity}% {estimate}"
-                                        foreground: ${theme_maingreen}ff
-                                    - string:
-                                        text: "  󰂂 {capacity}% {estimate}"
-                                        foreground: ${theme_maingreen}ff
-                                    - string:
-                                        text: "  󰁹 {capacity}% {estimate}"
-                                        foreground: ${theme_maingreen}ff
+                                    - string: {text: "  󰂎 {capacity}% {estimate}", foreground: $(theme_mainred)ff}
+                                    - string: {text: "  󰁺 {capacity}% {estimate}", foreground: $(theme_mainred)ff}
+                                    - string: {text: "  󰁻 {capacity}% {estimate}", foreground: $(theme_brightyellow)ff}
+                                    - string: {text: "  󰁼 {capacity}% {estimate}", foreground: $(theme_brightyellow)ff}
+                                    - string: {text: "  󰁽 {capacity}% {estimate}", foreground: $(theme_brightyellow)ff}
+                                    - string: {text: "  󰁾 {capacity}% {estimate}", foreground: $(theme_brightyellow)ff}
+                                    - string: {text: "  󰁿 {capacity}% {estimate}", foreground: $(theme_maingreen)ff}
+                                    - string: {text: "  󰂀 {capacity}% {estimate}", foreground: $(theme_maingreen)ff}
+                                    - string: {text: "  󰂁 {capacity}% {estimate}", foreground: $(theme_maingreen)ff}
+                                    - string: {text: "  󰂂 {capacity}% {estimate}", foreground: $(theme_maingreen)ff}
+                                    - string: {text: "  󰁹 {capacity}% {estimate}", foreground: $(theme_maingreen)ff}
         - clock:
             time-format: "%a, %b %d %Y %I:%M:%S %p %Z"
             content:
