@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# backlight control script
+# this may require root; do `chmod 777 -R /sys/class/backlight` first
+
+# cat substitute
+command -v cat >/dev/null 2>&1 || cat() { while IFS="" read -r line; do printf "%s\n" "$line"; done <"$1"; }
+
+# do stuff
+test -z "$backlight_recursive" -a -z "$driver" && for driver in 5a000000.dsi.0 acpi_video intel_backlight amdgpu_bl0 nvidia_0; do
+    eval 'export driver; backlight_recursive=y '"$0"' "$@"'
+done
+
+# we need permissions etc
+test ! -d /sys/class/backlight/"$driver" && return
+test ! -w /sys/class/backlight/"$driver"/brightness && printf "error: cannot write to %s: Permission denied\n" "/sys/class/backlight/$driver/brightness" && continue
+
+# set vars
+max="$(cat /sys/class/backlight/"$driver"/max_brightness)" || exit 1
+current="$(cat /sys/class/backlight/"$driver"/brightness)" || exit 1
+step="$(awk -v a="$max" 'BEGIN{printf("%f", a*0.05)}')"
+perc="$(awk -v a="$max" 'BEGIN{printf("%f", a*0.01)}')"
+
+# do stuff
+test "$1" != "${1##*set*}" -o "$1" != "${1##*=*}" && awk -v a="$perc" -v b="$(printf "%s\n" "${2:-$1}" | sed 's/[^0-9]//g' | sed 's/^$/5/g')}" 'BEGIN{printf("%d", a*b)}' >"/sys/class/backlight/$driver/brightness" && exit
+test "$1" != "${1##*add*}" -o "$1" != "${1##*+*}" && awk -v a="$perc" -v b="$(printf "%s\n" "${2:-$1}" | sed 's/[^0-9]//g' | sed 's/^$/5/g')}" -v c="$current" 'BEGIN{printf("%d", (a*b)+c)}' >"/sys/class/backlight/$driver/brightness" && exit
+test "$1" != "${1##*sub*}" -o "$1" != "${1##*-*}" && awk -v a="$perc" -v b="$(printf "%s\n" "${2:-$1}" | sed 's/[^0-9]//g' | sed 's/^$/5/g')}" -v c="$current" 'BEGIN{printf("%d", c-(a*b))}' >"/sys/class/backlight/$driver/brightness" && exit

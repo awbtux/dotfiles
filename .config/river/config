@@ -83,5 +83,7 @@ riverctl map            $mode       None                XF86AudioMedia          
 riverctl map            $mode       None                XF86AudioPlay           spawn 'playerctl play-pause'
 riverctl map            $mode       None                XF86AudioPrev           spawn 'playerctl previous'
 riverctl map            $mode       None                XF86AudioNext           spawn 'playerctl next'
+riverctl map            $mode       None                XF86MonBrightnessUp     spawn 'brighten +8'
+riverctl map            $mode       None                XF86MonBrightnessDown   spawn 'brighten -8'
 
 done
