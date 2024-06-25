@@ -18,11 +18,11 @@ set -o vi
 command -v stty >/dev/null 2>&1 && stty -ixon
 
 # load ~/.config/shell/aliases
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"
+test -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"
 
 # load scripts in rc.d
-[ -d "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shrc.d" ] && {
+test -d "${XDG_CONFIG_HOME:-$HOME/.config}/shell/shrc.d" && {
     for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/shrc.d/*.sh; do
-        [ -r "$i" ] && . "$i"
+        test -r "$i" && . "$i"
     done
 }

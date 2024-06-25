@@ -4,5 +4,5 @@
 
 # set background and border color
 riverctl background-color 0x${theme_wm_rootbg}
-riverctl border-color-focused 0x${theme_brightbg2}
-riverctl border-color-unfocused 0x${theme_statusbg}
+riverctl border-color-focused 0x${theme_wm_border_sel}
+riverctl border-color-unfocused 0x${theme_wm_border}

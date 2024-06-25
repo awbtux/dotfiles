@@ -2,6 +2,11 @@
 
 # generate theme configurations
 
+# sort implementation
+command -v sort >/dev/null 2>&1 || sort() {
+    sed ''
+}
+
 # theme select menu
 chtheme() {
     test -z "$1" && return 1
@@ -40,8 +45,8 @@ test -r "$themedir${1:+/$1/}theme.conf" && theme="$1"
 IFS="$(printf "\n\v")"
 
 # or pick one
-test -z "$themes" && themes="$(find "$themedir" -mindepth 1 -type d 2>/dev/null)"
-test -z "$themes" && themes="$(for d in "$themedir"/* "$themedir"/*/*; do test -d "$d" && printf "%s\n" "$d"; done)"
+test -z "$themes" && themes="$(find "$themedir" -mindepth 1 -type d 2>/dev/null | sort)"
+test -z "$themes" && themes="$(for d in "$themedir"/* "$themedir"/*/*; do test -d "$d" && printf "%s\n" "$d"; done | sort)"
 test -z "$theme" && theme="$(chtheme $themes)"
 test "$?" = "4" && exit 4
 test ! -r "$themedir/$theme/theme.conf" && printf "%s: error: %s: No such file or directory" "$0" "$themedir/$theme/theme.conf"

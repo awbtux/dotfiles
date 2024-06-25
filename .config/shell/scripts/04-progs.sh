@@ -47,7 +47,7 @@ test -n "${WAYLAND_DISPLAY:-$DISPLAY}" && for i in rage-player ffplay vlc mplaye
 done
 
 # image viewer
-for i in catimg timg fbida mpv fbpdf fbv tiv viu
+for i in img2sixel catimg timg fbida mpv fbpdf fbv tiv viu
     do command -v $i >/dev/null 2>&1 && export IMGVIEWER="xdg-terminal-exec $i"
 done
 test -n "${WAYLAND_DISPLAY:-$DISPLAY}" && for i in deepin-image-viewer aloadimage gthumb ahoviewer eom geeqie gpicview mirage lximage-qt viewnior phototonic gwenview celluloid mpv swayimg nomacs qview qimgv feh qiv vimiv pqiv imv sxiv nsxiv

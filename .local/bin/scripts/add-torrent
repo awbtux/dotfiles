@@ -23,7 +23,7 @@ test -d "${XDG_DOWNLOAD_DIR:-$HOME/Downloads}" && {
 
 # decide whether to change the default dir
 while test "$(chmenu "Should $(for i in "$@"; do printf "%s " "$i"; done)be downloaded to $default?" "yes" "no")" != "yes"; do
-    while newdir="`(echo ..; find . -maxdepth 1 -type d -not -name '.') | sed -e 's/\.\///g' -e 's/$/\//g' | fzf`" && test -n "$newdir"; do
+    while newdir="`(echo ..; find . -maxdepth 1 -mindepth 1 -type d) | sed -e 's/\.\///g' -e 's/$/\//g' | fzf`" && test -n "$newdir"; do
         cd "$newdir"
     done
     default="$PWD"

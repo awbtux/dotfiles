@@ -45,8 +45,8 @@ done
 done
 
 # set background
-test "$wpcmd" = "swaybg" && swaybg -i "$bgloc" -m fill
-test "$wpcmd" = "xwallpaper" && xwallpaper --zoom "$bgloc"
-test "$wpcmd" = "feh" && feh --no-fehbg --bg-fill "$bgloc"
-test "$wpcmd" = "hsetroot" && hsetroot -fill "$bgloc"
-test "$wpcmd" = "xfconf-query" && xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor1/workspace0/last-image -s "$bgloc"
+test "$wpcmd" = "swaybg" && swaybg -i "$bgloc" -m fill </dev/null &
+test "$wpcmd" = "xwallpaper" && xwallpaper --zoom "$bgloc" </dev/null &
+test "$wpcmd" = "feh" && feh --no-fehbg --bg-fill "$bgloc" </dev/null &
+test "$wpcmd" = "hsetroot" && hsetroot -fill "$bgloc" </dev/null &
+test "$wpcmd" = "xfconf-query" && xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor1/workspace0/last-image -s "$bgloc" </dev/null &

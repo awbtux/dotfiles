@@ -21,14 +21,14 @@ title = "Terminal"
 [font]
 normal = { family = "${theme_font_monospace}" }
 bold_italic = { style = "BoldItalic" }
-size = 9
+size = ${theme_terminal_font_size}
 builtin_box_drawing = true
 
 [colors.primary]
 background = "#${theme_mainbg}"
 foreground = "#${theme_mainfg}"
 bright_foreground = "#${theme_brightfg}"
-dim_foreground = "#${theme_darkerfg}"
+dim_foreground = "#${theme_darkfg}"
 
 [colors.normal]
 black = "#${theme_mainbg}"
@@ -41,7 +41,7 @@ cyan = "#${theme_maincyan}"
 white = "#${theme_mainfg}"
 
 [colors.bright]
-black = "#${theme_brighterbg2}"
+black = "#${theme_brighterbg}"
 red = "#${theme_brightred}"
 green = "#${theme_brightgreen}"
 yellow = "#${theme_brightyellow}"
@@ -51,14 +51,14 @@ cyan = "#${theme_brightcyan}"
 white = "#${theme_brightfg}"
 
 [colors.dim]
-black = "#${theme_brightbg2}"
+black = "#${theme_brighterbg}"
 red = "#${theme_darkred}"
 green = "#${theme_darkgreen}"
 yellow = "#${theme_darkyellow}"
 blue = "#${theme_darkblue}"
 magenta = "#${theme_darkmagenta}"
 cyan = "#${theme_darkcyan}"
-white = "#${theme_darkerfg}"
+white = "#${theme_darkfg}"
 
 [colors]
 transparent_background_colors = true

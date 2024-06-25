@@ -62,11 +62,11 @@ case "$TERM" in
 esac
 
 # load ~/.config/shell/aliases
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"
+test -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"
 
 # load scripts in zrc.d
-[ -d "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshrc.d" ] && {
+test -d "${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshrc.d" && {
     for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/zshrc.d/*.sh; do
-        [ -r "$i" ] && . "$i"
+        test -r "$i" && . "$i"
     done
 }

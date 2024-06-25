@@ -1,31 +1,3 @@
-# nord theme
-set completion-fg "#${theme_mainfg}"
-set completion-bg "#${theme_mainbg}"
-set completion-highlight-fg "#${theme_brightfg}"
-set completion-highlight-bg "#${theme_brighterbg}"
-set default-fg "#${theme_mainfg}"
-set default-bg "#${theme_mainbg}"
-set inputbar-fg "#${theme_mainfg}"
-set inputbar-bg "#${theme_mainbg}"
-set notification-fg "#${theme_brightfg}"
-set notification-bg "#${theme_brightbg}"
-set notification-error-fg "#${theme_brightfg}"
-set notification-error-bg "#${theme_mainred}"
-set notification-warning-fg "#${theme_brightfg}"
-set notification-warning-bg "#${theme_mainyellow}"
-set statusbar-fg "#${theme_mainfg}"
-set statusbar-bg "#${theme_statusbg2}"
-set highlight-color "#${theme_brighterbg}"
-set highlight-fg "#000000"
-set highlight-active-color "#${theme_brighterbg}"
-set highlight-transparency 0.5
-set render-loading-fg "#${theme_mainfg}"
-set render-loading-bg "#${theme_mainbg}"
-set index-fg "#${theme_mainfg}"
-set index-bg "#${theme_mainbg}"
-set index-active-fg "#${theme_brightfg}"
-set index-active-bg "#${theme_mainbg}"
-
 # general behavior
 set window-width 1024
 set window-height 640
@@ -40,8 +12,6 @@ set font "${theme_font_monospace} 9"
 set selection-clipboard clipboard
 
 # page recoloring
-set recolor-lightcolor "#${theme_mainbg2}"
-set recolor-darkcolor "#${theme_brightfg}"
 set recolor-keephue "true"
 
 # key mappings

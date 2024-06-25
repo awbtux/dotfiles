@@ -38,11 +38,11 @@ esac
 PROMPT_COMMAND="set_ps1"
 
 # load ~/.config/shell/aliases
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"
+test -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"
 
 # load scripts in bashrc.d
-[ -d "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bashrc.d" ] && {
+test -d "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bashrc.d" && {
     for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/bashrc.d/*.sh; do
-        [ -r "$i" ] && . "$i"
+        test -r "$i" && . "$i"
     done
 }

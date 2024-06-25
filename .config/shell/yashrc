@@ -50,11 +50,11 @@ PROMPT_COMMAND="alias !!=\"\$(history | sed -e '/\!!$/d' -e 's/^[0-9][0-9]*\t//'
 PS1P="\[\e[90m\]"
 
 # load ~/.config/shell/aliases
-[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"
+test -r "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases" && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliases"
 
 # load scripts in rc.d
-[ -d "${XDG_CONFIG_HOME:-$HOME/.config}/shell/yashrc.d" ] && {
+test -d "${XDG_CONFIG_HOME:-$HOME/.config}/shell/yashrc.d" && {
     for i in ${XDG_CONFIG_HOME:-$HOME/.config}/shell/yashrc.d/*.sh; do
-        [ -r "$i" ] && . "$i"
+        test -r "$i" && . "$i"
     done
 }
