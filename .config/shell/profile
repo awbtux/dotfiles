@@ -65,12 +65,8 @@ whichsh() {
     SHNAME="${ZSH_ARGZERO:-$0}"
     SHNAME="${SHNAME##-}"
     SHNAME="${SHNAME##*/}"
-
     command -v realpath >/dev/null 2>&1 && SHNAME="$(realpath "$(which "${SHNAME:-$SHELL}")")"
-    SHNAME="${SHNAME##*/}"
-
-    # print the shell name
-    printf "%s\n" "$SHNAME"
+    printf "%s\n" "${SHNAME##*/}"
 }
 
 # function add directories to our path

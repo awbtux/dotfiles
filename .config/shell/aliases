@@ -101,7 +101,7 @@ aliascmd \
 
 # verbosity and confirmation
 aliascmd \
-    cp="cp -iv" \
+    cp="cp -iva" \
     mv="mv -iv" \
     rm="rm -Iv" \
     mkdir="mkdir -v" \

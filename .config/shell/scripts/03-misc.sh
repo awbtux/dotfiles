@@ -36,8 +36,8 @@ export MPV_LEAK_REPORT="1"
 export DVDCSS_VERBOSE="1"
 
 # fzf stuff
-export FZF_DEFAULT_OPTS="--color=16 --extended"
-export FZF_DEFAULT_COMMAND="find . -xdev"
+export FZF_DEFAULT_OPTS="--color=16 --extended --walker=file,follow"
+#export FZF_DEFAULT_COMMAND="find . -xdev"
 
 # 'watch' update interval
 export WATCH_INTERVAL="0.5"
